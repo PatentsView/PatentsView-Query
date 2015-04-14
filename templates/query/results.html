@@ -1,0 +1,23 @@
+﻿<div id="tpl-step-results">
+    <section>
+        <div class="step-view">
+            <h3>Step 3: Select Output Fields</h3>
+            {{#each outputs}}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{this.category}}</h3>
+                </div>
+                <div class="panel-body">
+                    {{#each this.subcategories}}
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> {{this.key}}
+                        </label>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </section>
+</div>
