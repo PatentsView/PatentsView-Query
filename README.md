@@ -1,2 +1,0 @@
-# PatentsView-Query
-PatentsView Query

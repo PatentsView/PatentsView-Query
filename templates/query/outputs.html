@@ -1,0 +1,33 @@
+﻿<div class="col-md-12 r">
+    <h3>Step 3: Select Output Fields</h3>
+    {{#each outputs}}
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <label for="category-{{id}}">
+                    {{#if isActive}}
+                    <input id="category-{{id}}" data-id="{{this.id}}" type="checkbox" class="check-all" checked="checked" /> {{this.category}}
+                    {{else}}
+                    <input id="category-{{id}}" data-id="{{this.id}}" type="checkbox" class="check-all" /> {{this.category}}
+                    {{/if}}
+                </label>
+            </div>
+            <div class="panel-body">
+                <ul class="checkbox-list" data-category-id="{{this.id}}">
+                    {{#each this.subcategories}}
+                    <li class="checkbox">
+                        <label for="output-{{id}}">
+                            {{#if isActive}}
+                            <input id="output-{{id}}" type="checkbox" data-id="{{this.id}}" class="check" checked="checked"> {{this.name}}
+                            {{else}}
+                            <input id="output-{{id}}" type="checkbox" data-id="{{this.id}}" class="check"> {{this.name}}
+                            {{/if}}
+                        </label>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>

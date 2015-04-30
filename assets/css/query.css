@@ -1,155 +1,84 @@
-﻿.gradient-blue-mid {
-  background-image: -moz-linear-gradient(#54677b, #48596a);
-  background-image: -webkit-linear-gradient(#54677b, #48596a);
-  background-image: linear-gradient(#54677b, #48596a); }
+﻿
+  .btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+  border-color: #48596a;
+  color: #cde6f6;
+}
+.btn-circle.btn-lg {
+  width: 50px;
+  height: 50px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 25px;
+}
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  font-size: 24px;
+  line-height: 1.33;
+  border-radius: 35px;
+  border-width: medium;
+  border-color: #48596a;
+}
 
-.gradient-blue-light {
-  background-image: -moz-linear-gradient(#cde6f6, #cde6f6);
-  background-image: -webkit-linear-gradient(#cde6f6, #cde6f6);
-  background-image: linear-gradient(#cde6f6, #cde6f6); }
+.btn-circle.entity {
+    background-image: -moz-linear-gradient(#54677b, #54677b);
+    background-image: -webkit-linear-gradient(#54677b, #54677b);
+    background-image: linear-gradient(#54677b, #54677b);
+    background-repeat: no-repeat;
+}
 
-.gradient-blue-gray {
-  background-image: -moz-linear-gradient(#d9e1ec 0%, #d9e1ec 8%, #bdc9da 100%);
-  background-image: -webkit-linear-gradient(#d9e1ec 0%, #d9e1ec 8%, #bdc9da 100%);
-  background-image: linear-gradient(#d9e1ec 0%, #d9e1ec 8%, #bdc9da 100%); }
+.btn-circle.entity:hover,
+.btn-circle.entity.selected {
+    background-image: -moz-linear-gradient(#e17954, #e17954);
+    background-image: -webkit-linear-gradient(#e17954, #e17954);
+    background-image: linear-gradient(#e17954, #e17954);
+}
 
-.gradient-blue-gray-light {
-  background-image: -moz-linear-gradient(#eaedf1 0%, #eaedf1 8%, #d8e0ec 100%);
-  background-image: -webkit-linear-gradient(#eaedf1 0%, #eaedf1 8%, #d8e0ec 100%);
-  background-image: linear-gradient(#eaedf1 0%, #eaedf1 8%, #d8e0ec 100%); }
 
-.gradient-gray {
-  background-image: -moz-linear-gradient(#fafbfc 0%, #fafbfc 10%, #eaebec 100%);
-  background-image: -webkit-linear-gradient(#fafbfc 0%, #fafbfc 10%, #eaebec 100%);
-  background-image: linear-gradient(#fafbfc 0%, #fafbfc 10%, #eaebec 100%); }
-
-.gradient-gray-light {
-  background-image: -moz-linear-gradient(#fbfcfd 0%, #fbfcfd 10%, #f0f1f2 100%);
-  background-image: -webkit-linear-gradient(#fbfcfd 0%, #fbfcfd 10%, #f0f1f2 100%);
-  background-image: linear-gradient(#fbfcfd 0%, #fbfcfd 10%, #f0f1f2 100%); }
-
-body a, body a:visited {
-  color: #536579; }
-  body a:hover, body a:hover:visited {
-    border-bottom-color: #e17954;
-    color: #e17954; }
-  body a[target="_blank"]:hover:after, body a[target="_blank"]:active:after, body a.new-window:hover:after, body a.new-window:active:after {
-    content: ".";
-    display: inline-block;
-    margin-left: 6px;
-    vertical-align: middle; }
-
-body {
-  color: #536579;
-  font-family: "Open Sans", sans-serif;
-  font-size: 12px; }
-
-body a[target="_blank"]:hover:after, body a[target="_blank"]:visited:hover:after, body a[target="_blank"]:active:after, body a[target="_blank"]:visited:active:after, body a.new-window:hover:after, body a.new-window:visited:hover:after, body a.new-window:active:after, body a.new-window:visited:active:after {
+button.next {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
   text-indent: -119988px;
   overflow: hidden;
   text-align: left;
   text-transform: capitalize;
-  background-position: 0 -460px;
-  height: 12px;
-  width: 12px;
-  background-image: url('../img/../img/search-s4b67b7b92a.png');
-  background-repeat: no-repeat; }
+  border: 1px solid #8c9fae;
+  border-left: none;
+  color: #cde6f6;
+  height: 25px;
+  margin-top: 6px;
+  padding: 0;
+  position: relative;
+  width: 14.51%;
+}
 
-body {
-  color: #3e4b5a; }
+#entity h2 {
+    color: #e17954;
+    display: block;
+    font-family: "Open Sans", sans-serif;
+    font-size: 30px;
+    font-style: italic;
+    font-weight: normal;
+    line-height: 36px;
+    margin: 18px 0 16px;
+}
 
-@media (min-width: 1013px) {
-  .center-content {
-    width: 985px; }
-
-  aside.overview {
-    padding: 0 16px 0 0; } }
-@media (max-width: 1012px) {
-  .center-content {
-    width: 758px; } }
-.center-content {
-  margin: 0 auto;
-  padding: 0 14px; }
-
-aside.overview {
-  margin-top: 48px;
-  float: left;
-  width: 227px;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  line-height: 16px;
-  font-size: 12px; }
-  aside.overview em {
-    font-style: italic; }
-  aside.overview h5 {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase; }
-  aside.overview p {
-    margin-top: 7px;
-    margin-bottom: 13px; }
-    aside.overview p.one-line {
-      margin-top: 4px; }
-
-section.mainContent {
-  margin-top: 48px;
-  float: left;
-  width: 758px; }
-
-h2 {
-  font-size: 28px;
-  margin-bottom: 24px;
-  color: #e17954;
-  font-weight: 600; }
-
-table {
-  width: 100%;
-  background: #E5EFF3;
-  font-size: 13px;
-  line-height: 18px; }
-  table td, table th {
-    vertical-align: top;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box; }
-  table th {
-    padding: 5px 14px;
-    background: #F3F4F6;
-    border: 1px solid #DCDCDC;
-    border-left-color: #CBCDD9;
-    border-right-color: #CBCDD9;
-    font-weight: 700;
-    text-transform: uppercase; }
-  table td {
-    padding: 20px 14px 12px 14px;
-    border: 1px solid #C3CCD3;
-    border-top: 1px dashed #9099A0;
-    border-bottom: 1px dashed #9099A0;
-    font-weight: 300; }
-  table .table-name {
-    width: 25%;
-    padding-left: 6.5%; }
-  table td:nth-child(1) {
-    padding-left: 6.5%;
-    font-weight: 400; }
-    table td:nth-child(1) a {
-      font-size: 14px; }
-    table td:nth-child(1) .filesize {
-      display: block;
-      font-size: 11px;
-      margin-top: 3px; }
-  table .table-description {
-    width: 41%;
-    text-align: center; }
-  table .table-num-rows, table td:nth-child(3) {
-    width: 13.5%;
-    text-align: right; }
-  table .table-origin {
-    text-align: center; }
-
-.notes {
-  margin: 20px 0 50px 0;
-  line-height: 18px; }
-  .notes p {
-    margin-bottom: 10px; }
+#entity p {
+    color: #8c9fae;
+    display: block;
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 24px;
+    margin: 18px 0 16px;
+}

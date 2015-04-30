@@ -1,23 +1,112 @@
-﻿<div id="tpl-step-results">
-    <section>
-        <div class="step-view">
-            <h3>Step 3: Select Output Fields</h3>
-            {{#each outputs}}
+﻿<div class="col-md-12 r">
+    <h3>Step 4: Customize Results</h3>
+    <div class="row">
+        <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">{{this.category}}</h3>
+                    Sort Results By
                 </div>
                 <div class="panel-body">
-                    {{#each this.subcategories}}
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox"> {{this.key}}
-                        </label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>
+                                Group
+                                <select id="group" class="form-control">
+                                    <option>-Select Group-</option>
+                                    {{#each lookups.groups}}
+                                    {{#if isActive}}
+                                    <option id="{{id}}" data-id="{{id}}" selected="selected">{{name}}</option>
+                                    {{else}}
+                                    <option id="{{id}}" data-id="{{id}}">{{name}}</option>
+                                    {{/if}}
+                                    {{/each}}
+                                </select>
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label>
+                                Field
+                                <select id="field" class="form-control">
+                                    <option>-Select Field-</option>
+                                    {{#each lookups.fields}}
+                                    {{#if isActive}}
+                                    <option id="{{id}}" data-id="{{id}}" selected="selected">{{name}}</option>
+                                    {{else}}
+                                    <option id="{{id}}" data-id="{{id}}">{{name}}</option>
+                                    {{/if}}
+                                    {{/each}}
+                                </select>
+                            </label>
+                        </div>
                     </div>
-                    {{/each}}
                 </div>
             </div>
-            {{/each}}
         </div>
-    </section>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Limit Search Results
+                </div>
+                <div class="panel-body">
+                    <div class="list-inline">
+                        <label for="resultCount">Limit search results to <input id="resultCount" type="text" class="form-control" placeholder="Enter number" value="{{resultCount}}" /> patents (maximum 10,000).</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Getting the Results
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="">
+                                Please enter the e-mail address where you want the resutsl delivered
+                                <input id="recipient" type="text" class="form-control" placeholder="Enter e-mail address" value="{{recipient}}" />
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Please select the desired file format(s) of your final results.</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="xml">
+                                        {{#if xml}}
+                                        <input type="checkbox" id="xml" checked="checked" />
+                                        {{else}}
+                                        <input type="checkbox" id="xml" />
+                                        {{/if}}
+                                        XML
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="json">
+                                        {{#if json}}
+                                        <input type="checkbox" id="json" checked="checked" />
+                                        {{else}}
+                                        <input type="checkbox" id="json" />
+                                        {{/if}}
+                                        JSON
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="csv">
+                                        {{#if csv}}
+                                        <input type="checkbox" id="csv" checked="checked" />
+                                        {{else}}
+                                        <input type="checkbox" id="csv" />
+                                        {{/if}}
+                                        CSV
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

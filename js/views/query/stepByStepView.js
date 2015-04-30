@@ -7,8 +7,9 @@ define([
     'underscore',
     'backbone',
     'handlebars',
-    'text!../../../templates/query/stepbystep.html'
-], function ($, _, Backbone, Handlebars, stepbystepTemplate) {
+    'text!../../../templates/query/stepbystep.html',
+    'recaptcha'
+], function ($, _, Backbone, Handlebars, stepbystepTemplate, Recaptcha) {
 
     var StepByStep = (function () {
 
@@ -19,13 +20,19 @@ define([
                 var _previous = null;
                 var _view = view.ref;
                 var _tab = view.tab;
+                var _hideTab = view.hideTab || false;
+                var _hideNav = view.hideNav || false;
+                var _pos = view.pos;
                 return {
                     setPrevious: function (node) { _previous = node; return this; },
                     getPrevious: function () { return _previous; },
                     setNext: function (node) { _next = node; return this; },
                     getNext: function () { return _next; },
                     getView: function () { return _view; },
-                    getTab: function () { return _tab; }
+                    getTab: function () { return _tab; },
+                    getPos: function() { return _pos;  },
+                    getHideTab: function() { return _hideTab; },
+                    getHideNav: function () { return _hideNav; },
                 };
             };
 
@@ -63,36 +70,43 @@ define([
 
         var StepView = Backbone.View.extend({
             tagName: 'div',
+            id: 'step-by-step',
             initialize: function () {
-                _.bindAll(this, 'render', 'movePrevious', 'moveNext', 'insertView', 'save', 'moveToTab');
+                _.bindAll(this, 'render', 'insertView', 'save', 'routeStep');
 
-                //$("#step-template").html()
                 $(this.el).append(Handlebars.compile(stepbystepTemplate));
                 this.stepViewTabs = $(this.el).find('#step-view-progress');
                 this.stepViewContainer = $(this.el).find('#step-view-container');
                 this.stepViews = new StepViews();
             },
             events: {
-                "click .btn-previous": "movePrevious",
-                "click .btn-next": "moveNext",
-                "click .btn-save": "save",
-                "click .nav-tabs a": "moveToTab"
+                "click .btn-previous": "routeStep",
+                "click #next": "routeStep",
+                "click #save": "save",
+                "click .nav-tabs a": "routeStep"
             },
             render: function () {
+                
                 var currentView = this.stepViews.getCurrent();
+                var firstView = this.stepViews.first();
                 if (currentView !== null) {
-
                     if (currentView.getNext() === null) {
-                        $('.btn-next', this.el).hide();
+                        $('#next', this.el).hide();
                         $('.form-actions', this.el).show();
                     } else {
-                        $('.btn-next', this.el).show();
+                        $('#next', this.el).html(this.getNextHtml());
+                        $('#next', this.el).show();
                         $('.form-actions', this.el).hide();
                     }
                     if (currentView.getPrevious() === null) {
                         $('.btn-previous', this.el).hide();
                     } else {
                         $('.btn-previous', this.el).show();
+                    }
+                    if (currentView.getHideNav()) {
+                        this.stepViewTabs.hide();
+                    } else {
+                        this.stepViewTabs.show();
                     }
 
                     //clear the active tab css class
@@ -108,6 +122,12 @@ define([
                     this.stepViewContainer.find('.step-view:parent').hide();
                     $(currentView.getView().render().el).show();
 
+                    //debugger;
+                    //Recaptcha.render('captcha-container', {
+                    //    "sitekey": "6LcUEgYTAAAAAPXnyayKNTkx4nZsgQoBG52pD9_D"
+                        
+                    //});
+                    
                 }
                 return this;
             },
@@ -116,8 +136,8 @@ define([
                 var tab = view.tab;
                 view.tab = view.tab.replace(/\s/g, '-');
 
-                this.stepViewTabs.
-                    append('<li><a id="' + view.tab + '" href="#' + view.tab + '" title="' + view.tabTitle + '">' + view.tabTitle + '</a></li>');
+                if (!(view.hideTab || false))
+                    this.stepViewTabs.append('<li><a id="' + view.tab + '" href="#" title="' + view.tabTitle + '">' + view.tabTitle + '</a></li>');
 
                 this.stepViewContainer.append($(view.ref.render().el).hide());
                 this.stepViews.insertView(view);
@@ -135,10 +155,8 @@ define([
                 return false;
             },
             moveToTab: function (e) {
-                e = e || window.event;
-                var anchor = $(e.srcElement || e.target);
                 this.updateModel();
-                this.stepViews.setCurrentByTab($(anchor).attr('title'));
+                this.stepViews.setCurrentByTab(e);
                 this.render();
                 return false;
             },
@@ -147,19 +165,67 @@ define([
                 //favor view update method convention to force synchronous updates
             },
             save: function () {
-                this.updateModel();
+                //debugger;
+               
+                //jQuery.ajax({
+                //    type: 'POST', url: "verify.php", data: {}, success: function (result) {
+                //        if (result) {
+                //            $('#show').html('Your Form Successfully Submitted');
+                //            $('.formwrap').hide(result);
+                //            return true;
+                //        }
+                //    }
+                //});
+                //$('#show').html('Please Enter Valid Captcha');
+
+
                 alert(JSON.stringify(this.model.toJSON()));
+            },
+            routeStep: function (e) {
+                e = e || window.event;
+                var source = $(e.srcElement || e.target);
+                var action = $(source).attr('id');
+                var dest = 'start';
+
+                if (action === 'next') {
+                    var nextStep = this.stepViews.getCurrent().getNext();
+                    if (nextStep !== null) dest = nextStep.getTab();
+                }
+                else if (action === 'previous') {
+                    var prevStep = this.stepViews.getCurrent().getPrevious();
+                    if (prevStep !== null) dest = prevStep.getTab();
+                }
+                else {
+                    dest = action;
+                }
+
+                _router.navigate('step/'+dest, true);
+
+                return false;
+            },
+            getNextHtml: function () {
+                if (!_.isUndefined(this.stepViews.getCurrent().getView().getNextHtml()))
+                    return this.stepViews.getCurrent().getView().getNextHtml();
+
+                return 'Next';//Would rather use the template instead of sending this back.
             }
         });
 
         var _stepView = null;
+        var _router = null;
 
         return {
-            initialize: function (stepModel) {
+            initialize: function (router, stepModel) {
+                _router = router;
                 _stepView = new StepView({ model: stepModel });
             },
             insertView: function (view) {
                 _stepView.insertView(view);
+            },
+            movePrevious: function () { _stepView.movePrevious(); },
+            moveNext: function () { _stepView.moveNext(); },
+            moveToTab: function(e) {
+                return _stepView.moveToTab(e);
             },
             render: function () {
                 return _stepView.render();

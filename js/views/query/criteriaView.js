@@ -27,6 +27,9 @@ define([
         updateModel: function() {
 
 
+        },
+        getNextHtml: function () {
+            return 'Go to Step 3 &nbsp;&nbsp; <i class="fa fa-play" />';
         }
     });
 

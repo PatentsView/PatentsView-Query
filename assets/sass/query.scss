@@ -1,0 +1,146 @@
+﻿@import "stylesheets/bootstrap";
+@import "stylesheets/bootstrap-sprockets";
+
+//Move to layout mixin
+@mixin horizontal-list($list-margin: 0 8px 0 0) {
+	display: inline-block;
+	position: relative;
+	margin: 0;
+	padding: 0;
+
+	li {
+		display: inline-block;
+		position: relative;
+		margin: $list-margin;
+		padding: 0;
+
+		&:last-of-type {
+			margin-right: 0;
+		}
+
+		a {
+			display: inline-block;
+		}
+	}
+}
+
+
+#step-by-step-container{
+	margin-bottom: 25px;
+}
+
+
+
+#step-by-step{
+	margin-top: 25px;
+	
+}
+
+ul#step-view-progress{
+
+  border: 1px solid $blue-gray-dark;//user var
+	
+  > li {
+	  border: none;
+		  background-color: #f5f5f5;
+
+	  > a {
+		  border: none;
+		  font-weight: 600;
+		  background-color: #f5f5f5;
+	  } 
+	  &.active > a {
+		  background-color: #f5f5f5;
+      &,
+      &:hover,
+      &:focus {
+        color: $nav-tabs-active-link-hover-color;
+        background-color: #f5f5f5;
+        //border: 1px solid $nav-tabs-active-link-hover-border-color;
+        border-bottom-color: transparent;
+        cursor: default;
+      }
+    } 
+  }
+
+}
+
+
+ul#step-pager {
+	@include horizontal-list;
+	display: block;
+
+	li {
+		float: right;
+		padding: .5em;
+	}
+}
+
+.r { //rename this!!!
+	margin-top: 25px;
+		margin-bottom: 25px;
+		padding-top: 25px;
+		padding-bottom: 25px;
+		border-top-style: solid;
+	border-top-color: $blue-gray-dark;
+	border-top-width: 1px;
+	border-bottom-color: $blue-gray-dark;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+#intro { 
+	h2{
+	color: $orange;
+	}
+	p{
+		  margin-top: 17px;
+
+	}
+}
+
+ul.entity-list {
+	@include horizontal-list;
+	display: flex;
+	justify-content: space-between;
+
+	li {
+		label {
+			display: table-caption;
+			text-align: center;
+			text-transform: uppercase;
+		}
+
+		button.entity {
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			border-width: 1px;
+			margin-bottom: 10px;
+		}
+
+		&.active {
+
+			label {
+				color: $active-background-color;
+			}
+
+			button.entity {
+				background-color: $active-background-color;
+				border-color: darken($active-background-color, 10%);
+				
+			}
+		}
+	}
+}
+
+.panel-body{
+	ul{
+		padding-left:0;
+	}
+}
+
+#resultCount{
+	display: inline;
+	width: 200px;
+}

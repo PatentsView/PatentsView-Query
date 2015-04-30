@@ -1,29 +1,24 @@
-﻿<div id="tpl-step-by-step">
-    <div class="row">
-        <!-- step-by-step composer -->
-        <div id="step-by-step" class="col-md-12">
-            <!-- progress indicator -->
-            <ul id="step-view-progress" class="nav nav-tabs"></ul>
-            <!-- /progress indicator -->
-            <!-- step-view container -->
-            <div id="step-view-container"></div>
-            <!-- /step-view container -->
-            <!-- step pagination -->
-            <ul id="step-pager" class="pager pull-right" style="margin-top:0;">
-                <li class="previous">
-                    <a href="#" class="btn-previous">&larr; previous</a>
-                </li>
-                <li class="next">
-                    <a href="#" class="btn-next">next &rarr;</a>
-                </li>
-            </ul>
-            <!-- /step pagination -->
-            <!-- form action buttons -->
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary btn-save">Save changes</button>
-            </div>
-            <!-- form action buttons -->
-        </div>
-        <!-- /step-by-step composer -->
-    </div>
+﻿    <!-- step-by-step composer -->
+<!-- progress indicator -->
+<ul id="step-view-progress" class="nav nav-tabs nav-justified"></ul>
+<!-- /progress indicator -->
+<!-- step-view container -->
+<div id="step-view-container"></div>
+<!-- /step-view container -->
+<!-- step pagination -->
+<ul id="step-pager">
+    <li class="next">
+        <button id="next" type="button" class="btn btn-default">Next</button>
+    </li>
+    <li class="previous">
+        <button id="previous" type="button" class="btn btn-default" style="display: none;">Previous</button>
+    </li>
+</ul>
+<!-- /step pagination -->
+<!-- form action buttons -->
+<div class="form-actions">
+    <div id="captcha-container"></div>
+    <button id="save" type="submit" class="btn btn-default">Submit Query</button>
 </div>
+<!-- form action buttons -->
+<!-- /step-by-step composer -->
