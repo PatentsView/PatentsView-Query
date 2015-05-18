@@ -25,6 +25,61 @@
 }
 
 
+.btn-circle {
+  width: 49px;
+  height: 49px;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 20px;
+  line-height: 2.00;
+  border-radius: 30px;
+}
+
+.btn-circle-micro {
+  width: 19px;
+  height: 19px;
+  text-align: center;
+  padding: 1px 0;
+  font-size: 13px;
+  line-height: 0.1;
+  border-radius: 30px;
+}
+
+.btn-circle-sm {
+  width: 35px;
+  height: 35px;
+  text-align: center;
+  padding: 2px 0;
+  font-size: 20px;
+  line-height: 1.65;
+  border-radius: 30px;
+}
+
+.btn-circle-lg {
+  width: 79px;
+  height: 79px;
+  text-align: center;
+  font-size: 30px;
+  border-radius: 70px;
+}
+
+button.patent {
+	    background: url("../img/icon-ribbon.png") no-repeat center 5px #536579;
+  }
+
+button.inventor {
+	    background: url("../img/icon-bulb.png") no-repeat center 10px #536579;
+  }
+
+button.assignee, button.nberSubcategory, button.cpcSubsection, button.uspcMainclass {
+	    background: url("../img/icon-folder.png") no-repeat center 10px #536579;
+  }
+
+button.location {
+	    background: url("../img/icon-pin.png") no-repeat center 10px #536579;
+  }
+
+
 #step-by-step-container{
 	margin-bottom: 25px;
 }
@@ -49,6 +104,10 @@ ul#step-view-progress{
 		  font-weight: 600;
 		  background-color: #f5f5f5;
 	  } 
+	  &.complete > a {
+		  background-color: #f5f5f5;
+		  color: $nav-tabs-active-link-hover-color;
+	  }
 	  &.active > a {
 		  background-color: #f5f5f5;
       &,
@@ -89,13 +148,22 @@ ul#step-pager {
 	border-bottom-style: solid;
 }
 
+p.step-desc
+{
+	font-size: 20px;
+	font-style: italic;
+	color: $blue-gray-dark;
+	margin-bottom: 50px;
+}
+
 #intro { 
-	h2{
-	color: $orange;
+	h1{
+
+		color: $orange;
+		font-style: italic;
 	}
 	p{
 		  margin-top: 17px;
-
 	}
 }
 

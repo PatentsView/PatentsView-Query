@@ -1,0 +1,43 @@
+﻿{
+    "entityId":"patent",
+    "outputIds":[
+        "app_date",
+        "app_number",
+        "app_type",
+        "assignee_first_name",
+        "assignee_first_seen_date",
+        "assignee_id",
+        "assignee_last_name",
+        "assignee_last_seen_date",
+        "assignee_lastknown_location",
+        "assignee_location",
+        "assignee_organization",
+        "assignee_sequence",
+        "assignee_type"
+    ],
+    "criteria":[
+        {
+            "id":"9",
+            "name":"Set 1",
+            "group":"applications",
+            "field":"app_date",
+            "condition":"IsGreaterThan",
+            "value":"6/1/2002"
+        },
+        {
+            "id":"12",
+            "name":"Set 2",
+            "group":"cited_patents",
+            "field":"cited_patent_category",
+            "condition":"IsEqualTo",
+            "value":"technology"
+        }
+    ],
+    "groupId":"applications",
+    "fieldId":"app_date",
+    "resultCount":"1000",
+    "recipient":"jwrye@air.org",
+    "xml":"true",
+    "json":"true",
+    "csv":"true"
+}

@@ -39,8 +39,10 @@ define([
             var _head = null;
             var _tail = null;
             var _current = null;
+            var _list = new Array();
 
             return {
+                all: function() { return _list; },
                 first: function () { return _head; },
                 last: function () { return _tail; },
                 moveNext: function () {
@@ -51,12 +53,17 @@ define([
                 }, //set current to previous and return current or return null
                 getCurrent: function () { return _current; },
                 insertView: function (view) {
+                    debugger;
+                    var node = new Node(view);
+
                     if (_tail === null) { // list is empty (implied head is null)
-                        _current = _tail = _head = new Node(view);
+                        _current = _tail = _head = node;
                     }
                     else {//list has nodes
-                        _tail = _tail.setNext(new Node(view).setPrevious(_tail)).getNext();
+                        _tail = _tail.setNext(node.setPrevious(_tail)).getNext();
                     }
+
+                    _list.push(node);
                 },
                 setCurrentByTab: function (tab) {
                     var node = _head;
@@ -92,11 +99,18 @@ define([
                 if (currentView !== null) {
                     if (currentView.getNext() === null) {
                         $('#next', this.el).hide();
-                        $('.form-actions', this.el).show();
+                        $('.form-actions').show();
+
+                        $('#captcha-container').empty();
+                        //check if we're at this step and render and move the container.
+                        var widgetid = grecaptcha.render('captcha-container', {
+                            "sitekey": "6LcUEgYTAAAAAPXnyayKNTkx4nZsgQoBG52pD9_D"
+                        });
+
                     } else {
                         $('#next', this.el).html(this.getNextHtml());
                         $('#next', this.el).show();
-                        $('.form-actions', this.el).hide();
+                        $('.form-actions').hide();
                     }
                     if (currentView.getPrevious() === null) {
                         $('.btn-previous', this.el).hide();
@@ -109,35 +123,40 @@ define([
                         this.stepViewTabs.show();
                     }
 
-                    //clear the active tab css class
-                    this.stepViewTabs.
-                        find('li').removeClass('active');
-
-                    //set the active tab for the current view
-                    this.stepViewTabs.
-                        find('a#' + currentView.getTab() + '').
-                        parents('li:first').addClass('active');
+                    var tabPos = currentView.getPos();
+                    var stepViewTabs = this.stepViewTabs;
+                    
+                    _.forEach(this.stepViews.all(), function (n, key) {
+                        debugger;
+                        var view = n.getView();
+                        var pos = n.getPos();
+                        var anchor = stepViewTabs.find('li > a#' + view.id);
+                        anchor.parent().attr('class', '');
+                        
+                        if (pos < tabPos) {
+                            anchor.parent().addClass('complete');
+                            anchor.empty().html(view.getNavHtml('complete'));
+                        } else if (pos == tabPos) {
+                            anchor.parent().addClass('active');
+                            anchor.empty().html(view.getNavHtml('active'));
+                        } else {
+                            anchor.empty().html(view.getNavHtml());
+                        }
+                    });
 
                     //show only the current view
                     this.stepViewContainer.find('.step-view:parent').hide();
                     $(currentView.getView().render().el).show();
-
-                    //debugger;
-                    //Recaptcha.render('captcha-container', {
-                    //    "sitekey": "6LcUEgYTAAAAAPXnyayKNTkx4nZsgQoBG52pD9_D"
-                        
-                    //});
-                    
                 }
                 return this;
             },
             insertView: function (view) {
-
                 var tab = view.tab;
                 view.tab = view.tab.replace(/\s/g, '-');
 
-                if (!(view.hideTab || false))
-                    this.stepViewTabs.append('<li><a id="' + view.tab + '" href="#" title="' + view.tabTitle + '">' + view.tabTitle + '</a></li>');
+                if (!(view.hideTab || false)) {
+                    this.stepViewTabs.append('<li><a id="' + view.tab + '" href="#" title="' + view.tabTitle + '"><i class="fa fa-lg fa-square-o"></i> ' + view.tabTitle + '</a></li>');
+                }
 
                 this.stepViewContainer.append($(view.ref.render().el).hide());
                 this.stepViews.insertView(view);
@@ -165,7 +184,7 @@ define([
                 //favor view update method convention to force synchronous updates
             },
             save: function () {
-                //debugger;
+                //
                
                 //jQuery.ajax({
                 //    type: 'POST', url: "verify.php", data: {}, success: function (result) {

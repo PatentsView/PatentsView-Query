@@ -1,3 +1,58 @@
-﻿ <section id="criteria" class="step-view">
-        <h3>Step 2: Select Search Criteria</h3>
-</section>
+﻿<div id="criteria" class="col-md-12 r">
+    <h2>Step 2: Select Search Criteria</h2>
+    <p class="step-desc">Use the following criteria to identify a set of US patents. The output dataset will contain all primary entities (inventors, assignees, patents, classes, or locations) associated with those patents.</p>
+    <table id="search-criteria" class="table">
+        <thead>
+            <tr>
+                <th>
+                    Search Criteria
+                </th>
+                <th>
+                    Group
+                </th>
+                <th>
+                    Field
+                </th>
+                <th>
+                    Condition
+                </th>
+                <th>
+                    Value
+                </th>
+            </tr>
+        </thead>
+        <tbody id="criteria-items"></tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <button id="add-criterion" type="button" class="btn btn-default btn-block"><i class="fa fa-plus"></i> Add Set</button>
+                </td>
+                <td>
+                    <select id="add-criterion-group" class="form-control">
+                        <option>-Select Group-</option>
+                        {{#each groups}}
+                        {{#if isActive}}
+                        <option id="{{id}}" data-id="{{id}}" selected="selected">{{name}}</option>
+                        {{else}}
+                        <option id="{{id}}" data-id="{{id}}">{{name}}</option>
+                        {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+                <td>
+                    <select id="add-criterion-field" class="form-control">
+                        <option>-Select Field-</option>
+                    </select>
+                </td>
+                <td>
+                    <select id="add-criterion-condition" class="form-control">
+                        <option>-Select Condition-</option>
+                    </select>
+                </td>
+                <td>
+                    <input id="add-criterion-value" type="text" class="form-control" placeholder="Enter value" value="" />
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

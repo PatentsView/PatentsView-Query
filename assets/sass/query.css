@@ -2428,7 +2428,7 @@ output {
   padding-top: 7px;
   font-size: 12px;
   line-height: 1.42857;
-  color: #d2d3d4; }
+  color: #333333; }
 
 .form-control {
   display: block;
@@ -2437,7 +2437,7 @@ output {
   padding: 6px 12px;
   font-size: 12px;
   line-height: 1.42857;
-  color: #d2d3d4;
+  color: #333333;
   background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
@@ -3394,7 +3394,7 @@ tbody.collapse.in {
   font-size: 12px;
   font-weight: normal;
   line-height: 1;
-  color: #d2d3d4;
+  color: #333333;
   text-align: center;
   background-color: white;
   border: 1px solid #ccc;
@@ -3508,7 +3508,7 @@ tbody.collapse.in {
       .nav-tabs > li > a:hover {
         border-color: white white #b2cadd; }
     .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-      color: #536579;
+      color: #e17954;
       background-color: #fff;
       border: 1px solid #ddd;
       border-bottom-color: transparent;
@@ -5635,6 +5635,52 @@ button.close {
 @media print {
   .hidden-print {
     display: none !important; } }
+.btn-circle {
+  width: 49px;
+  height: 49px;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 20px;
+  line-height: 2.00;
+  border-radius: 30px; }
+
+.btn-circle-micro {
+  width: 19px;
+  height: 19px;
+  text-align: center;
+  padding: 1px 0;
+  font-size: 13px;
+  line-height: 0.1;
+  border-radius: 30px; }
+
+.btn-circle-sm {
+  width: 35px;
+  height: 35px;
+  text-align: center;
+  padding: 2px 0;
+  font-size: 20px;
+  line-height: 1.65;
+  border-radius: 30px; }
+
+.btn-circle-lg {
+  width: 79px;
+  height: 79px;
+  text-align: center;
+  font-size: 30px;
+  border-radius: 70px; }
+
+button.patent {
+  background: url("../img/icon-ribbon.png") no-repeat center 5px #536579; }
+
+button.inventor {
+  background: url("../img/icon-bulb.png") no-repeat center 10px #536579; }
+
+button.assignee, button.nberSubcategory, button.cpcSubsection, button.uspcMainclass {
+  background: url("../img/icon-folder.png") no-repeat center 10px #536579; }
+
+button.location {
+  background: url("../img/icon-pin.png") no-repeat center 10px #536579; }
+
 #step-by-step-container {
   margin-bottom: 25px; }
 
@@ -5650,10 +5696,13 @@ ul#step-view-progress {
       border: none;
       font-weight: 600;
       background-color: #f5f5f5; }
+    ul#step-view-progress > li.complete > a {
+      background-color: #f5f5f5;
+      color: #e17954; }
     ul#step-view-progress > li.active > a {
       background-color: #f5f5f5; }
       ul#step-view-progress > li.active > a, ul#step-view-progress > li.active > a:hover, ul#step-view-progress > li.active > a:focus {
-        color: #536579;
+        color: #e17954;
         background-color: #f5f5f5;
         border-bottom-color: transparent;
         cursor: default; }
@@ -5689,8 +5738,15 @@ ul#step-pager {
   border-bottom-width: 1px;
   border-bottom-style: solid; }
 
-#intro h2 {
-  color: #e17954; }
+p.step-desc {
+  font-size: 20px;
+  font-style: italic;
+  color: #8c9fae;
+  margin-bottom: 50px; }
+
+#intro h1 {
+  color: #e17954;
+  font-style: italic; }
 #intro p {
   margin-top: 17px; }
 

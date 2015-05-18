@@ -1,5 +1,6 @@
 ﻿<div class="col-md-12 r">
-    <h3>Review Selections</h3>
+    <h2>Review Selections</h2>
+    <p class="step-desc">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.</p>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -7,8 +8,10 @@
                     Step 1: Primary Entity
                     <a href="#step/entity" class="pull-right">Edit</a>
                 </div>
-                <div class="panel-body">
-                    [Entity Here]
+                <div class="panel-body text-center">
+                    <h2 class="center-block">
+                        {{entityName}}
+                    </h2>
                 </div>
             </div>
         </div>
@@ -34,7 +37,24 @@
                     <a href="#step/outputs" class="pull-right">Edit</a>
                 </div>
                 <div class="panel-body">
-                    [Output Fields Here]
+                    {{#grouped_each 4 outputs}}
+                    <div class="row">
+                        {{#each this}}
+                        {{#if isChildActive}}
+                        <div class="col-md-3">
+                            <label>{{name}}</label>
+                            <ul class="list-unstyled">
+                                {{#each this.fields}}
+                                {{#if isActive}}
+                                <li>{{this.name}}</li>
+                                {{/if}}
+                                {{/each}}
+                            </ul>
+                        </div>
+                        {{/if}}
+                        {{/each}}
+                    </div>
+                    {{/grouped_each}}
                 </div>
             </div>
         </div>
@@ -47,9 +67,45 @@
                     <a href="#step/results" class="pull-right">Edit</a>
                 </div>
                 <div class="panel-body">
-                    [Results Here]
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>
+                                Group:
+                            </label>
+                            {{groupId}}
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                Field:
+                            </label>
+                            {{fieldId}}
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                Limit:
+                            </label>
+                            {{resultCount}}
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                Format:
+                            </label>
+                            {{#if xml}}XML &nbsp;{{/if}}
+                            {{#if json}}JSON &nbsp;{{/if}}
+                            {{#if csv}}CSV {{/if}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>
+                                Email:
+                            </label>
+                            {{recipient}}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+

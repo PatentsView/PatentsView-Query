@@ -1,0 +1,79 @@
+﻿[
+	{
+		"id": "app_country",
+		"name": "Country",
+		"desc": "Country in which patent application was filed, always U.S.",
+		"type": "string",
+		"fieldType": "select",
+		"isOutput": "true",
+		"isQuery": "true",
+		"isSort": "true",
+		"group": "application",
+		"entities": [
+			"patent",
+			"inventor",
+			"assignee",
+			"cpc_subsection",
+			"uspc",
+			"nber_subcategory",
+			"location"
+		],
+		"values": [
+			"Albania",
+			"Belgium",
+			"Costa Rica",
+			"etc"
+		]
+	},
+	{
+		"id": "appcit_app_number",
+		"name": "Application Number",
+		"desc": "Application ID (issued by USPTO) for application cited by the selected patent",
+		"type": "string",
+		"fieldType": "input",
+		"isOutput": "true",
+		"isQuery": "true",
+		"isSort": "true",
+		"group": "application_citations",
+		"entities": [
+			"patent",
+			"location"
+		],
+		"values": []
+	},
+	{
+		"id": "assignee_type",
+		"name": "Type",
+		"desc": "Classification of assignee. 2 - US Company or Corporation, 3 - Foreign Company or Corporation, 4 - US Individual, 5 - Foreign Individual, 6 - US Government, 7 - Foreign Government, 8 - Country Government, 9 - State Government (US). Note: A \"1\" appearing before any of these codes signifies part interest",
+		"type": "string",
+		"fieldType": "select",
+		"isOutput": "true",
+		"isQuery": "true",
+		"isSort": "true",
+		"group": "assignees",
+		"entities": [
+			"patent",
+			"inventor",
+			"assignee",
+			"cpc_subsection",
+			"uspc",
+			"nber_subcategory",
+			"location"
+		],
+		"values": [
+			"3",
+			"2",
+			"5",
+			"4",
+			"13",
+			"7",
+			"6",
+			"14",
+			"15",
+			"12",
+			"9",
+			"8",
+			"1"
+		]
+	}
+]

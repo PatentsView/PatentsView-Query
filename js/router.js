@@ -5,7 +5,7 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'models/query/querymodel',
+  'models/query/queryModel',
   'views/query/stepbystepView',
   'views/query/entityView',
   'views/query/criteriaView',
@@ -29,23 +29,30 @@ define([
 
         var start = function () {
             var model = new QueryModel();
+
             $('#step-by-step-container').html('');
             StepByStepView.initialize(appRouter, model);
-            StepByStepView.insertView({ ref: new EntityView({ model: model }), tab: 'entity', tabTitle: 'Step 1: Select Entity', hideTab: false, hideNav: true, pos: 1 });
-            StepByStepView.insertView({ ref: new CriteriaView({ model: model }), tab: 'criteria', tabTitle: 'Step 2: Search Criteria', pos: 2 });
-            StepByStepView.insertView({ ref: new OutputsView({ model: model }), tab: 'outputs', tabTitle: 'Step 3: Output Fields', pos: 3 });
-            StepByStepView.insertView({ ref: new ResultsView({ model: model }), tab: 'results', tabTitle: 'Step 4: Customize Results', pos: 4 });
-            StepByStepView.insertView({ ref: new ReviewView({ model: model }), tab: 'review', tabTitle: 'Review', hideTab: true, hideNav: true, pos: 5 });
+            StepByStepView.insertView({ ref: new EntityView({ model: model }), tab: 'entity', tabTitle: 'Step 1: Select Entity', hideTab: false, hideNav: true, pos: 0 });
+            StepByStepView.insertView({ ref: new CriteriaView({ model: model }), tab: 'criteria', tabTitle: 'Step 2: Search Criteria', pos: 1 });
+            StepByStepView.insertView({ ref: new OutputsView({ model: model }), tab: 'outputs', tabTitle: 'Step 3: Output Fields', pos: 2 });
+            StepByStepView.insertView({ ref: new ResultsView({ model: model }), tab: 'results', tabTitle: 'Step 4: Customize Results', pos: 3 });
+            StepByStepView.insertView({ ref: new ReviewView({ model: model }), tab: 'review', tabTitle: 'Review', hideTab: true, hideNav: true, pos: 4 });
             
             StepByStepView.router = appRouter;
             $('#step-by-step-container').append(StepByStepView.render().el);
         };
 
-        appRouter.on('route:start', function (entity) {
+        appRouter.on('route:start', function () {
             start();
         });
         appRouter.on('route:step', function (view) {
-            return StepByStepView.moveToTab(view);
+            try {
+                StepByStepView.moveToTab(view);
+            }
+            catch (e) {
+                debugger;
+                //TODO: determine the best way to handle this redirection.
+            }             
         });
         appRouter.on('route:defaultRoute', function (actions) {
             start();

@@ -251,7 +251,7 @@ $input-bg:                       #fff !default;
 $input-bg-disabled:              $gray-lighter !default;
 
 //** Text color for `<input>`s
-$input-color:                    $gray !default;
+$input-color:                    $gray-dark !default;
 //** `<input>` border color
 $input-border:                   #ccc !default;
 
@@ -496,7 +496,7 @@ $nav-tabs-border-color:                     $blue-gray !default;
 $nav-tabs-link-hover-border-color:          $gray-lighter !default;
 
 $nav-tabs-active-link-hover-bg:             $body-bg !default;
-$nav-tabs-active-link-hover-color:          $blue-mid !default;
+$nav-tabs-active-link-hover-color:          $orange !default;
 $nav-tabs-active-link-hover-border-color:   #ddd !default;
 
 $nav-tabs-justified-link-border-color:            #ddd !default;

@@ -1,28 +1,28 @@
 ﻿<div id="intro">
     <div class="col-md-3">
-        <h2>
+        <h1 style="font-style: italic">
             The PatentsView
             Query Tool
-        </h2>
+        </h1>
     </div>
     <div class="col-md-9">
         <p>
-            The PatentsView Query Tool provides an easy to use web interface for querying data on patents, applications, inventors and assignees from the PatentsView database. To begin your search, click on one of the primary output entities: patent, inventor, or assignee. Click through the steps of the query to select search criteria, identify output fields, and sort and limit results. You will receive results in the designated format via email within 24 hours. Similar queries can also be completed using the PatentsView API.
+            The PatentsView Query Tool provides an easy to use web interface for querying data on patents, inventors, assignees, patent classes, and locations from the PatentsView database. To begin your search, click on one of the primary data output entities and click through to Step 2. Click through the steps of the query to select search criteria, identify output fields, and sort and limit results. You will receive results in the designated format via email within 24 hours. Similar queries can also be completed using the PatentsView API.
         </p>
     </div>
 </div>
 <div class="col-md-12 r">
-    <h3>Step 1: Select primary entity</h3>
-    <p>The selected entity will be the primary entity in the output dataset.</p>
+    <h2>Step 1: Select primary entity</h2>
+    <p class="step-desc">The selected entity will be the primary entity in the output dataset.</p>
     <ul class="entity-list">
-        {{#each entities}}
+        {{#each this}}
         {{#if isActive}}
         <li class="active">
         {{else}}
         <li>
         {{/if}}
             <label>
-                <button type="button" data-id="{{id}}" class="btn-default entity"><i class="fa fa-user fa-lg"></i></button>
+                <button type="button" data-id="{{id}}" class="btn btn-circle-lg btn-default entity {{id}}"></button>
                 {{name}}
             </label>
         </li>

@@ -7,10 +7,16 @@ require.config({
         underscore: 'libs/lodash',
         backbone: 'libs/backbone',
         text: 'libs/plugins/text',
-        handlebars: 'libs/plugins/handlebars',
-        recaptcha: "//www.google.com/recaptcha/api.js?render=explicit&response=yes"
+        handlebarsCore: 'libs/plugins/handlebars',
+        handlebars: 'libs/plugins/handlebars.helpers',
+        recaptcha: "https://www.google.com/recaptcha/api.js?render=explicit&response=yes"
     },
     shim: {
+        handlebarsCore: { exports: 'Handlebars' },
+        handlebars: {
+            deps: ['handlebarsCore'],
+            exports: 'Handlebars'
+        },
         recaptcha: { exports: "Recaptcha" }
     }
 });
