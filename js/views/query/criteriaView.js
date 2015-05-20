@@ -11,6 +11,7 @@ define([
     'text!../../../templates/query/criterion.html'
 ], function ($, _, Backbone, Handlebars, criteriaTemplate, criterionTemplate) {
 
+    debugger;
     var_queryModel = null;
 
     CriterionView = Backbone.View.extend({
@@ -62,8 +63,10 @@ define([
 
             //TODO: move to partial
              var conditionsTemplate = Handlebars.compile('<option data-id="0">-Select Condition-</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}">{{name}}</option>{{/if}}{{/each}}');
-            $(this.el).find('#criterion-condition-' + id).html(conditionsTemplate(conditions));
-            $(this.el).find('#criterion-value-' + id).val(this.model.get('value'));
+             $(this.el).find('#criterion-condition-' + id).html(conditionsTemplate(conditions));
+
+             $(this.el).find('#criterion-value-' + id).tagsinput(this.model.get('value'));
+//            $(this.el).find('#criterion-value-' + id).val(this.model.get('value'));
 
             return this;
         },
@@ -144,6 +147,9 @@ define([
                 
                 $(this.el).empty();
                 $(this.el).append(this.template(this.model.toJSON()));
+
+                $('#add-criterion-value').tagsinput();
+
                 this.addAll();
             }
 
@@ -154,7 +160,7 @@ define([
             var criterion = new criteria.model();
 
             criterion.set("id", _.uniqueId());
-            criterion.set("name", "Set " + (_.parseInt(criteria.models.length) + 1));
+            criterion.set("name", "Criterion");
             criterion.set("group", $('#add-criterion-group').find('option:selected').attr('data-id'));
             criterion.set("field", $('#add-criterion-field').find('option:selected').attr('data-id'));
             criterion.set("condition", $('#add-criterion-condition').find('option:selected').attr('data-id'));
@@ -167,7 +173,7 @@ define([
             $(this.el).find('#criteria-items').append(criterionView.render().el);
         },
         addAll: function () {
-            debugger;
+            
             this.model.get('criteria').models.forEach(this.addOne, this);
         },
         removeSet: function () {

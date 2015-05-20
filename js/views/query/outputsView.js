@@ -41,7 +41,7 @@ define([
             //    }
             //});
 
-            $('.output-groups').height(280);//TODO: (High) Replace the static output-groups height set with a calc of max field count.
+            //$('.output-groups').height(280);//TODO: (High) Replace the static output-groups height set with a calc of max field count.
 
             return this;
         },
@@ -56,7 +56,6 @@ define([
                     var output = $('#output-field-' + field.id + '');
                     if (output.prop('checked')) {
                         field.isActive = true;
-                        group.isChildActive = true;
                         outputIds.push(field.id);
                     }                    
                 });

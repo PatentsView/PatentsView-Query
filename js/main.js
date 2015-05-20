@@ -9,6 +9,7 @@ require.config({
         text: 'libs/plugins/text',
         handlebarsCore: 'libs/plugins/handlebars',
         handlebars: 'libs/plugins/handlebars.helpers',
+        'query-builder': 'libs/plugins/query-builder.standalone',
         recaptcha: "https://www.google.com/recaptcha/api.js?render=explicit&response=yes"
     },
     shim: {

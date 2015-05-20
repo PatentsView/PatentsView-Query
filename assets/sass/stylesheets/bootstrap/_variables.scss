@@ -83,7 +83,7 @@ $gray-lighter:           lighten($gray-base, 93.5%) !default; // #eee
 $brand-primary:         $blue-mid !default; // #337ab7
 $brand-success:         #5cb85c !default;
 $brand-info:            #5bc0de !default;
-$brand-warning:         $yellow !default;
+$brand-warning:         #e17954 !default;
 $brand-danger:          $dark-red !default;
 
 
@@ -629,7 +629,7 @@ $popover-arrow-outer-fallback-color:  darken($popover-fallback-border-color, 20%
 //##
 
 //** Default label background color
-$label-default-bg:            $gray-light !default;
+$label-default-bg:            $blue-mid !default;
 //** Primary label background color
 $label-primary-bg:            $brand-primary !default;
 //** Success label background color

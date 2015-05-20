@@ -11,8 +11,9 @@ define([
   'views/query/criteriaView',
   'views/query/outputsView',
   'views/query/resultsView',
-  'views/query/reviewView'
-], function ($, _, Backbone, QueryModel, StepByStepView, EntityView, CriteriaView, OutputsView, ResultsView, ReviewView) {
+  'views/query/reviewView',
+  'views/query/criteriaBuilderView'
+], function ($, _, Backbone, QueryModel, StepByStepView, EntityView, CriteriaView, OutputsView, ResultsView, ReviewView, CriteriaBuilderView) {
 
     var AppRouter = Backbone.Router.extend({
         routes: {
@@ -33,7 +34,8 @@ define([
             $('#step-by-step-container').html('');
             StepByStepView.initialize(appRouter, model);
             StepByStepView.insertView({ ref: new EntityView({ model: model }), tab: 'entity', tabTitle: 'Step 1: Select Entity', hideTab: false, hideNav: true, pos: 0 });
-            StepByStepView.insertView({ ref: new CriteriaView({ model: model }), tab: 'criteria', tabTitle: 'Step 2: Search Criteria', pos: 1 });
+            //StepByStepView.insertView({ ref: new CriteriaView({ model: model }), tab: 'criteria', tabTitle: 'Step 2: Search Criteria', pos: 1 });
+            StepByStepView.insertView({ ref: new CriteriaBuilderView({ model: model }), tab: 'criteria', tabTitle: 'Step 2: Search Criteria', pos: 1 });
             StepByStepView.insertView({ ref: new OutputsView({ model: model }), tab: 'outputs', tabTitle: 'Step 3: Output Fields', pos: 2 });
             StepByStepView.insertView({ ref: new ResultsView({ model: model }), tab: 'results', tabTitle: 'Step 4: Customize Results', pos: 3 });
             StepByStepView.insertView({ ref: new ReviewView({ model: model }), tab: 'review', tabTitle: 'Review', hideTab: true, hideNav: true, pos: 4 });
@@ -50,7 +52,7 @@ define([
                 StepByStepView.moveToTab(view);
             }
             catch (e) {
-                debugger;
+                
                 //TODO: determine the best way to handle this redirection.
             }             
         });

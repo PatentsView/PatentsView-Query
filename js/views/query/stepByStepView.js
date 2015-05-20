@@ -53,7 +53,7 @@ define([
                 }, //set current to previous and return current or return null
                 getCurrent: function () { return _current; },
                 insertView: function (view) {
-                    debugger;
+                    
                     var node = new Node(view);
 
                     if (_tail === null) { // list is empty (implied head is null)
@@ -127,7 +127,7 @@ define([
                     var stepViewTabs = this.stepViewTabs;
                     
                     _.forEach(this.stepViews.all(), function (n, key) {
-                        debugger;
+                        
                         var view = n.getView();
                         var pos = n.getPos();
                         var anchor = stepViewTabs.find('li > a#' + view.id);

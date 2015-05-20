@@ -18,14 +18,21 @@ define([
         { "id": "location", "name": "Location", "isActive": false }
     ];
 
-
-    var operators = [
-        { "id": "IsEqualTo", "name": "is equal to", "types": ["string", "date", "float", "integer", "fullText"], "isActive": false },
-        { "id": "IsNotEqualTo", "name": "is not equal to", "types": ["string", "date", "float", "integer", "fullText"], "isActive": false },
-        { "id": "IsGreaterThan", "name": "is greater than", "types": ["date", "float", "integer"], "isActive": false },
-        { "id": "IsLessThan", "name": "is less than", "types": ["date", "float", "integer"], "isActive": false }
+    var types = [
+        { "ops": ["equal", "not_equal", "begins_with", "contains"], "type": "string", "matches": ["string", "full text"] },
+        { "ops": ["equal", "not_equal" ], "type": "boolean", "matches": ["boolean"] },
+        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "date", "matches": ["date"] },
+        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "time", "matches": ["time"] },
+        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "datetime", "matches": ["datetime"] },
+        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "integer", "matches": ["integer"] },
+        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "double", "matches": ["double", "float"] }
     ];
 
+    var inputs = [
+        { "type": "text", "matches": ["input"] },
+        { "type": "select", "matches": ["select"] }
+    ];
+    
     var FieldModel = Backbone.Model.extend({
         initialize: function() {
             this.set("id", "");
@@ -111,7 +118,6 @@ define([
         initialize: function () {
             this.set('options', options);
             this.set('entities', entities);
-            this.set('operators', operators);
             this.set('outputs', []);
             this.set('sorts', []);
             this.set('entityId', "");
@@ -124,6 +130,83 @@ define([
             this.set('xml', "");
             this.set('json', "");
             this.set('csv', "");
+        },
+        getFilters: function () {
+            //build a set of filters to use by entity.
+
+            //var filters = [
+            //    {
+            //        id: 'name',
+            //        label: 'Name',
+            //        type: 'string',
+            //        optgroup: 'Application'
+            //    }, {
+            //        id: 'category',
+            //        label: 'Category',
+            //        type: 'integer',
+            //        input: 'select',
+            //        values: {
+            //            1: 'Books',
+            //            2: 'Movies',
+            //            3: 'Music',
+            //            4: 'Tools',
+            //            5: 'Goodies',
+            //            6: 'Clothes'
+            //        },
+            //        operators: ['equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null']
+            //    }, {
+            //        id: 'in_stock',
+            //        label: 'In stock',
+            //        type: 'integer',
+            //        input: 'radio',
+            //        values: {
+            //            1: 'Yes',
+            //            0: 'No'
+            //        },
+            //        operators: ['equal']
+            //    }, {
+            //        id: 'price',
+            //        label: 'Price',
+            //        type: 'double',
+            //        validation: {
+            //            min: 0,
+            //            step: 0.01
+            //        }
+            //    }, {
+            //        id: 'id',
+            //        label: 'Identifier',
+            //        type: 'string',
+            //        placeholder: '____-____-____',
+            //        operators: ['equal', 'not_equal'],
+            //        validation: {
+            //            format: /^.{4}-.{4}-.{4}$/
+            //        }
+            //    }
+            //];
+
+            var entityId = this.get('entityId');
+            var filters = new Array();
+
+            _.where(this.get('options'), { "entities": [entityId] }).forEach(function (field) {
+
+                var typeMatch = _.find(types, { "matches": [field.type] });
+                var inputMatch = _.find(inputs, { "matches": [field.fieldType] });
+
+                if (field.isQuery) {
+                    filters.push(
+                    {
+                        id: field.id,
+                        label: field.name,
+                        type: typeMatch.type,
+                        input: inputMatch.type,
+                        operators: typeMatch.ops,
+                        values: field.values,
+                        optgroup: field.group
+                    });
+                }
+            });
+
+            return filters;
         },
         getGroups: function() {
             var entityId = this.get('entityId');
@@ -193,7 +276,7 @@ define([
                 if (field.isOutput) {
 
                     var group = _.find(groups, { "id": field.group });
-                    var output = { "id": field.id, "name": field.name, "isActive": false, "isChildActive": false };
+                    var output = { "id": field.id, "name": field.name, "isActive": false };
 
                     if (_.isUndefined(group)) {
                         group = { "id": field.group, "name": field.group, "isActive": false, fields: new Array() };

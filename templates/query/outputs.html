@@ -1,34 +1,38 @@
 ﻿<div class="col-md-12 r">
     <h2>Step 3: Select Output Fields</h2>
     <p class="step-desc">Options for output data fields are determined by the primary entity selected in step 1.</p>
-    {{#each this}}
-    <div class="col-md-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <label for="output-group-{{id}}">
-                    {{#if isActive}}
-                    <input id="output-group-{{id}}" data-id="{{this.id}}" type="checkbox" class="check-all" checked="checked" /> {{this.name}}
-                    {{else}}
-                    <input id="output-group-{{id}}" data-id="{{this.id}}" type="checkbox" class="check-all" /> {{this.name}}
-                    {{/if}}
-                </label>
-            </div>
-            <div class="panel-body ">
-                <ul class="checkbox-list output-groups" data-output-group-id="{{this.id}}">
-                    {{#each this.fields}}
-                    <li class="checkbox">
-                        <label for="output-group-{{id}}">
-                            {{#if isActive}}
-                            <input id="output-field-{{id}}" type="checkbox" data-id="{{this.id}}" class="check" checked="checked"> {{this.name}}
-                            {{else}}
-                            <input id="output-field-{{id}}" type="checkbox" data-id="{{this.id}}" class="check"> {{this.name}}
-                            {{/if}}
-                        </label>
-                    </li>
-                    {{/each}}
-                </ul>
+    {{#each_every 4 this}}
+    <div class="row equal">
+        {{#each this}}
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <label for="output-group-{{id}}">
+                        {{#if isActive}}
+                        <input id="output-group-{{id}}" data-id="{{this.id}}" type="checkbox" class="check-all" checked="checked" /> {{this.name}}
+                        {{else}}
+                        <input id="output-group-{{id}}" data-id="{{this.id}}" type="checkbox" class="check-all" /> {{this.name}}
+                        {{/if}}
+                    </label>
+                </div>
+                <div class="panel-body ">
+                    <ul class="checkbox-list output-groups" data-output-group-id="{{this.id}}">
+                        {{#each this.fields}}
+                        <li class="checkbox">
+                            <label for="output-field-{{id}}">
+                                {{#if isActive}}
+                                <input id="output-field-{{id}}" type="checkbox" data-id="{{this.id}}" class="check" checked="checked"> {{this.name}}
+                                {{else}}
+                                <input id="output-field-{{id}}" type="checkbox" data-id="{{this.id}}" class="check"> {{this.name}}
+                                {{/if}}
+                            </label>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
             </div>
         </div>
+        {{/each}}
     </div>
-    {{/each}}
+    {{/each_every}}
 </div>

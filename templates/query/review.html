@@ -8,7 +8,7 @@
                     Step 1: Primary Entity
                     <a href="#step/entity" class="pull-right">Edit</a>
                 </div>
-                <div class="panel-body text-center">
+                <div class="panel-body text-center review-entity">
                     <h2 class="center-block">
                         {{entityName}}
                     </h2>
@@ -23,7 +23,7 @@
                     Step 1: Search Criteria
                     <a href="#step/criteria" class="pull-right">Edit</a>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body review-criteria">
                     [Entity Here]
                 </div>
             </div>
@@ -36,11 +36,10 @@
                     Step 3: Output Fields
                     <a href="#step/outputs" class="pull-right">Edit</a>
                 </div>
-                <div class="panel-body">
-                    {{#grouped_each 4 outputs}}
+                <div class="panel-body review-outputs">
+                    {{#each_active_output_every 4 outputs}}
                     <div class="row">
                         {{#each this}}
-                        {{#if isChildActive}}
                         <div class="col-md-3">
                             <label>{{name}}</label>
                             <ul class="list-unstyled">
@@ -51,10 +50,9 @@
                                 {{/each}}
                             </ul>
                         </div>
-                        {{/if}}
                         {{/each}}
                     </div>
-                    {{/grouped_each}}
+                    {{/each_active_output_every}}
                 </div>
             </div>
         </div>
@@ -66,46 +64,29 @@
                     Step 4: Customize Results
                     <a href="#step/results" class="pull-right">Edit</a>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body review-results">
                     <div class="row">
+                            <div class="col-md-3">
+                                    <span class="label label-block label-default">Group:</span>  {{groupId}}
+                                </div>
                         <div class="col-md-3">
-                            <label>
-                                Group:
-                            </label>
-                            {{groupId}}
+                            <span class="label label-block label-default">Field:</span>  {{fieldId}}
                         </div>
                         <div class="col-md-3">
-                            <label>
-                                Field:
-                            </label>
-                            {{fieldId}}
+                            <span class="label label-block label-default">Limit:</span>  {{resultCount}}
                         </div>
                         <div class="col-md-3">
-                            <label>
-                                Limit:
-                            </label>
-                            {{resultCount}}
+                            <span class="label label-block label-default">Format:</span>  {{#if xml}}XML &nbsp;{{/if}} {{#if json}}JSON &nbsp;{{/if}} {{#if csv}}CSV {{/if}}
                         </div>
-                        <div class="col-md-3">
-                            <label>
-                                Format:
-                            </label>
-                            {{#if xml}}XML &nbsp;{{/if}}
-                            {{#if json}}JSON &nbsp;{{/if}}
-                            {{#if csv}}CSV {{/if}}
                         </div>
-                    </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <label>
-                                Email:
-                            </label>
-                            {{recipient}}
+                            <span class="label label-block label-default">Email:</span>  {{recipient}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
+</div>
