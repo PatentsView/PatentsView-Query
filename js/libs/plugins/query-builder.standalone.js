@@ -364,7 +364,7 @@
             add_rule: 'fa fa-plus',
             remove_group: 'fa fa-times',
             remove_rule: 'fa fa-times',
-            error: 'glyphicon glyphicon-warning-sign'
+            error: 'fa fa-exclamation-triangle'
         }
     };
 
@@ -1142,14 +1142,17 @@
                 if (model.operator.nb_inputs !== 0) {
                     value = model.value;
                 }
-
+                
                 var rule = {
                     id: model.filter.id,
                     field: model.filter.field,
                     type: model.filter.type,
                     input: model.filter.input,
                     operator: model.operator.type,
-                    value: value
+                    value: value,
+                    label: model.filter.label,
+                    group: model.filter.optgroup,
+                    operatorLabel: model.operator.type.replace(/_/g, " ")
                 };
 
                 if (model.filter.data || model.data) {
@@ -3432,7 +3435,7 @@
         "__locale": "English (en)",
         "__author": "Damien \"Mistic\" Sorel, http://www.strangeplanet.fr",
         "add_rule": "Add Criterion",
-        "add_group": "Add Criteria Set",
+        "add_group": "Add Set",
         "delete_rule": "Delete",
         "delete_group": "Delete",
         "conditions": {

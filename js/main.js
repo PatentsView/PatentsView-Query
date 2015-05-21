@@ -9,21 +9,22 @@ require.config({
         text: 'libs/plugins/text',
         handlebarsCore: 'libs/plugins/handlebars',
         handlebars: 'libs/plugins/handlebars.helpers',
+        moment: 'libs/plugins/moment',
         'query-builder': 'libs/plugins/query-builder.standalone',
-        recaptcha: "https://www.google.com/recaptcha/api.js?render=explicit&response=yes"
+        recaptcha: 'https://www.google.com/recaptcha/api.js?render=explicit&response=yes'
     },
     shim: {
-        handlebarsCore: { exports: 'Handlebars' },
+        handlebarsCore: { exports:'"Handlebars' },
         handlebars: {
             deps: ['handlebarsCore'],
             exports: 'Handlebars'
         },
-        recaptcha: { exports: "Recaptcha" }
+        recaptcha: { exports: 'Recaptcha' }
     }
 });
 
 require([
-  'app'
+  "app"
 ], function (App) {
     App.initialize();
 });

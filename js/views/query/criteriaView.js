@@ -16,7 +16,8 @@ define([
 
     CriterionView = Backbone.View.extend({
         tagName: 'tr',
-        initialize: function () {
+        initialize: function (options) {
+            this.listenTo(this.model, 'entityChanged', this.entityChanged);
             //this.model.on('change', this.render, this);
             this.template = Handlebars.compile(criterionTemplate);
         },

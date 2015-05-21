@@ -7,67 +7,94 @@ define([
     'underscore',
     'backbone',
     'handlebars',
-    'query-builder',
-    'text!../../../templates/query/criteriaBuilder.html'
-], function ($, _, Backbone, Handlebars, QueryBuilder, criteriaBuilderTemplate) {
+    'text!../../../templates/query/criteriaBuilder.html',
+    'moment',
+    'query-builder'
+], function ($, _, Backbone, Handlebars, criteriaBuilderTemplate) {
 
     var CriteriaBuilderView = Backbone.View.extend({
         tagName: 'div',
         className: 'step-view row',
-        id: 'builder',
-        initialize: function () {
+        id: 'criteria',
+        initialize: function (options) {
+            this.listenTo(this.model, 'entityChanged', this.entityChanged);
             _.bindAll(this, 'render', 'updateModel');
             this.template = Handlebars.compile(criteriaBuilderTemplate);
         },
         render: function () {
-            $(this.el).empty();
-            $(this.el).append(this.template(this.model.toJSON()));
-            debugger;
+            if (this.resetView) {
+                var qb = this.model.get("qb");
 
-            var filters = this.model.getFilters();
+                if (!_.isUndefined(qb)) {
+                    qb.queryBuilder('destroy');
+                }
 
-            if (!_.isNull(filters) && _.size(filters) > 0) {
+                var filters = this.model.getFilters();
 
-                $(this.el).find('#builder').queryBuilder({
-                    select_placeholder: '- Select Field -',
-                    filters: filters
-                });
+                if (!_.isNull(filters) && _.size(filters) > 0) {
+
+                    $(this.el).empty();
+                    $(this.el).append(this.template(this.model.toJSON()));
+
+                    this.model.set("qb", $(this.el).find('#builder').queryBuilder({
+                        select_placeholder: '- Select Field -',
+                        filters: filters
+                    }));
+                }
+
+                this.resetView = false;
             }
 
             return this;
         },
         updateModel: function (e) {
-            
+            debugger;
+            var qb = this.model.get("qb");
+
+            if (!_.isUndefined(qb)) {
+
+                this.model.set("rules", [$(this.el).find('#builder').queryBuilder('getRules')]);
+
+
+
+                //if (!qb.queryBuilder('validate')) {
+
+                //    this.model.set("rules", qb.queryBuilder('getRules'));
+                //    //TODO: (Med) Convert the rules to a format that we can pass for processing.
+                //} else {
+                //    //TODO: (High) Short the navigation of the view.
+                //}
+            }
         },
         getNavHtml: function (s) {
-            //s is the state requested.
-            var result = '<i class="fa fa-lg fa-square-o"></i> testing';
+            var result = '<i class="fa fa-lg fa-square-o"></i> Step 2: Select Criteria';
 
-            //switch (s) {
-            //    case "active":
-            //        {
-            //            result = '<i class="fa fa-lg fa-square-o"></i> Step 1: Select Entity';
+            switch (s) {
+                case "active":
+                    {
+                        result = '<i class="fa fa-lg fa-square-o"></i> Step 2: Select Criteria';
 
-            //            break;
-            //        }
-            //    case "complete":
-            //        {
-            //            result = '<i class="fa fa-lg fa-check-square-o"></i> Step 1: ' + this.model.get('entityName');
+                        break;
+                    }
+                case "complete":
+                    {
+                        result = '<i class="fa fa-lg fa-check-square-o"></i> Step 2: Complete';
 
-            //            break;
-            //        }
-            //    default: {
-            //        break;
-            //    }
-            //}
-
+                        break;
+                    }
+                default: {
+                    break;
+                }
+            }
 
             return result;
         },
         getNextHtml: function () {
             return 'Go to Step 3 &nbsp;&nbsp; <i class="fa fa-play" />';
+        },
+        entityChanged: function(e) {
+            this.resetView = true;
         }
-
     });
 
     return CriteriaBuilderView;

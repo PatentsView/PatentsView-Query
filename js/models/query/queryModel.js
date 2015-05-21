@@ -21,7 +21,7 @@ define([
     var types = [
         { "ops": ["equal", "not_equal", "begins_with", "contains"], "type": "string", "matches": ["string", "full text"] },
         { "ops": ["equal", "not_equal" ], "type": "boolean", "matches": ["boolean"] },
-        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "date", "matches": ["date"] },
+        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "date", "matches": ["date"], placeholder: "YYYY-MM-DD" },
         { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "time", "matches": ["time"] },
         { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "datetime", "matches": ["datetime"] },
         { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "integer", "matches": ["integer"] },
@@ -102,17 +102,17 @@ define([
 
     var options = JSON.parse(optionsJson);
 
-    //Lookups for views.
-    var LookupModel = Backbone.Model.extend({
-        defaults: {},
-        outputs: [
-            { "id": "1", "category": "Patent", "isActive": false, "subcategories": [{ "id": "1", "name": "eg 1", "isActive": false }, { "id": "6", "name": "eg 6", "isActive": false }, { "id": "11", "name": "eg 11", "isActive": false }] },
-            { "id": "2", "category": "Inventor", "isActive": false, "subcategories": [{ "id": "2", "name": "eg 2", "isActive": false }, { "id": "7", "name": "eg 7", "isActive": false }, { "id": "12", "name": "eg 12", "isActive": false }] },
-            { "id": "3", "category": "Assignee", "isActive": false, "subcategories": [{ "id": "3", "name": "eg 3", "isActive": false }, { "id": "8", "name": "eg 8", "isActive": false }, { "id": "13", "name": "eg 13", "isActive": false }] },
-            { "id": "4", "category": "Co-Inventor", "isActive": false, "subcategories": [{ "id": "4", "name": "eg 4", "isActive": false }, { "id": "9", "name": "eg 9", "isActive": false }, { "id": "14", "name": "eg 14", "isActive": false }] },
-            { "id": "5", "category": "ETC...", "isActive": false, "subcategories": [{ "id": "5", "name": "eg 5", "isActive": false }, { "id": "10", "name": "eg 10", "isActive": false }, { "id": "15", "name": "eg 15", "isActive": false }] }
-        ]
-    });
+    ////Lookups for views.
+    //var LookupModel = Backbone.Model.extend({
+    //    defaults: {},
+    //    outputs: [
+    //        { "id": "1", "category": "Patent", "isActive": false, "subcategories": [{ "id": "1", "name": "eg 1", "isActive": false }, { "id": "6", "name": "eg 6", "isActive": false }, { "id": "11", "name": "eg 11", "isActive": false }] },
+    //        { "id": "2", "category": "Inventor", "isActive": false, "subcategories": [{ "id": "2", "name": "eg 2", "isActive": false }, { "id": "7", "name": "eg 7", "isActive": false }, { "id": "12", "name": "eg 12", "isActive": false }] },
+    //        { "id": "3", "category": "Assignee", "isActive": false, "subcategories": [{ "id": "3", "name": "eg 3", "isActive": false }, { "id": "8", "name": "eg 8", "isActive": false }, { "id": "13", "name": "eg 13", "isActive": false }] },
+    //        { "id": "4", "category": "Co-Inventor", "isActive": false, "subcategories": [{ "id": "4", "name": "eg 4", "isActive": false }, { "id": "9", "name": "eg 9", "isActive": false }, { "id": "14", "name": "eg 14", "isActive": false }] },
+    //        { "id": "5", "category": "ETC...", "isActive": false, "subcategories": [{ "id": "5", "name": "eg 5", "isActive": false }, { "id": "10", "name": "eg 10", "isActive": false }, { "id": "15", "name": "eg 15", "isActive": false }] }
+    //    ]
+    //});
 
     var QueryModel = Backbone.Model.extend({
         initialize: function () {
@@ -122,6 +122,7 @@ define([
             this.set('sorts', []);
             this.set('entityId', "");
             this.set('outputIds', []);
+            this.set('rules', []);
             this.set('criteria', new CriteraCollection());
             this.set('groupId', "");
             this.set('fieldId', "");
@@ -131,7 +132,7 @@ define([
             this.set('json', "");
             this.set('csv', "");
         },
-        getFilters: function () {
+        getFilters: function (readonly) {
             //build a set of filters to use by entity.
 
             //var filters = [
@@ -193,8 +194,8 @@ define([
                 var inputMatch = _.find(inputs, { "matches": [field.fieldType] });
 
                 if (field.isQuery) {
-                    filters.push(
-                    {
+
+                    var filter = {
                         id: field.id,
                         label: field.name,
                         type: typeMatch.type,
@@ -202,7 +203,13 @@ define([
                         operators: typeMatch.ops,
                         values: field.values,
                         optgroup: field.group
-                    });
+                    };
+
+                    if (!_.isUndefined(typeMatch.validation)) {
+                        filter.validation = typeMatch.validation;
+                    }
+
+                    filters.push(filter);
                 }
             });
 

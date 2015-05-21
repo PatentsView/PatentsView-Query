@@ -36,6 +36,7 @@ define([
                 };
             };
 
+            var _events = _({}).extend(Backbone.Events);
             var _head = null;
             var _tail = null;
             var _current = null;
@@ -53,7 +54,6 @@ define([
                 }, //set current to previous and return current or return null
                 getCurrent: function () { return _current; },
                 insertView: function (view) {
-                    
                     var node = new Node(view);
 
                     if (_tail === null) { // list is empty (implied head is null)
@@ -71,6 +71,9 @@ define([
                         if (node.getTab() !== tab) { node = node.getNext(); }
                         else { _current = node; break; }
                     }
+                },
+                stepEvents: function () {
+                    return _events;
                 }
             };
         };
@@ -150,7 +153,7 @@ define([
                 }
                 return this;
             },
-            insertView: function (view) {
+                insertView: function (view) {
                 var tab = view.tab;
                 view.tab = view.tab.replace(/\s/g, '-');
 
@@ -248,7 +251,11 @@ define([
             },
             render: function () {
                 return _stepView.render();
+            },
+            stepEvents: function() {
+                return _stepView.stepViews.stepEvents();
             }
+
         };
 
     })();

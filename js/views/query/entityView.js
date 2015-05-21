@@ -14,7 +14,7 @@ define([
         tagName: 'div',
         className: 'step-view row',
         id: 'entity',
-        initialize: function() {
+        initialize: function (options) {
             _.bindAll(this, 'render', 'updateModel');
             this.template = Handlebars.compile(entityTemplate);
         },
@@ -23,7 +23,7 @@ define([
             "click #step .btn-previous": "updateModel",
             "click #step .btn-next": "updateModel"
         },
-        render: function() {
+        render: function () {
             $(this.el).empty();
             $(this.el).append(this.template(this.model.get('entities')));
 
@@ -39,6 +39,7 @@ define([
             var dataId = $(this.el).find('.active button.entity').attr('data-id');
 
             //Check if the entityId has changed.
+            //TODO: (High) add dialog to prompt the user that that they're about to change the entity.
             if (dataId != this.model.get('entityId')) {
 
                 var entities = this.model.get('entities');
@@ -48,6 +49,9 @@ define([
 
                 if (!_.isNull(entity)) entity.isActive = true;
 
+                this.model.trigger('entityChanged', dataId);
+
+                //TODO: (High) move these to their views to handle.
                 this.model.set('entityId', dataId);
                 this.model.set('entityName', entity.name);
 

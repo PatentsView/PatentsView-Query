@@ -86,6 +86,10 @@ $ticks-position: 5px, 10px !default;
       @extend %rule-component;
     }
 
+	.rule-operator-contianer{
+		border-left: $rule-value-separator;
+	}
+
     .rule-value-container {
       border-left: $rule-value-separator;
       padding-left: 5px;

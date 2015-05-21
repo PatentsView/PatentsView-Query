@@ -14,9 +14,10 @@ define([
         tagName: 'div',
         className: 'step-view row',
         id: 'results',
-        initialize: function () {
-
+        initialize: function (options) {
+            this.listenTo(this.model, 'entityChanged', this.entityChanged);
             _.bindAll(this, 'render', 'updateModel');
+           
             this.template = Handlebars.compile(resultsTemplate);
         },
         events: {
