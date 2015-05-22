@@ -21,7 +21,7 @@ define([
     var types = [
         { "ops": ["equal", "not_equal", "begins_with", "contains"], "type": "string", "matches": ["string", "full text"] },
         { "ops": ["equal", "not_equal" ], "type": "boolean", "matches": ["boolean"] },
-        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "date", "matches": ["date"], placeholder: "YYYY-MM-DD" },
+        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "date", "matches": ["date"], validation: { format: "YYYY-MM-DD" }, placeholder: "YYYY-MM-DD" },
         { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "time", "matches": ["time"] },
         { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "datetime", "matches": ["datetime"] },
         { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "integer", "matches": ["integer"] },

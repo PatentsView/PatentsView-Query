@@ -47,7 +47,7 @@ define([
             //            filters: filters,
             //        });
 
-            //        debugger;
+            //        
             //        vqb.queryBuilder('setRules', rules);
             //    }
 

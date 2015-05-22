@@ -968,6 +968,7 @@
         if (this.settings.display_errors) {
             if (node.error === null) {
                 node.$el.removeClass('has-error');
+                node.$el.find('.error').empty();
             }
             else {
                 // translate the text without modifying event array
@@ -977,6 +978,7 @@
 
                 node.$el.addClass('has-error')
                   .find('.error-container').eq(0).attr('title', fmt.apply(null, error));
+                node.$el.find('.error').eq(0).html(fmt.apply(null, error));
             }
         }
     };
@@ -1748,7 +1750,10 @@
   <div class="rule-filter-container"></div> \
   <div class="rule-operator-container"></div> \
   <div class="rule-value-container"></div> \
-</li>';
+        '+ (this.settings.display_errors ?
+        '<div class="error"></div>'
+        : '') + '\
+  </li>';
 
         return this.change('getRuleTemplate', h);
     };
@@ -3464,7 +3469,7 @@
             "is_not_null": "is not null"
         },
         "errors": {
-            "no_filter": "No filter selected",
+            "no_filter": "No field selected",
             "empty_group": "The group is empty",
             "radio_empty": "No value selected",
             "checkbox_empty": "No value selected",

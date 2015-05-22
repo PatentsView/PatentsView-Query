@@ -36,7 +36,6 @@ define([
                 };
             };
 
-            var _events = _({}).extend(Backbone.Events);
             var _head = null;
             var _tail = null;
             var _current = null;
@@ -71,9 +70,6 @@ define([
                         if (node.getTab() !== tab) { node = node.getNext(); }
                         else { _current = node; break; }
                     }
-                },
-                stepEvents: function () {
-                    return _events;
                 }
             };
         };
@@ -128,7 +124,7 @@ define([
                                 },
                                 error: function(e) {
                                     //TODO: (High) Add Error Logic should the recaptcha or other funcitons fail.
-                                    debugger;
+                                    
                                 }
                             });
                             
@@ -206,14 +202,22 @@ define([
                 this.render();
                 return false;
             },
-            updateModel: function () {
+            isValid: function () {
+                var currentView = this.stepViews.getCurrent().getView();
+
+                return (_.isUndefined(currentView.isValid)) ? true: currentView.isValid();
+            },
+            updateModel: function() {
                 this.stepViews.getCurrent().getView().updateModel();
-                //favor view update method convention to force synchronous updates
             },
             save: function () {
                 
             },
             routeStep: function (e) {
+
+                if (!this.isValid())
+                    return false;
+
                 e = e || window.event;
                 var source = $(e.srcElement || e.target);
                 var action = $(source).attr('id');

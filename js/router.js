@@ -31,7 +31,7 @@ define([
         var start = function () {
             
             var model = new QueryModel();
-            debugger;
+            
             $('#step-by-step-container').html('');
             StepByStepView.initialize(appRouter, model);
             StepByStepView.insertView({ ref: new EntityView({ model: model, stepByStepView: StepByStepView }), tab: 'entity', tabTitle: 'Step 1: Select Entity', hideTab: false, hideNav: true, pos: 0 });

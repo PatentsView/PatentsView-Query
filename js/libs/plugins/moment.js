@@ -5,12 +5,14 @@
 //! momentjs.com
 
 (function (global, factory) {
+    
     if (typeof define === 'function' && define.amd) {
-        define([], factory);
+        global.moment = factory();//JP the query-builder lib depends on moment being declared in window.
+        define(['moment'], factory);
     } else if (typeof exports === 'object') {
         module.exports = factory();
     } else {
-        root.moment = factory();
+        global.moment = factory();
     }
 }(this, function () {
     'use strict';

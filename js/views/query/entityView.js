@@ -15,13 +15,13 @@ define([
         className: 'step-view row',
         id: 'entity',
         initialize: function (options) {
-            _.bindAll(this, 'render', 'updateModel');
+            _.bindAll(this, 'render');
             this.template = Handlebars.compile(entityTemplate);
         },
         events: {
             "click button.entity": "selectEntity",
             "click #step .btn-previous": "updateModel",
-            "click #step .btn-next": "updateModel"
+            "click #step .btn-next": "moveNext"
         },
         render: function () {
             $(this.el).empty();
@@ -34,8 +34,12 @@ define([
                 $(this.el).find('ul.entity-list > li').removeClass('active');
                 $(e.currentTarget).closest('li').addClass('active');
             }
-        },      
-        updateModel: function (e) {
+        },
+        isValid: function()
+        {
+            return (!_.isUndefined($(this.el).find('.active button.entity').attr('data-id')));
+        },
+        updateModel: function () {
             var dataId = $(this.el).find('.active button.entity').attr('data-id');
 
             //Check if the entityId has changed.

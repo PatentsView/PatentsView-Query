@@ -48,7 +48,7 @@ define([
             return this;
         },
         updateModel: function (e) {
-            debugger;
+            
             var qb = this.model.get("qb");
 
             if (!_.isUndefined(qb)) {

@@ -11,7 +11,7 @@ define([
     'text!../../../templates/query/criterion.html'
 ], function ($, _, Backbone, Handlebars, criteriaTemplate, criterionTemplate) {
 
-    debugger;
+    
     var_queryModel = null;
 
     CriterionView = Backbone.View.extend({

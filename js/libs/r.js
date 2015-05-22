@@ -12732,7 +12732,7 @@ function gen_code(ast, options) {
         "string": encode_string,
         "num": make_num,
         "name": make_name,
-        "debugger": function(){ return "debugger;" },
+        "debugger": function(){ return "" },
         "toplevel": function(statements) {
             return make_block_statements(statements)
                 .join(newline + newline);
