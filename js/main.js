@@ -9,6 +9,8 @@ require.config({
         text: 'libs/plugins/text',
         handlebarsCore: 'libs/plugins/handlebars',
         handlebars: 'libs/plugins/handlebars.helpers',
+        validateCore: 'libs/plugins/jquery.validate',
+        validate: 'libs/plugins/jquery.validate.additional',
         moment: 'libs/plugins/moment',
         'query-builder': 'libs/plugins/query-builder.standalone',
         recaptcha: 'https://www.google.com/recaptcha/api.js?render=explicit&response=yes'
@@ -18,6 +20,11 @@ require.config({
         handlebars: {
             deps: ['handlebarsCore'],
             exports: 'Handlebars'
+        },
+        validateCore: { exports: 'Validate' },
+        validate: {
+            deps: ['validateCore'],
+            exports: 'Validate'
         },
         recaptcha: { exports: 'Recaptcha' }
     }

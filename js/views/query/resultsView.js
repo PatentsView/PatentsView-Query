@@ -7,7 +7,8 @@ define([
     'underscore',
     'backbone',
     'handlebars',
-    'text!../../../templates/query/results.html'
+    'text!../../../templates/query/results.html',
+    'validate'
 ], function ($, _, Backbone, Handlebars, resultsTemplate) {
 
     var ResultsView = Backbone.View.extend({
@@ -24,6 +25,8 @@ define([
             "change #group": "changeGroup",
         },
         render: function () {
+            debugger;
+
             $(this.el).empty();
             $(this.el).append(this.template(this.model.toJSON()));
 
@@ -59,6 +62,7 @@ define([
             }
         },
         updateModel: function () {
+
             var groupDataId = $(this.el).find('#group > option').filter(':selected').attr('data-id');
             var fieldDataId = $(this.el).find('#field > option').filter(':selected').attr('data-id');
             var sorts = this.model.get('sorts');

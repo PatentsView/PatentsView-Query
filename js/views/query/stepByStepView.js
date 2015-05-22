@@ -92,7 +92,6 @@ define([
             events: {
                 "click .btn-previous": "routeStep",
                 "click #next": "routeStep",
-                "click #save": "save",
                 "click .nav-tabs a": "routeStep"
             },
             render: function () {
@@ -103,11 +102,36 @@ define([
                     if (currentView.getNext() === null) {
                         $('#next', this.el).hide();
                         $('.form-actions').show();
-
                         $('#captcha-container').empty();
-                        //check if we're at this step and render and move the container.
-                        var widgetid = grecaptcha.render('captcha-container', {
+
+                        grecaptcha.render('captcha-container', {
                             "sitekey": "6LcUEgYTAAAAAPXnyayKNTkx4nZsgQoBG52pD9_D"
+                        });
+
+                        $('#save').on('click', function() {
+                            var response = grecaptcha.getResponse();
+                            var query = JSON.stringify(this.model.toJSON());
+
+                            jQuery.ajax({
+                                type: 'POST',
+                                url: "submit.php",
+                                data: { "g-recaptcha-response": response, "query": query },
+                                success: function (result) {
+                                    
+                                    if (result) {
+                                        //TODO: (High) Route to a different sucess route and clear the history.
+
+                                        return true;
+                                    }
+
+                                    return false;
+                                },
+                                error: function(e) {
+                                    //TODO: (High) Add Error Logic should the recaptcha or other funcitons fail.
+                                    debugger;
+                                }
+                            });
+                            
                         });
 
                     } else {
@@ -187,21 +211,7 @@ define([
                 //favor view update method convention to force synchronous updates
             },
             save: function () {
-                //
-               
-                //jQuery.ajax({
-                //    type: 'POST', url: "verify.php", data: {}, success: function (result) {
-                //        if (result) {
-                //            $('#show').html('Your Form Successfully Submitted');
-                //            $('.formwrap').hide(result);
-                //            return true;
-                //        }
-                //    }
-                //});
-                //$('#show').html('Please Enter Valid Captcha');
-
-
-                alert(JSON.stringify(this.model.toJSON()));
+                
             },
             routeStep: function (e) {
                 e = e || window.event;
