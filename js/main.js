@@ -1,14 +1,19 @@
 /**************************************************************/
-
+// Main backbone app entry point.
 /**************************************************************/
 require.config({
     paths: {
-        jquery: 'libs/jquery',
-        underscore: 'libs/lodash',
-        backbone: 'libs/backbone',
-        text: 'libs/plugins/text',
-        handlebarsCore: 'libs/plugins/handlebars',
+        jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min',
+        underscore: 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min',
+        backbone: 'https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min',
+        text: 'https://cdnjs.cloudflare.com/ajax/libs/require-text/2.0.12/text.min',
+        i18n: 'https://cdnjs.cloudflare.com/ajax/libs/require-i18n/2.0.4/i18n.min',
+        handlebarsCore: 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min',
         handlebars: 'libs/plugins/handlebars.helpers',
+        //headfoot: 'http://ec2-54-68-66-55.us-west-2.compute.amazonaws.com/js/headfoot', //Might try to shim this later.
+        bootstrap: 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min',
+        typeahead: 'libs/plugins/typeahead.bundle',
+        bloodhound: 'libs/plugins/typeahead.bundle',
         validateCore: 'libs/plugins/jquery.validate',
         validate: 'libs/plugins/jquery.validate.additional',
         moment: 'libs/plugins/moment',
@@ -21,17 +26,20 @@ require.config({
             deps: ['handlebarsCore'],
             exports: 'Handlebars'
         },
+        //headfoot: { "deps": ['i18n'], 'exports': 'headfoot' }, //Might try to shim this later.
+        bootstrap: { "deps": ['jquery'] },
+        typeahead: { 'deps': ['jquery'], 'exports': 'Typeahead' },
+        bloodhound: { 'deps': ['jquery'], 'exports': 'Bloodhound' },
         validateCore: { exports: 'Validate' },
         validate: {
             deps: ['validateCore'],
             exports: 'Validate'
         },
         recaptcha: { exports: 'Recaptcha' }
-    }
+    },
+    urlArgs: "v=" + (new Date()).getTime()
 });
 
-require([
-  "app"
-], function (App) {
-    App.initialize();
-});
+require(["app"], function (App) {
+        App.initialize();
+    });

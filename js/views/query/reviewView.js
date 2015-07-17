@@ -1,21 +1,21 @@
 ﻿/**************************************************************/
-
+// View that displays the query options and criteria that the user has built 
+// prior steps submitting the query.
 /**************************************************************/
-
 define([
     'jquery',
     'underscore',
     'backbone',
     'handlebars',
-    'text!../../../templates/query/review.html',
-    'text!../../../templates/query/rules.html'
+    'text!views/query/templates/review.html',
+    'text!views/query/templates/rules.html'
 ], function ($, _, Backbone, Handlebars, reviewTemplate, rulesTemplate) {
 
     var ReviewView = Backbone.View.extend({
         tagName: 'section',
         id: 'review',
         className: 'step-view',
-        initialize: function (options) {
+        initialize: function(options) {
             this.listenTo(this.model, 'entityChanged', this.entityChanged);
             _.bindAll(this, 'render', 'updateModel');
             Handlebars.registerPartial('part_rules', rulesTemplate);
@@ -25,49 +25,16 @@ define([
         },
         render: function () {
             $(this.el).empty();
-            
-            //if (this.resetView) {
-            //    var qb = this.model.get("qb");
-            //    var rules = qb.queryBuilder("getRules"
-            //, {
-            //    filter_readonly: true,
-            //    operator_readonly: true,
-            //    value_readonly: true,
-            //    no_delete: true
-            //});
-                
-            //    var filters = this.model.getFilters();
-
-            //    if (!_.isNull(filters) && _.size(filters) > 0) {
-
-            //        $(this.el).empty();
-            //        $(this.el).append(this.template(this.model.toJSON()));
-
-            //        var vqb = $(this.el).find('#reviewCriteria').queryBuilder({
-            //            filters: filters,
-            //        });
-
-            //        
-            //        vqb.queryBuilder('setRules', rules);
-            //    }
-
-            //    this.resetView = false;
-            //}
-
             $(this.el).append(this.template(this.model.toJSON()));
 
             return this;
         },
         updateModel: function () {
-
         },
         getNavHtml: function (s) {
-            //s is the state requested.
-            var result = '<i class="fa fa-lg fa-square-o"></i> Review and Submit';
-
-            return result;
+            return '<i class="fa fa-lg fa-square-o"></i> Review and Submit';
         },
-        entityChanged: function(e) {
+        entityChanged: function (e) {
             this.resetView = true;
         }
     });

@@ -4,13 +4,14 @@
 
 //Move to layout mixin
 @mixin horizontal-list($list-margin: 0 8px 0 0) {
-	display: inline-block;
+	
+    width: 100%;
 	position: relative;
 	margin: 0;
 	padding: 0;
 
 	li {
-		display: inline-block;
+		display: inline;
 		position: relative;
 		margin: $list-margin;
 		padding: 0;
@@ -20,7 +21,7 @@
 		}
 
 		a {
-			display: inline-block;
+			display: block;
 		}
 	}
 }
@@ -89,7 +90,11 @@ button.inventor {
 	    background: url("../img/icon-bulb.png") no-repeat center 10px #536579;
   }
 
-button.assignee, button.nberSubcategory, button.cpcSubsection, button.uspcMainclass {
+button.assignee {
+	    background: url("../img/icon-case.png") no-repeat center 10px #536579;
+  }
+
+button.nberSubcategory, button.cpcSubsection, button.uspcMainclass {
 	    background: url("../img/icon-folder.png") no-repeat center 10px #536579;
   }
 
@@ -172,9 +177,16 @@ p.step-desc
 	font-style: italic;
 	color: $blue-gray-dark;
 	margin-bottom: 50px;
+
+	span.step-tip
+	{
+		font-size: 12px;
+		line-height: 17px;
+	}
 }
 
-#intro { 
+#intro
+ { 
 	h1{
 
 		color: $orange;
@@ -185,15 +197,27 @@ p.step-desc
 	}
 }
 
+h1.thankyou {
+	color: $orange;
+		font-style: italic;
+}
+
 ul.entity-list {
-	@include horizontal-list;
-	display: flex;
-	justify-content: space-between;
+	list-style: none;
+	padding: 0;
+	width: 100%;
 
 	li {
+		  height: 125px;
+		  position: relative;
+		  display: inline-block;
+		  padding-left: 3em;
+		  padding-right: 3em;
+		  width: 13em;
+		  vertical-align: top;
+		  text-align:center;
+
 		label {
-			display: table-caption;
-			text-align: center;
 			text-transform: uppercase;
 		}
 
@@ -206,7 +230,7 @@ ul.entity-list {
 		}
 
 		&.active {
-
+			
 			label {
 				color: $active-background-color;
 			}
@@ -241,8 +265,7 @@ ul.entity-list {
 }
 
 #resultCount{
-	display: inline;
-	width: 200px;
+		
 }
 
 
@@ -253,3 +276,70 @@ ul.entity-list {
 	
 }
 
+.save-form {
+	text-align: right;
+	button#save{
+		margin-top: 10px;
+	}
+}
+
+.twitter-typeahead .tt-query,
+.twitter-typeahead .tt-hint {
+	margin-bottom: 0;
+}
+.tt-input {margin-right: 5px;}
+/*.tt-hint {
+	display: block;
+	width: 100%;
+	height: 38px;
+	padding: 8px 12px;
+	font-size: 14px;
+	line-height: 1.428571429;
+	color: #999;
+	vertical-align: middle;
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+	      transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}*/
+.tt-menu {
+	min-width: 160px;
+	margin-top: 2px;
+	padding: 5px 0;
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	border-radius: 4px;
+	-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+	      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+	background-clip: padding-box;
+
+}
+.tt-suggestion {
+	display: block;
+	padding: 3px 20px;
+}
+.tt-suggestion.tt-is-under-cursor {
+	color: #fff;
+	background-color: #428bca;
+}
+.tt-suggestion.tt-is-under-cursor a {
+	color: #fff;
+}
+.tt-suggestion p {
+	margin: 0;
+}
+
+.patent-class-type ul li .label {
+	display: block;
+	  min-width: 25px;
+	  text-align: right;
+	  margin-right: 8px;
+	  float: left;
+	  font-size: 100%; 
+	  font-weight: 600;
+	  color: #3e4b5a;
+}

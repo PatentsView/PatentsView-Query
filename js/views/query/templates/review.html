@@ -1,0 +1,96 @@
+﻿<div class="col-md-12 r">
+    <h2>Review Selections</h2>
+    <p class="step-desc"></p>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Step 1: Primary Entity
+                    <a href="#step/entity" class="pull-right" title="Edit the primary entity selected.">Edit</a>
+                </div>
+                <div class="panel-body text-center review-entity">
+                    <h2 class="center-block">
+                        {{entityName}}
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Step 1: Search Criteria
+                    <a href="#step/criteria" class="pull-right" title="Edit the criteria to search by.">Edit</a>
+                </div>
+                <div class="panel-body review-criteria">
+                    <div class="query-builder form-inline">
+                        {{#each rules}}
+                        {{> part_rules}}
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Step 3: Output Fields
+                    <a href="#step/outputs" class="pull-right" title="Edit the fields to output in your query.">Edit</a>
+                </div>
+                <div class="panel-body review-outputs">
+                    {{#each_active_output_every 4 outputs}}
+                    <div class="row">
+                        {{#each this}}
+                        <div class="col-md-3">
+                            <label>{{name}}</label>
+                            <ul class="list-unstyled">
+                                {{#each this.fields}}
+                                {{#if isActive}}
+                                <li>{{this.name}}</li>
+                                {{/if}}
+                                {{/each}}
+                            </ul>
+                        </div>
+                        {{/each}}
+                    </div>
+                    {{/each_active_output_every}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Step 4: Customize Results
+                    <a href="#step/results" class="pull-right" title="Edit how you receive the results of your query.">Edit</a>
+                </div>
+                <div class="panel-body review-results">
+                    <div class="row">
+                        <div class="col-md-3">
+                                <span class="label label-block label-default">Group:</span>  {{groupId}}
+                        </div>
+                        <div class="col-md-3">
+                            <span class="label label-block label-default">Field:</span>  {{fieldId}}
+                        </div>
+                        <div class="col-md-3">
+                            <span class="label label-block label-default">Limit:</span>  {{resultCount}}
+                        </div>
+                        <div class="col-md-3">
+                            <span class="label label-block label-default">Format:</span>  {{#if xml}}XML &nbsp;{{/if}} {{#if json}}JSON &nbsp;{{/if}} {{#if csv}}CSV {{/if}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span class="label label-block label-default">Email:</span>  {{recipient}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,23 @@
+<h3>Glossary</h3>
+<div class="scroll">
+<div class="col2">
+<p><em>The following glossary is provided for the purpose of navigating the PatentsView platform tools and data. These are not official USPTO definitions of terms.</em></p>
+<%
+
+var entries = [];
+for(var key in glossary) {
+	entries.push(glossary[key]);
+}
+
+entries.sort(function(a, b) {return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;});
+
+for(var i = 0, l = entries.length; i<l; ++i) {
+	var entry = entries[i];
+%>
+<p><span class="entryTitle"><%=entry.title%></span> <span class="entryText"><%=entry.text%></span></p>
+
+<%
+}
+%>
+</div>
+</div>

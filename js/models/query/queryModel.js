@@ -5,23 +5,27 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'text!../query/options.json'
-], function ($, _, Backbone, optionsJson) {
+  'text!models/query/options.js',
+  'models/overlay/overlay',
+  'models/overlay/nls/lexicon'
+], function ($, _, Backbone, optionsJson, OverlayModel, Lexicon) {
 
     var entities = [
-        { "id": "patent", "name": "Patent", "isActive": false },
-        { "id": "inventor", "name": "Inventor", "isActive": false },
-        { "id": "assignee", "name": "Assignee", "isActive": false },
-        { "id": "nberSubcategory", "name": "NBER Technology Area", "isActive": false },
-        { "id": "cpcSubsection", "name": "Cooperative Patent Class", "isActive": false },
-        { "id": "uspcMainclass", "name": "US Patent Class", "isActive": false },
-        { "id": "location", "name": "Location", "isActive": false }
+        { "id": "patent", "name": "Patent", "isActive": false, "defaults": ["patent_title"], "url": "querytool/query/fields.html#patent" },
+        { "id": "inventor", "name": "Inventor", "isActive": false, "defaults": ["inventor_id", "inventor_first_name", "inventor_last_name"], "url": "querytool/query/fields.html#inventor" },
+        { "id": "assignee", "name": "Assignee", "isActive": false, "defaults": ["assignee_id", "assignee_first_name", "assignee_last_name", "assignee_organization"], "url": "querytool/query/fields.html#assignee" },
+        { "id": "nberSubcategory", "name": "NBER Technology Area", "isActive": false, "defaults": ["nber_subcategory_id", "nber_subcategory_title"], "url": "querytool/query/fields.html#nberSubcategory" },
+        { "id": "cpcSubsection", "name": "Cooperative Patent Class", "isActive": false, "defaults": ["cpc_subsection_id", "cpc_subsection_title"], "url": "querytool/query/fields.html#cpcSubsection" },
+        { "id": "uspcMainclass", "name": "US Patent Class", "isActive": false, "defaults": ["uspc_mainclass_id", "uspc_mainclass_title"], "url": "querytool/query/fields.html#uspcMainclass" },
+        { "id": "location", "name": "Location", "isActive": false, "defaults": ["location_id", "location_city", "location_state", "location_country"], "url": "querytool/query/fields.html#location" }
     ];
 
     var types = [
-        { "ops": ["equal", "not_equal", "begins_with", "contains"], "type": "string", "matches": ["string", "full text"] },
+        { "ops": ["equal", "not_equal", "begins_with", "contains"], "type": "string", "matches": ["string"] },
+        { "ops": ["equal", "not_equal"], "type": "location", "matches": ["location"] },
+        { "ops": ["any", "all", "phrase"], "type": "string", "matches": ["full text"] },
         { "ops": ["equal", "not_equal" ], "type": "boolean", "matches": ["boolean"] },
-        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "date", "matches": ["date"], validation: { format: "YYYY-MM-DD" }, placeholder: "YYYY-MM-DD" },
+        { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "date", "matches": ["date"], validation: { format: "YYYY-MM-DD" }, placeholder: 'YYYY-MM-DD' },
         { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "time", "matches": ["time"] },
         { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "datetime", "matches": ["datetime"] },
         { "ops": ["equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal"], "type": "integer", "matches": ["integer"] },
@@ -30,161 +34,81 @@ define([
 
     var inputs = [
         { "type": "text", "matches": ["input"] },
-        { "type": "select", "matches": ["select"] }
+        { "type": "select", "matches": ["select"] },
+        { "type": "location", "matches": ["location"] }
     ];
-    
-    var FieldModel = Backbone.Model.extend({
-        initialize: function() {
-            this.set("id", "");
-            this.set("name", "");
-            this.set("desc", "");
-            this.set("type", "");
-            this.set("fieldType", "");
-            this.set("isOutput", "");
-            this.set("isQuery", "");
-            this.set("isSort", "");
-            this.set("entities", []);
-            this.set("groups", []);
-            this.set("values", []);
-        }
-    });
 
-    var FieldCollection = Backbone.Collection.extend({
-        model: FieldModel,
-        getGroups: function (entityId) {
-            var results = new Array();
+    var outputGroups = [
+        { "name": "Patent Applications Cited by Patents", "desc": "Data on applications that are cited by patents in the output dataset" },
+        { "name": "Patent Application", "desc": "Data on applications associated with the patents in the output dataset" },
+        { "name": "Patent Assignee", "desc": "Data on assignees on the patents in the output dataset" },
+        { "name": "Patents Citing a Given Patent", "desc": "Data on patents that have cited the patents in the output dataset" },
+        { "name": "Patents Cited by Other Patents", "desc": "Data on patents that have been cited by the patents in the output dataset" },
+        { "name": "Cooperative Patent Class", "desc": "Metadata describing the cooperative patent classification of the patents in the output dataset" },
+        { "name": "Inventor", "desc": "Data on the inventors on the patents in the output dataset" },
+        { "name": "Co-inventors on a Given Patent", "desc": "Data on all of the inventors on the patents in the output dataset, in addition to the inventors that satisfy the search criteria" },
+        { "name": "International Patent Class", "desc": "Metadata describing the international patent classification of the patents in the output dataset" },
+        { "name": "Location", "desc": "Locations of the inventors and assignees as listed on the patents in the output dataset" },
+        { "name": "NBER Technology Area", "desc": "Metadata describing the technology area of the patents in the output dataset.  See www.nber.org/patents for more information on NBER technology areas." },
+        { "name": "Patent", "desc": "Patent metadata" },
+        { "name": "US Patent Class", "desc": "Metadata describing the US patent classification of the patents in the output dataset" }
+    ];
 
-            _.forEach(this.models, function (n) {
-                if (_.some(n.get('entities'), function (id) {
-                    return id === entityId;
-                })) {
-                    var group = n.get('group');
-                    if (!_.contains(results, group)) {
-                        results.push(group);
-                    }
+    var overlays = [
+        {
+            className: 'center-pane',
+            blockMouse: false,
+            verticalCenter: false,
+            items: [
+                {
+                    className: 'center-pane',
+                    key: OverlayModel.overlays.patentClass,
+                    file: 'patentClass.html',
+                    title: Lexicon.root.titles.patentClass
+                },
+                {
+                    className: 'center-pane scroll',
+                    key: OverlayModel.overlays.uspc,
+                    file: 'uspc.html',
+                    title: Lexicon.root.titles.uspc
+                },
+                {
+                    className: 'center-pane scroll',
+                    key: OverlayModel.overlays.nber,
+                    file: 'nber.html',
+                    title: Lexicon.root.titles.nber
+                },
+                {
+                    className: 'center-pane scroll',
+                    key: OverlayModel.overlays.cpc,
+                    file: 'cpc.html',
+                    title: Lexicon.root.titles.cpc
                 }
-            });
-
-            return results;
-        },
-        getFields: function (entityId, groupIds) {
-            var results = new Array();
-
-            _.forEach(this.models, function (n) {
-                if (_.some(groupIds, function (id) {
-                    return id === n.get('group');
-                }) &&
-                    _.some(n.get('entities'), function (id) {
-                    return id === entityId;
-                })) {
-                        results.push(n);
-                }
-            });
-
-            return results;
+            ]
         }
-    });
-
-    var CriterionModel = Backbone.Model.extend({
-        initialize: function() {
-            this.set("id", "");
-            this.set("name", "");
-            this.set("group", "");
-            this.set("field", "");
-            this.set("condition", "");
-            this.set("value");
-        }
-    });
-
-    var CriteraCollection = Backbone.Collection.extend({
-        model: CriterionModel
-    });
+    ];
 
     var options = JSON.parse(optionsJson);
-
-    ////Lookups for views.
-    //var LookupModel = Backbone.Model.extend({
-    //    defaults: {},
-    //    outputs: [
-    //        { "id": "1", "category": "Patent", "isActive": false, "subcategories": [{ "id": "1", "name": "eg 1", "isActive": false }, { "id": "6", "name": "eg 6", "isActive": false }, { "id": "11", "name": "eg 11", "isActive": false }] },
-    //        { "id": "2", "category": "Inventor", "isActive": false, "subcategories": [{ "id": "2", "name": "eg 2", "isActive": false }, { "id": "7", "name": "eg 7", "isActive": false }, { "id": "12", "name": "eg 12", "isActive": false }] },
-    //        { "id": "3", "category": "Assignee", "isActive": false, "subcategories": [{ "id": "3", "name": "eg 3", "isActive": false }, { "id": "8", "name": "eg 8", "isActive": false }, { "id": "13", "name": "eg 13", "isActive": false }] },
-    //        { "id": "4", "category": "Co-Inventor", "isActive": false, "subcategories": [{ "id": "4", "name": "eg 4", "isActive": false }, { "id": "9", "name": "eg 9", "isActive": false }, { "id": "14", "name": "eg 14", "isActive": false }] },
-    //        { "id": "5", "category": "ETC...", "isActive": false, "subcategories": [{ "id": "5", "name": "eg 5", "isActive": false }, { "id": "10", "name": "eg 10", "isActive": false }, { "id": "15", "name": "eg 15", "isActive": false }] }
-    //    ]
-    //});
 
     var QueryModel = Backbone.Model.extend({
         initialize: function () {
             this.set('options', options);
             this.set('entities', entities);
+            this.set('query', {});
             this.set('outputs', []);
             this.set('sorts', []);
             this.set('entityId', "");
             this.set('outputIds', []);
             this.set('rules', []);
-            this.set('criteria', new CriteraCollection());
             this.set('groupId', "");
             this.set('fieldId', "");
-            this.set('resultCount', "");
+            this.set('resultCount', "100");
             this.set('recipient', "");
             this.set('xml', "");
             this.set('json', "");
             this.set('csv', "");
         },
-        getFilters: function (readonly) {
-            //build a set of filters to use by entity.
-
-            //var filters = [
-            //    {
-            //        id: 'name',
-            //        label: 'Name',
-            //        type: 'string',
-            //        optgroup: 'Application'
-            //    }, {
-            //        id: 'category',
-            //        label: 'Category',
-            //        type: 'integer',
-            //        input: 'select',
-            //        values: {
-            //            1: 'Books',
-            //            2: 'Movies',
-            //            3: 'Music',
-            //            4: 'Tools',
-            //            5: 'Goodies',
-            //            6: 'Clothes'
-            //        },
-            //        operators: ['equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null']
-            //    }, {
-            //        id: 'in_stock',
-            //        label: 'In stock',
-            //        type: 'integer',
-            //        input: 'radio',
-            //        values: {
-            //            1: 'Yes',
-            //            0: 'No'
-            //        },
-            //        operators: ['equal']
-            //    }, {
-            //        id: 'price',
-            //        label: 'Price',
-            //        type: 'double',
-            //        validation: {
-            //            min: 0,
-            //            step: 0.01
-            //        }
-            //    }, {
-            //        id: 'id',
-            //        label: 'Identifier',
-            //        type: 'string',
-            //        placeholder: '____-____-____',
-            //        operators: ['equal', 'not_equal'],
-            //        validation: {
-            //            format: /^.{4}-.{4}-.{4}$/
-            //        }
-            //    }
-            //];
-
+        getFilters: function () {
             var entityId = this.get('entityId');
             var filters = new Array();
 
@@ -207,6 +131,9 @@ define([
 
                     if (!_.isUndefined(typeMatch.validation)) {
                         filter.validation = typeMatch.validation;
+                    }
+                    if (!_.isUndefined(typeMatch.placeholder)) {
+                        filter.placeholder = typeMatch.placeholder;
                     }
 
                     filters.push(filter);
@@ -268,9 +195,11 @@ define([
             
             return conditions;
         },
-        getOutputs: function() {
+        getOutputs: function () {
+            debugger;
             var entityId = this.get('entityId');
             var groups = new Array();
+            var entity = _.find(entities, { "id": entityId });
 
             if (_.isNull(entityId) || _.isEmpty(entityId)) {
                 this.set('groups', groups);
@@ -281,12 +210,14 @@ define([
             _.where(this.get('options'), { "entities": [entityId] }).forEach(function(field) {
 
                 if (field.isOutput) {
-
+                    var isDefault = _.contains(entity.defaults, field.id);
+                    console.log(field.id + ', ' + isDefault);
                     var group = _.find(groups, { "id": field.group });
-                    var output = { "id": field.id, "name": field.name, "isActive": false };
+                    var output = { "id": field.id, "name": field.name, desc: field.desc, "isActive": isDefault };
 
                     if (_.isUndefined(group)) {
-                        group = { "id": field.group, "name": field.group, "isActive": false, fields: new Array() };
+                        var outputGroup = _.find(outputGroups, { "name": field.group });
+                        group = { "id": field.group, "name": field.group, "isActive": isDefault, desc: (_.isUndefined(outputGroup)) ? "" : outputGroup.desc, fields: new Array() };
                         group.fields.push(output);
                         groups.push(group);
                     } else {
@@ -326,8 +257,22 @@ define([
 
             return groups;
         },
+        getOverlay: function (key) {
+            return _.find(overlays, function (item) {
+                return !!_.findWhere(item.items, { key: key });
+            });
+        },
         setGroups: function() {
-            this.set('groups', this.getGroups()); //TODO: May need to go _.uniq here.
+            this.set('groups', this.getGroups());
+        },
+        buildQuery: function () {
+            var result = '';
+            result = 'q=' + JSON.stringify(this.get('query'))
+                     + '&f=' + JSON.stringify(this.get('outputIds'))
+                     + '&o={"page":1,"per_page":' + this.get('resultCount') + '}'
+                     + '&s=[{"' + this.get('fieldId') + '":"asc"}]';
+
+            return result;         
         }
     });
 

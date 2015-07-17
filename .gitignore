@@ -5,3 +5,6 @@
 *.userosscache
 *.sln.docstates
 *.phpproj
+/.private
+/app-build
+/Properties/PublishProfiles

@@ -1,13 +1,12 @@
 ﻿/**************************************************************/
-
+// View that enables the user to select the primary entity to build a query for.
 /**************************************************************/
-
 define([
     'jquery',
     'underscore',
     'backbone',
     'handlebars',
-    'text!../../../templates/query/entity.html'
+    'text!views/query/templates/entity.html'
 ], function ($, _, Backbone, Handlebars, entityTemplate) {
 
     var EntityView = Backbone.View.extend({
@@ -26,12 +25,22 @@ define([
         render: function () {
             $(this.el).empty();
             $(this.el).append(this.template(this.model.get('entities')));
-
+            
             return this;
         },
         selectEntity: function (e) {
-            if (!_.isNull(e)) {
-                $(this.el).find('ul.entity-list > li').removeClass('active');
+            var dataId = $(e.currentTarget).attr('data-id');
+            var entityId = this.model.get('entityId');
+
+            if ((!_.isUndefined(entityId) && !_.isEmpty(entityId)) && dataId != entityId) {
+                $('.entity-change-modal').find('.ok').on('click', function () {
+                    $('.entity-change-modal').modal('hide');
+                    $(e.currentTarget).closest('ul.entity-list').find('li').removeClass('active');
+                    $(e.currentTarget).closest('li').addClass('active');
+                });
+                $('.entity-change-modal').modal('show');
+            } else {
+                $(e.currentTarget).closest('ul.entity-list').find('li').removeClass('active');
                 $(e.currentTarget).closest('li').addClass('active');
             }
         },
@@ -43,27 +52,20 @@ define([
             var dataId = $(this.el).find('.active button.entity').attr('data-id');
 
             //Check if the entityId has changed.
-            //TODO: (High) add dialog to prompt the user that that they're about to change the entity.
             if (dataId != this.model.get('entityId')) {
-
                 var entities = this.model.get('entities');
                 var entity = _.find(entities, { "id": dataId });
 
                 _.forEach(entities, function(opt) { opt.isActive = false; });
 
-                if (!_.isNull(entity)) entity.isActive = true;
+                if (!_.isNull(entity)) {
+                    entity.isActive = true;
+                }
 
                 this.model.trigger('entityChanged', dataId);
-
-                //TODO: (High) move these to their views to handle.
                 this.model.set('entityId', dataId);
                 this.model.set('entityName', entity.name);
-
-                //The following calls could be moved to a method explicitly used for reseting the entity id.
-                //reset criteria.
-                //here.
-
-                //reset outputs
+                this.model.set('url', entity.url);
                 this.model.set('outputs', this.model.getOutputs());
                 this.model.set('sorts', this.model.getSorts());
             }
@@ -90,13 +92,11 @@ define([
                 }
             }
 
-
             return result;
         },
         getNextHtml: function () {
             return 'Go to Step 2 &nbsp;&nbsp; <i class="fa fa-play" />';
         }
-        
     });
 
     return EntityView;

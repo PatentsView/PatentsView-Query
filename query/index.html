@@ -2,17 +2,15 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Create Query</title>
+        <title>Create a PatentsView Query</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Create a new Query">
         <meta name="author" content="AIR">
         <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,700,800%7CRoboto+Slab:400,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="http://ec2-54-68-66-55.us-west-2.compute.amazonaws.com/css/headfoot.css" />
-       
         <link rel="stylesheet" href="../assets/sass/font-awesome/font-awesome.min.css" />
         <link rel="stylesheet" href="../assets/sass/query.css" />
-        <link rel="stylesheet" href="../assets/css/bootstrap-tagsinput.css" />
-        <script data-main="../js/main" src="../js/libs/require.js"></script>
+        <script data-main="../js/main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.18/require.min.js"></script>
     </head>
     <body>
         <noscript>This search tool requires Javascript. For more information about finding a particular patent or group of patents please visit <a href="http://uspto.gov/" title="United States Patent and Trademark Office Website">www.uspto.gov</a> or call our customer support at <a href="tel:1-800-786-9199" title="USPTO Customer Support Toll-Free Phone Number">1-800-786-9199</a>.</noscript>
@@ -31,15 +29,7 @@
         <!-- Container -->
         <section id="step-by-step-container" class="container"></section>
         <!-- /Container -->
-        <section class="container">
-            <!-- form action buttons -->
-            <div class="form-actions col-md-12" style="display: none; text-align: right;">
-                <div class="pull-right">
-                    <div id="captcha-container"></div>
-                    <button id="save" type="submit" class="btn btn-lg btn-default" style="margin-top: 10px;">Submit Query</button>
-                </div>
-            </div>
-        </section>
+        <form id="submit" method="get" action="querytool/query/submit.php"></form>
      <!-- form action buttons -->
             <footer class="thin-footer">
                 <div>
@@ -55,11 +45,7 @@
                 </div>
             </footer>
             <script type="text/javascript">
-                var loadRecaptcha = function () {
-                    //grecaptcha.render('html_element', {
-                    //    'sitekey': 'your_site_key'
-                    //});
-                };
+                var loadRecaptcha = function () {};
             </script>
             <script src="https://www.google.com/recaptcha/api.js?onload=loadRecaptcha&render=explicit" async defer></script>
 </body>

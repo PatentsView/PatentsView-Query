@@ -1,13 +1,12 @@
 ﻿/**************************************************************/
-
+// View that enables ther user to select how they would like to recieve their query results.
 /**************************************************************/
-
 define([
     'jquery',
     'underscore',
     'backbone',
     'handlebars',
-    'text!../../../templates/query/results.html',
+    'text!views/query/templates/results.html',
     'validate'
 ], function ($, _, Backbone, Handlebars, resultsTemplate) {
 
@@ -15,34 +14,33 @@ define([
         tagName: 'div',
         className: 'step-view row',
         id: 'results',
-        initialize: function (options) {
+        initialize: function(options) {
             this.listenTo(this.model, 'entityChanged', this.entityChanged);
             _.bindAll(this, 'render', 'updateModel');
-           
             this.template = Handlebars.compile(resultsTemplate);
+            $.validator.setDefaults({
+                success: "valid"
+            });
+            $.validator.addMethod('require-one', function (value) {
+                return $('.require-one:checked').size() > 0;
+            }, 'Please check at least one box.');
         },
         events: {
             "change #group": "changeGroup",
         },
-        render: function () {
-            
-
+        render: function() {
             $(this.el).empty();
             $(this.el).append(this.template(this.model.toJSON()));
-
             var entityId = this.model.get('entityId');
             var groupId = this.model.get('groupId');
 
             if (!_.isEmpty(entityId)) {
-                var goupsTemplate = Handlebars.compile('"<option>-Select Group-</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}">{{name}}</option>{{/if}}{{/each}}"');
-
+                var goupsTemplate = Handlebars.compile('"<option>-Select Group-</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" value="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}" value="{{id}}">{{name}}</option>{{/if}}{{/each}}"');
                 $('#group').html(goupsTemplate(this.model.get('sorts')));
-                
                 var group = _.find(this.model.get('sorts'), { "id": groupId });
 
                 if (!_.isUndefined(group)) {
-                    var fieldsTemplate = Handlebars.compile('"<option>-Select Field-</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}">{{name}}</option>{{/if}}{{/each}}"');
-
+                    var fieldsTemplate = Handlebars.compile('"<option>-Select Field-</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" value="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}" value="{{id}}">{{name}}</option>{{/if}}{{/each}}"');
                     $('#field').html(fieldsTemplate(group.fields));
                 }
             }
@@ -57,12 +55,69 @@ define([
 
             if (!_.isUndefined(group)) {
                 var fieldsTemplate = Handlebars.compile('"<option>-Select Field-</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}">{{name}}</option>{{/if}}{{/each}}"');
-
                 $('#field').html(fieldsTemplate(group.fields));
             }
         },
-        updateModel: function () {
+        isValid: function() {
+            var form = $(this.el).find('#results-form');
+            form.validate({
+                rules: {
+                    resultCount: {
+                        required: true,
+                        min: 1,
+                        max: 10000
+                    },
+                    field: {
+                        required: true,
+                    },
+                    group: {
+                        required: true,
+                    },
+                    recipient: {
+                        required: true,
+                        email: true
+                    },
+                    format: {
+                            required: true
+                    }
+                },
+                messages: {
+                    resultCount: {
+                    required: "Please provide a result count to limit the query by.",
+                    min: "Please provide a result count to limit the query by.",
+                    max: "Query results are restricted to a maximum of 10,000."
+                    },
+                    field: {
+                    required: "Please select a field to sort your results."
+                    },
+                    recipient: {
+                    required: "Please provide a valid e-mail address to send query results to."
+                    },
+                    format: {
+                        required: "Please select at least one format for the qurey."
+                    }
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error');
+                },
+                errorElement: 'span',
+                errorClass: 'help-block',
+                errorPlacement: function (error, element) {
+                    if (element.attr('name') === 'format') {
+                        error.insertAfter($(element).closest('.checkbox-group'));
+                    }
+                    else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
 
+            return form.valid();
+        },
+        updateModel: function () {
             var groupDataId = $(this.el).find('#group > option').filter(':selected').attr('data-id');
             var fieldDataId = $(this.el).find('#field > option').filter(':selected').attr('data-id');
             var sorts = this.model.get('sorts');
@@ -79,7 +134,7 @@ define([
 
             this.model.set('groupId', groupDataId);
             this.model.set('fieldId', fieldDataId);
-            this.model.set('resultCount', $(this.el).find('#resultCount').val());
+            this.model.set('resultCount', _.parseInt($(this.el).find('#result-count').val()));
             this.model.set('recipient', $(this.el).find('#recipient').val());
             this.model.set('xml', $(this.el).find('#xml').prop('checked'));
             this.model.set('csv', $(this.el).find('#csv').prop('checked'));
@@ -107,11 +162,10 @@ define([
                 }
             }
 
-
             return result;
         },
         getNextHtml: function () {
-            return 'Review Selections';
+            return 'Review Selections &nbsp;&nbsp; <i class="fa fa-play" />';
         }
         });
 

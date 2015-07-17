@@ -1,48 +1,41 @@
 ﻿/**************************************************************/
-
+// View to enable the user to select the outputs to return in the query.
 /**************************************************************/
-
 define([
     'jquery',
     'underscore',
     'backbone',
     'handlebars',
-    'text!../../../templates/query/outputs.html'
-], function ($, _, Backbone, Handlebars, resultsTemplate) {
+    'text!views/query/templates/outputs.html',
+    'bootstrap'
+], function ($, _, Backbone, Handlebars, resultsTemplate, Boostrap) {
 
     var ResultsView = Backbone.View.extend({
         tagName: 'div',
         className: 'step-view row',
         id: 'outputs',
-        initialize: function (options) {
+        initialize: function(options) {
             this.listenTo(this.model, 'entityChanged', this.entityChanged);
             _.bindAll(this, 'render', 'updateModel');
             this.template = Handlebars.compile(resultsTemplate);
-            
         },
-        render: function () {
+        render: function() {
             $(this.el).empty();
             $(this.el).append(this.template(this.model.get('outputs')));
-            var mfc = 0;
-
             var checkAlls = $(this.el).find('input.check-all');
-            _.forEach(checkAlls, function (checkall) {
 
-                $(checkall).click(function () {
+            _.forEach(checkAlls, function (checkall) {
+                $(checkall).click(function() {
                     var dataId = $(this).attr('data-id');
                     $('ul[data-output-group-id="' + dataId + '"]').find('.check').prop('checked', $(this).prop('checked'));
                 });
             });
 
-            //var maxHeight = 0;
-
-            //$('.output-groups').each(function () {
-            //    if ($(this).height() > maxHeight) {
-            //        maxHeight = $(this).height();
-            //    }
-            //});
-
-            //$('.output-groups').height(280);//TODO: (High) Replace the static output-groups height set with a calc of max field count.
+            //TODO: Consider using the popover that periscopic is using.
+            $('[data-toggle="popover"]').popover({
+                trigger: 'hover',
+                'placement': 'top'
+            });
 
             return this;
         },
@@ -55,6 +48,7 @@ define([
                 group.isChildActive = false;
                 _.forEach(group.fields, function (field) {
                     var output = $('#output-field-' + field.id + '');
+
                     if (output.prop('checked')) {
                         field.isActive = true;
                         outputIds.push(field.id);
@@ -85,7 +79,6 @@ define([
                     break;
                 }
             }
-
 
             return result;
         },

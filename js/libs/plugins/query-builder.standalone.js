@@ -279,7 +279,8 @@
         'date': 'datetime',
         'time': 'datetime',
         'datetime': 'datetime',
-        'boolean': 'boolean'
+        'boolean': 'boolean',
+        'location': 'location',
     };
 
     /**
@@ -290,7 +291,8 @@
         'textarea',
         'radio',
         'checkbox',
-        'select'
+        'select',
+        'location'
     ];
 
     /**
@@ -338,7 +340,7 @@
         lang: {},
 
         operators: [
-            { type: 'equal', nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean'] },
+            { type: 'equal', nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean', 'location'] },
             { type: 'not_equal', nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean'] },
             { type: 'in', nb_inputs: 1, multiple: true, apply_to: ['string', 'number', 'datetime'] },
             { type: 'not_in', nb_inputs: 1, multiple: true, apply_to: ['string', 'number', 'datetime'] },
@@ -356,7 +358,10 @@
             { type: 'is_empty', nb_inputs: 0, multiple: false, apply_to: ['string'] },
             { type: 'is_not_empty', nb_inputs: 0, multiple: false, apply_to: ['string'] },
             { type: 'is_null', nb_inputs: 0, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean'] },
-            { type: 'is_not_null', nb_inputs: 0, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean'] }
+            { type: 'is_not_null', nb_inputs: 0, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean'] },
+            { type: 'any', nb_inputs: 1, multiple: false, apply_to: ['string']},
+            { type: 'all', nb_inputs: 1, multiple: false, apply_to: ['string'] },
+            { type: 'phrase', nb_inputs: 1, multiple: false, apply_to: ['string'] }
         ],
 
         icons: {
@@ -365,7 +370,7 @@
             remove_group: 'fa fa-times',
             remove_rule: 'fa fa-times',
             error: 'fa fa-exclamation-triangle'
-        }
+        },
     };
 
     /**
@@ -823,6 +828,7 @@
      * @param rule {Rule}
      */
     QueryBuilder.prototype.createRuleInput = function (rule) {
+        
         var $valueContainer = rule.$el.find('.rule-value-container').empty();
 
         rule.__.value = undefined;
@@ -839,12 +845,17 @@
             var $ruleInput = $(this.getRuleInput(rule, i));
             if (i > 0) $valueContainer.append(this.settings.inputs_separator);
             $valueContainer.append($ruleInput);
+
             $inputs = $inputs.add($ruleInput);
         }
 
         $valueContainer.show();
 
-        $inputs.on('change', function () {
+        that.status.updating_value = true;
+        rule.value = that.getRuleValue(rule);
+        that.status.updating_value = false;
+
+        $inputs.on('blur', function () {
             that.status.updating_value = true;
             rule.value = that.getRuleValue(rule);
             that.status.updating_value = false;
@@ -968,7 +979,7 @@
         if (this.settings.display_errors) {
             if (node.error === null) {
                 node.$el.removeClass('has-error');
-                node.$el.find('.error').empty();
+                node.$el.find('.error-container .control-label').empty();
             }
             else {
                 // translate the text without modifying event array
@@ -978,7 +989,8 @@
 
                 node.$el.addClass('has-error')
                   .find('.error-container').eq(0).attr('title', fmt.apply(null, error));
-                node.$el.find('.error').eq(0).html(fmt.apply(null, error));
+                
+                node.$el.find('.error-container .control-label').html(fmt.apply(null, error));
             }
         }
     };
@@ -1069,12 +1081,10 @@
      */
     QueryBuilder.prototype.validate = function () {
         this.clearErrors();
-
         var that = this;
 
         var valid = (function parse(group) {
             var done = 0, errors = 0;
-
             group.each(function (rule) {
                 if (!rule.filter) {
                     that.triggerValidationError(rule, 'no_filter', null);
@@ -1172,6 +1182,62 @@
         }(this.model.root));
 
         return this.change('getRules', out);
+    };
+
+    /**
+      * Get an object representing current criteria
+      * @return {object}
+      */
+    QueryBuilder.prototype.getCriteria = function () {
+        if (!this.validate()) {
+            return {};
+        }
+
+        var that = this;
+
+        var out = (function parse(group) {
+            var data = {
+                condition: group.condition,
+                criterion: []
+            };
+
+            if (group.data) {
+                data.data = $.extendext(true, 'replace', {}, group.data);
+            }
+
+            group.each(function (model) {
+                var value = null;
+                if (model.operator.nb_inputs !== 0) {
+                    value = model.value;
+                }
+
+                var rule = {
+                    id: model.filter.id,
+                    //field: model.filter.field,
+                    type: model.filter.type,
+                    //input: model.filter.input,
+                    operator: model.operator.type,
+                    value: value,
+                    //label: model.filter.label,
+                    //group: model.filter.optgroup,
+                    //operatorLabel: model.operator.type.replace(/_/g, " ")
+                };
+
+                if (model.filter.data || model.data) {
+                    rule.data = $.extendext(true, 'replace', {}, model.filter.data, model.data);
+                }
+
+                data.criterion.push(rule);
+
+            }, function (model) {
+                data.criterion.push(parse(model));
+            });
+
+            return data;
+
+        }(this.model.root));
+
+        return out;
     };
 
     /**
@@ -1315,6 +1381,7 @@
                         }
                     }
                     else {
+                        
                         if (value[i] === undefined) {
                             result = ['select_empty'];
                             break;
@@ -1430,6 +1497,19 @@
                                 result = ['boolean_not_valid'];
                                 break;
                             }
+                            break;
+
+                        case 'location':
+                            if (value[i] === undefined || value[i].length === 0) {
+                                result = ['location_empty'];
+                                break;
+                            }
+                            if (value[i][0] === undefined || value[i][0].length === 0) {
+                                //country is at index 0;
+                                result = ['location_empty'];
+                                break;
+                            }
+                            
                     }
             }
 
@@ -1559,7 +1639,7 @@
 
                     case 'checkbox':
                         tmp = [];
-                        $value.find('[name=' + name + ']:checked').each(function () {
+                        $value.find('[name=' + name + ']:checked').each(function() {
                             tmp.push($(this).val());
                         });
                         value.push(tmp);
@@ -1568,17 +1648,24 @@
                     case 'select':
                         if (filter.multiple) {
                             tmp = [];
-                            $value.find('[name=' + name + '] option:selected').each(function () {
+                            $value.find('[name=' + name + '] option:selected').each(function() {
                                 tmp.push($(this).val());
                             });
                             value.push(tmp);
-                        }
-                        else {
+                        } else {
                             value.push($value.find('[name=' + name + '] option:selected').val());
                         }
                         break;
 
-                    default:
+                    case 'location':
+                        tmp =[];
+                        tmp.push($value.find('[name=' +name + '_country]').val());
+                        tmp.push($value.find('[name=' +name + '_city]').val());
+                        tmp.push($value.find('[name=' +name + '_state]').val());
+                        value.push(tmp);
+                        break;
+
+                    default:                  
                         value.push($value.find('[name=' + name + ']').val());
                 }
             }
@@ -1601,20 +1688,18 @@
      * @param rule {Rule}
      * @param value {mixed}
      */
-    QueryBuilder.prototype.setRuleValue = function (rule, value) {
+    QueryBuilder.prototype.setRuleValue = function(rule, value) {
         var filter = rule.filter,
             operator = rule.operator;
 
         if (filter.valueSetter) {
             filter.valueSetter.call(this, rule, value);
-        }
-        else {
+        } else {
             var $value = rule.$el.find('.rule-value-container');
 
             if (operator.nb_inputs == 1) {
                 value = [value];
-            }
-            else {
+            } else {
                 value = value;
             }
 
@@ -1622,59 +1707,64 @@
                 var name = rule.id + '_value_' + i;
 
                 switch (filter.input) {
-                    case 'radio':
-                        $value.find('[name=' + name + '][value="' + value[i] + '"]').prop('checked', true).trigger('change');
-                        break;
+                case 'radio':
+                    $value.find('[name=' + name + '][value="' + value[i] + '"]').prop('checked', true).trigger('change');
+                    break;
 
-                    case 'checkbox':
-                        if (!$.isArray(value[i])) {
-                            value[i] = [value[i]];
-                        }
-                        value[i].forEach(function (value) {
-                            $value.find('[name=' + name + '][value="' + value + '"]').prop('checked', true).trigger('change');
-                        });
-                        break;
+                case 'checkbox':
+                    if (!$.isArray(value[i])) {
+                        value[i] = [value[i]];
+                    }
+                    value[i].forEach(function(value) {
+                        $value.find('[name=' + name + '][value="' + value + '"]').prop('checked', true).trigger('change');
+                    });
+                    break;
 
-                    default:
-                        $value.find('[name=' + name + ']').val(value[i]).trigger('change');
-                        break;
+                    case 'location':
+                    $value.find('[name=' + name + '_country]').val(value[i][0]).trigger('change');
+                    $value.find('[name=' + name + '_city]').val(value[i][1]).trigger('change');
+                    $value.find('[name=' + name + '_state]').val(value[i][2]).trigger('change');
+                    break;
+
+                default:
+                    $value.find('[name=' + name + ']').val(value[i]).trigger('change');
                 }
             }
         }
     };
 
     /**
-     * Clean rule flags.
-     * @param rule {object}
-     * @return {object}
-     */
-    QueryBuilder.prototype.parseRuleFlags = function (rule) {
-        var flags = $.extend({}, this.settings.default_rule_flags);
+         * Clean rule flags.
+         * @param rule {object}
+         * @return {object}
+         */
+        QueryBuilder.prototype.parseRuleFlags = function (rule) {
+            var flags = $.extend({}, this.settings.default_rule_flags);
 
-        if (rule.readonly) {
-            $.extend(flags, {
-                filter_readonly: true,
-                operator_readonly: true,
-                value_readonly: true,
-                no_delete: true
-            });
-        }
+            if (rule.readonly) {
+                $.extend(flags, {
+                    filter_readonly: true,
+                    operator_readonly: true,
+                    value_readonly: true,
+                    no_delete: true
+                });
+            }
 
-        if (rule.flags) {
-            $.extend(flags, rule.flags);
-        }
+            if (rule.flags) {
+                $.extend(flags, rule.flags);
+            }
 
-        return this.change('parseRuleFlags', flags, rule);
-    };
+            return this.change('parseRuleFlags', flags, rule);
+        };
 
-    /**
-     * Returns group HTML
-     * @param group_id {string}
-     * @param level {int}
-     * @return {string}
-     */
-    QueryBuilder.prototype.getGroupTemplate = function (group_id, level) {
-        var h = '\
+        /**
+         * Returns group HTML
+         * @param group_id {string}
+         * @param level {int}
+         * @return {string}
+         */
+        QueryBuilder.prototype.getGroupTemplate = function (group_id, level) {
+            var h = '\
 <dl id="'+ group_id + '" class="rules-group-container"> \
   <dt class="rules-group-header"> \
     <div class="pull-right group-actions"> \
@@ -1682,60 +1772,60 @@
         <i class="' + this.icons.add_rule + '"></i> ' + this.lang.add_rule + ' \
       </button> \
       '+ (this.settings.allow_groups === -1 || this.settings.allow_groups >= level ?
-            '<button type="button" class="btn btn-default" data-add="group"> \
+                '<button type="button" class="btn btn-default" data-add="group"> \
           <i class="' + this.icons.add_group + '"></i> ' + this.lang.add_group + ' \
         </button>'
-          : '') + ' \
+              : '') + ' \
       '+ (level > 1 ?
-            '<button type="button" class="btn btn-warning" data-delete="group"> \
+                '<button type="button" class="btn btn-warning" data-delete="group"> \
           <i class="' + this.icons.remove_group + '"></i> ' + this.lang.delete_group + ' \
         </button>'
-          : '') + ' \
+              : '') + ' \
     </div> \
     <div class="btn-group group-conditions"> \
       '+ this.getGroupConditions(group_id, level) + ' \
     </div> \
-    '+ (this.settings.display_errors ?
-          '<div class="error-container"><i class="' + this.icons.error + '"></i></div>'
-        : '') + '\
+    ' + (this.settings.display_errors ?
+            '<div class="error-container"><sapn class="control-label"></sapn></div>'
+          : '') + '\
   </dt> \
   <dd class=rules-group-body> \
     <ul class=rules-list></ul> \
   </dd> \
 </dl>';
 
-        return this.change('getGroupTemplate', h, level);
-    };
+            return this.change('getGroupTemplate', h, level);
+        };
 
-    /**
-     * Returns group conditions HTML
-     * @param group_id {string}
-     * @param level {int}
-     * @return {string}
-     */
-    QueryBuilder.prototype.getGroupConditions = function (group_id, level) {
-        var h = '';
+        /**
+         * Returns group conditions HTML
+         * @param group_id {string}
+         * @param level {int}
+         * @return {string}
+         */
+        QueryBuilder.prototype.getGroupConditions = function (group_id, level) {
+            var h = '';
 
-        for (var i = 0, l = this.settings.conditions.length; i < l; i++) {
-            var cond = this.settings.conditions[i],
-                label = this.lang.conditions[cond] || cond;
+            for (var i = 0, l = this.settings.conditions.length; i < l; i++) {
+                var cond = this.settings.conditions[i],
+                    label = this.lang.conditions[cond] || cond;
 
-            h += '\
+                h += '\
         <label class="btn btn-primary"> \
           <input type="radio" name="'+ group_id + '_cond" value="' + cond + '"> ' + label + ' \
         </label>';
-        }
+            }
 
-        return this.change('getGroupConditions', h, level);
-    };
+            return this.change('getGroupConditions', h, level);
+        };
 
-    /**
-     * Returns rule HTML
-     * @param rule_id {string}
-     * @return {string}
-     */
-    QueryBuilder.prototype.getRuleTemplate = function (rule_id) {
-        var h = '\
+        /**
+         * Returns rule HTML
+         * @param rule_id {string}
+         * @return {string}
+         */
+        QueryBuilder.prototype.getRuleTemplate = function (rule_id) {
+            var h = '\
 <li id="'+ rule_id + '" class="rule-container"> \
   <div class="rule-header"> \
   <div class="btn-group pull-right rule-actions"> \
@@ -1744,697 +1834,707 @@
     </button> \
   </div> \
   </div> \
-  '+ (this.settings.display_errors ?
-        '<div class="error-container"><i class="' + this.icons.error + '"></i></div>'
-      : '') + '\
   <div class="rule-filter-container"></div> \
   <div class="rule-operator-container"></div> \
   <div class="rule-value-container"></div> \
-        '+ (this.settings.display_errors ?
-        '<div class="error"></div>'
-        : '') + '\
+        ' + (this.settings.display_errors ?
+            '<div class="error-container"><sapn class="control-label"></sapn></div>'
+          : '') + '\
   </li>';
 
-        return this.change('getRuleTemplate', h);
-    };
+            return this.change('getRuleTemplate', h);
+        };
 
-    /**
-     * Returns rule filter <select> HTML
-     * @param rule {Rule}
-     * @param filters {array}
-     * @return {string}
-     */
-    QueryBuilder.prototype.getRuleFilterSelect = function (rule, filters) {
-        var optgroup = null;
+        /**
+         * Returns rule filter <select> HTML
+         * @param rule {Rule}
+         * @param filters {array}
+         * @return {string}
+         */
+        QueryBuilder.prototype.getRuleFilterSelect = function (rule, filters) {
+            var optgroup = null;
 
-        var h = '<select class="form-control" name="' + rule.id + '_filter">';
-        h += '<option value="-1">' + this.settings.select_placeholder + '</option>';
+            var h = '<select class="form-control" name="' + rule.id + '_filter">';
+            h += '<option value="-1">' + this.settings.select_placeholder + '</option>';
 
-        filters.forEach(function (filter) {
-            if (optgroup != filter.optgroup) {
-                if (optgroup !== null) h += '</optgroup>';
-                optgroup = filter.optgroup;
-                if (optgroup !== null) h += '<optgroup label="' + optgroup + '">';
-            }
-
-            h += '<option value="' + filter.id + '">' + filter.label + '</option>';
-        });
-
-        if (optgroup !== null) h += '</optgroup>';
-        h += '</select>';
-
-        return this.change('getRuleFilterSelect', h, rule);
-    };
-
-    /**
-     * Returns rule operator <select> HTML
-     * @param rule {Rule}
-     * @param operators {object}
-     * @return {string}
-     */
-    QueryBuilder.prototype.getRuleOperatorSelect = function (rule, operators) {
-        var h = '<select class="form-control" name="' + rule.id + '_operator">';
-
-        for (var i = 0, l = operators.length; i < l; i++) {
-            var label = this.lang.operators[operators[i].type] || operators[i].type;
-            h += '<option value="' + operators[i].type + '">' + label + '</option>';
-        }
-
-        h += '</select>';
-
-        return this.change('getRuleOperatorSelect', h, rule);
-    };
-
-    /**
-     * Return the rule value HTML
-     * @param rule {Rule}
-     * @param filter {object}
-     * @param value_id {int}
-     * @return {string}
-     */
-    QueryBuilder.prototype.getRuleInput = function (rule, value_id) {
-        var filter = rule.filter,
-            validation = rule.filter.validation || {},
-            name = rule.id + '_value_' + value_id,
-            c = filter.vertical ? ' class=block' : '',
-            h = '';
-
-        if (typeof filter.input === 'function') {
-            h = filter.input.call(this, rule, name);
-        }
-        else {
-            switch (filter.input) {
-                case 'radio':
-                    iterateOptions(filter.values, function (key, val) {
-                        h += '<label' + c + '><input type="radio" name="' + name + '" value="' + key + '"> ' + val + '</label> ';
-                    });
-                    break;
-
-                case 'checkbox':
-                    iterateOptions(filter.values, function (key, val) {
-                        h += '<label' + c + '><input type="checkbox" name="' + name + '" value="' + key + '"> ' + val + '</label> ';
-                    });
-                    break;
-
-                case 'select':
-                    h += '<select class="form-control" name="' + name + '"' + (filter.multiple ? ' multiple' : '') + '>';
-                    iterateOptions(filter.values, function (key, val) {
-                        h += '<option value="' + key + '"> ' + val + '</option> ';
-                    });
-                    h += '</select>';
-                    break;
-
-                case 'textarea':
-                    h += '<textarea class="form-control" name="' + name + '"';
-                    if (filter.size) h += ' cols="' + filter.size + '"';
-                    if (filter.rows) h += ' rows="' + filter.rows + '"';
-                    if (validation.min !== undefined) h += ' minlength="' + validation.min + '"';
-                    if (validation.max !== undefined) h += ' maxlength="' + validation.max + '"';
-                    if (filter.placeholder) h += ' placeholder="' + filter.placeholder + '"';
-                    h += '></textarea>';
-                    break;
-
-                default:
-                    switch (QueryBuilder.types[filter.type]) {
-                        case 'number':
-                            h += '<input class="form-control" type="number" name="' + name + '"';
-                            if (validation.step !== undefined) h += ' step="' + validation.step + '"';
-                            if (validation.min !== undefined) h += ' min="' + validation.min + '"';
-                            if (validation.max !== undefined) h += ' max="' + validation.max + '"';
-                            if (filter.placeholder) h += ' placeholder="' + filter.placeholder + '"';
-                            if (filter.size) h += ' size="' + filter.size + '"';
-                            h += '>';
-                            break;
-
-                        default:
-                            h += '<input class="form-control" type="text" name="' + name + '"';
-                            if (filter.placeholder) h += ' placeholder="' + filter.placeholder + '"';
-                            if (filter.type === 'string' && validation.min !== undefined) h += ' minlength="' + validation.min + '"';
-                            if (filter.type === 'string' && validation.max !== undefined) h += ' maxlength="' + validation.max + '"';
-                            if (filter.size) h += ' size="' + filter.size + '"';
-                            h += '>';
-                    }
-            }
-        }
-
-        return this.change('getRuleInput', h, rule, name);
-    };
-
-    // Model CLASS
-    // ===============================
-    /**
-     * Main object storing data model and emitting events
-     * ---------
-     * Access Node object stored in jQuery objects
-     * @param el {jQuery|Node}
-     * @return {Node}
-     */
-    function Model(el) {
-        if (!(this instanceof Model)) {
-            return Model.getModel(el);
-        }
-
-        this.root = null;
-        this.$ = $(this);
-    }
-
-    $.extend(Model.prototype, {
-        trigger: function (type) {
-            this.$.triggerHandler(type, aps.call(arguments, 1));
-            return this;
-        },
-
-        on: function () {
-            this.$.on.apply(this.$, aps.call(arguments));
-            return this;
-        },
-
-        off: function () {
-            this.$.off.apply(this.$, aps.call(arguments));
-            return this;
-        },
-
-        once: function () {
-            this.$.one.apply(this.$, aps.call(arguments));
-            return this;
-        }
-    });
-
-    /**
-     * Access Node object stored in jQuery objects
-     * @param el {jQuery|Node}
-     * @return {Node}
-     */
-    Model.getModel = function (el) {
-        if (!el) {
-            return null;
-        }
-        else if (el instanceof Node) {
-            return el;
-        }
-        else {
-            return $(el).data('queryBuilderModel');
-        }
-    };
-
-    /*
-     * Define Node properties with getter and setter
-     * Update events are emitted in the setter through root Model (if any)
-     */
-    function defineModelProperties(obj, fields) {
-        fields.forEach(function (field) {
-            Object.defineProperty(obj.prototype, field, {
-                enumerable: true,
-                get: function () {
-                    return this.__[field];
-                },
-                set: function (value) {
-                    var oldValue = (this.__[field] !== null && typeof this.__[field] == 'object') ?
-                      $.extend({}, this.__[field]) :
-                      this.__[field];
-
-                    this.__[field] = value;
-
-                    if (this.model !== null) {
-                        this.model.trigger('update', this, field, value, oldValue);
-                    }
+            filters.forEach(function (filter) {
+                if (optgroup != filter.optgroup) {
+                    if (optgroup !== null) h += '</optgroup>';
+                    optgroup = filter.optgroup;
+                    if (optgroup !== null) h += '<optgroup label="' + optgroup + '">';
                 }
+
+                h += '<option value="' + filter.id + '">' + filter.label + '</option>';
             });
-        });
-    }
 
+            if (optgroup !== null) h += '</optgroup>';
+            h += '</select>';
 
-    // Node abstract CLASS
-    // ===============================
-    /**
-     * @param {Node}
-     * @param {jQuery}
-     */
-    var Node = function (parent, $el) {
-        if (!(this instanceof Node)) {
-            return new Node();
-        }
+            return this.change('getRuleFilterSelect', h, rule);
+        };
 
-        Object.defineProperty(this, '__', { value: {} });
+        /**
+         * Returns rule operator <select> HTML
+         * @param rule {Rule}
+         * @param operators {object}
+         * @return {string}
+         */
+        QueryBuilder.prototype.getRuleOperatorSelect = function (rule, operators) {
+        
+            var h = '<select class="form-control" name="' + rule.id + '_operator">';
 
-        $el.data('queryBuilderModel', this);
+            for (var i = 0, l = operators.length; i < l; i++) {
+                var label = this.lang.operators[operators[i].type] || operators[i].type;
+                h += '<option value="' + operators[i].type + '">' + label + '</option>';
+            }
 
-        this.__.level = 0;
-        this.__.error = null;
-        this.__.data = undefined;
-        this.$el = $el;
-        this.id = $el[0].id;
-        this.model = null;
-        this.parent = parent;
-    };
+            h += '</select>';
 
-    defineModelProperties(Node, ['level', 'error', 'data']);
+            return this.change('getRuleOperatorSelect', h, rule);
+        };
 
-    Object.defineProperty(Node.prototype, 'parent', {
-        enumerable: true,
-        get: function () {
-            return this.__.parent;
-        },
-        set: function (value) {
-            this.__.parent = value;
-            this.level = value === null ? 1 : value.level + 1;
-            this.model = value === null ? null : value.model;
-        }
-    });
+        /**
+         * Return the rule value HTML
+         * @param rule {Rule}
+         * @param filter {object}
+         * @param value_id {int}
+         * @return {string}
+         */
+        QueryBuilder.prototype.getRuleInput = function (rule, value_id) {
+            var filter = rule.filter,
+                validation = rule.filter.validation || {},
+                name = rule.id + '_value_' + value_id,
+                c = filter.vertical ? ' class=block' : '',
+                h = '';
 
-    /**
-     * Check if this Node is the root
-     * @return {boolean}
-     */
-    Node.prototype.isRoot = function () {
-        return (this.level === 1);
-    };
-
-    /**
-     * Return node position inside parent
-     * @return {int}
-     */
-    Node.prototype.getPos = function () {
-        if (this.isRoot()) {
-            return -1;
-        }
-        else {
-            return this.parent.getNodePos(this);
-        }
-    };
-
-    /**
-     * Delete self
-     */
-    Node.prototype.drop = function () {
-        if (this.model !== null) {
-            this.model.trigger('drop', this);
-        }
-
-        if (!this.isRoot()) {
-            this.parent._dropNode(this);
-            this.parent = null;
-        }
-    };
-
-    /**
-     * Move itself after another Node
-     * @param {Node}
-     * @return {Node} self
-     */
-    Node.prototype.moveAfter = function (node) {
-        if (this.isRoot()) return;
-
-        this.parent._dropNode(this);
-        node.parent._addNode(this, node.getPos() + 1);
-        return this;
-    };
-
-    /**
-     * Move itself at the beginning of parent or another Group
-     * @param {Group,optional}
-     * @return {Node} self
-     */
-    Node.prototype.moveAtBegin = function (target) {
-        if (this.isRoot()) return;
-
-        if (target === undefined) {
-            target = this.parent;
-        }
-
-        this.parent._dropNode(this);
-        target._addNode(this, 0);
-        return this;
-    };
-
-    /**
-     * Move itself at the end of parent or another Group
-     * @param {Group,optional}
-     * @return {Node} self
-     */
-    Node.prototype.moveAtEnd = function (target) {
-        if (this.isRoot()) return;
-
-        if (target === undefined) {
-            target = this.parent;
-        }
-
-        this.parent._dropNode(this);
-        target._addNode(this, target.length());
-        return this;
-    };
-
-
-    // GROUP CLASS
-    // ===============================
-    /**
-     * @param {Group}
-     * @param {jQuery}
-     */
-    var Group = function (parent, $el) {
-        if (!(this instanceof Group)) {
-            return new Group(parent, $el);
-        }
-
-        Node.call(this, parent, $el);
-
-        this.rules = [];
-        this.__.condition = null;
-    };
-
-    Group.prototype = Object.create(Node.prototype);
-    Group.prototype.constructor = Group;
-
-    defineModelProperties(Group, ['condition']);
-
-    /**
-     * Empty the Group
-     */
-    Group.prototype.empty = function () {
-        this.each('reverse', function (rule) {
-            rule.drop();
-        }, function (group) {
-            group.drop();
-        });
-    };
-
-    /**
-     * Delete self
-     */
-    Group.prototype.drop = function () {
-        this.empty();
-        Node.prototype.drop.call(this);
-    };
-
-    /**
-     * Return the number of children
-     * @return {int}
-     */
-    Group.prototype.length = function () {
-        return this.rules.length;
-    };
-
-    /**
-     * Add a Node at specified index
-     * @param {Node}
-     * @param {int,optional}
-     * @return {Node} the inserted node
-     */
-    Group.prototype._addNode = function (node, index) {
-        if (index === undefined) {
-            index = this.length();
-        }
-
-        this.rules.splice(index, 0, node);
-        node.parent = this;
-
-        if (this.model !== null) {
-            this.model.trigger('add', node, index);
-        }
-
-        return node;
-    };
-
-    /**
-     * Add a Group by jQuery element at specified index
-     * @param {jQuery}
-     * @param {int,optional}
-     * @return {Group} the inserted group
-     */
-    Group.prototype.addGroup = function ($el, index) {
-        return this._addNode(new Group(this, $el), index);
-    };
-
-    /**
-     * Add a Rule by jQuery element at specified index
-     * @param {jQuery}
-     * @param {int,optional}
-     * @return {Rule} the inserted rule
-     */
-    Group.prototype.addRule = function ($el, index) {
-        return this._addNode(new Rule(this, $el), index);
-    };
-
-    /**
-     * Delete a specific Node
-     * @param {Node}
-     * @return {Group} self
-     */
-    Group.prototype._dropNode = function (node) {
-        var index = this.getNodePos(node);
-        if (index !== -1) {
-            node.parent = null;
-            this.rules.splice(index, 1);
-        }
-
-        return this;
-    };
-
-    /**
-     * Return position of a child Node
-     * @param {Node}
-     * @return {int}
-     */
-    Group.prototype.getNodePos = function (node) {
-        return this.rules.indexOf(node);
-    };
-
-    /**
-     * Iterate over all Nodes
-     * @param {boolean,optional} iterate in reverse order, required if you delete nodes
-     * @param {function} callback for Rules
-     * @param {function,optional} callback for Groups
-     * @return {boolean}
-     */
-    Group.prototype.each = function (reverse, cbRule, cbGroup, context) {
-        if (typeof reverse === 'function') {
-            context = cbGroup;
-            cbGroup = cbRule;
-            cbRule = reverse;
-            reverse = false;
-        }
-        context = context === undefined ? null : context;
-
-        var i = reverse ? this.rules.length - 1 : 0,
-            l = reverse ? 0 : this.rules.length - 1,
-            c = reverse ? -1 : 1,
-            next = function () { return reverse ? i >= l : i <= l; },
-            stop = false;
-
-        for (; next() ; i += c) {
-            if (this.rules[i] instanceof Group) {
-                if (cbGroup !== undefined) {
-                    stop = cbGroup.call(context, this.rules[i]) === false;
-                }
+            if (typeof filter.input === 'function') {
+                h = filter.input.call(this, rule, name);
             }
             else {
-                stop = cbRule.call(context, this.rules[i]) === false;
-            }
-
-            if (stop) {
-                break;
-            }
-        }
-
-        return !stop;
-    };
-
-    /**
-     * Return true if the group contains a particular Node
-     * @param {Node}
-     * @param {boolean,optional} recursive search
-     * @return {boolean}
-     */
-    Group.prototype.contains = function (node, deep) {
-        if (this.getNodePos(node) !== -1) {
-            return true;
-        }
-        else if (!deep) {
-            return false;
-        }
-        else {
-            // the loop will return with false as soon as the Node is found
-            return !this.each(function (rule) {
-                return true;
-            }, function (group) {
-                return !group.contains(node, true);
-            });
-        }
-    };
-
-
-    // RULE CLASS
-    // ===============================
-    /**
-     * @param {Group}
-     * @param {jQuery}
-     */
-    var Rule = function (parent, $el) {
-        if (!(this instanceof Rule)) {
-            return new Rule(parent, $el);
-        }
-
-        Node.call(this, parent, $el);
-
-        this.__.filter = null;
-        this.__.operator = null;
-        this.__.flags = {};
-        this.__.value = undefined;
-    };
-
-    Rule.prototype = Object.create(Node.prototype);
-    Rule.prototype.constructor = Rule;
-
-    defineModelProperties(Rule, ['filter', 'operator', 'flags', 'value']);
-
-
-    QueryBuilder.Group = Group;
-    QueryBuilder.Rule = Rule;
-
-    /**
-     * Utility to iterate over radio/checkbox/selection options.
-     * it accept three formats: array of values, map, array of 1-element maps
-     *
-     * @param options {object|array}
-     * @param tpl {callable} (takes key and text)
-     */
-    function iterateOptions(options, tpl) {
-        if (options) {
-            if ($.isArray(options)) {
-                options.forEach(function (entry) {
-                    // array of one-element maps
-                    if ($.isPlainObject(entry)) {
-                        $.each(entry, function (key, val) {
-                            tpl(key, val);
-                            return false; // break after first entry
+                switch (filter.input) {
+                    case 'radio':
+                        iterateOptions(filter.values, function (key, val) {
+                            h += '<label' + c + '><input type="radio" name="' + name + '" value="' + key + '"> ' + val + '</label> ';
                         });
-                    }
-                        // array of values
-                    else {
-                        tpl(entry, entry);
-                    }
-                });
+                        break;
+
+                    case 'checkbox':
+                        iterateOptions(filter.values, function (key, val) {
+                            h += '<label' + c + '><input type="checkbox" name="' + name + '" value="' + key + '"> ' + val + '</label> ';
+                        });
+                        break;
+
+                    case 'select':
+                        h += '<select class="form-control" name="' + name + '"' + (filter.multiple ? ' multiple' : '') + '>';
+                        iterateOptions(filter.values, function (key, val) {
+                            h += '<option value="' + key + '"> ' + val + '</option> ';
+                        });
+                        h += '</select>';
+                        break;
+
+                    case 'textarea':
+                        h += '<textarea class="form-control" name="' + name + '"';
+                        if (filter.size) h += ' cols="' + filter.size + '"';
+                        if (filter.rows) h += ' rows="' + filter.rows + '"';
+                        if (validation.min !== undefined) h += ' minlength="' + validation.min + '"';
+                        if (validation.max !== undefined) h += ' maxlength="' + validation.max + '"';
+                        if (filter.placeholder) h += ' placeholder="' + filter.placeholder + '"';
+                        h += '></textarea>';
+                        break;
+
+                    case 'location':
+                        h += '<input class="form-control" type="text" data-location-type="country" data-provide="typeahead" autocomplete="false" name="' +name + '_country"';
+                        h += ' placeholder="Country"';
+                        h += '>';
+                        h += '<input class="form-control" type="text" data-location-type="city" data-provide="typeahead" autocomplete="false" name="' +name + '_city"';
+                        h += ' placeholder="City"';
+                        h += '>';
+                        h += '<input class="form-control" type="text" data-location-type="state" data-provide="typeahead" autocomplete="false" name="' +name + '_state"';
+                        h += ' placeholder="State"';
+                        h += '>';
+                        break;
+
+                    default:
+                        switch (QueryBuilder.types[filter.type]) {
+                            case 'number':
+                                h += '<input class="form-control" type="number" name="' + name + '"';
+                                if (validation.step !== undefined) h += ' step="' + validation.step + '"';
+                                if (validation.min !== undefined) h += ' min="' + validation.min + '"';
+                                if (validation.max !== undefined) h += ' max="' + validation.max + '"';
+                                if (filter.placeholder) h += ' placeholder="' + filter.placeholder + '"';
+                                if (filter.size) h += ' size="' + filter.size + '"';
+                                h += '>';
+                                break;
+                        
+                            default:
+                                h += '<input class="form-control" type="text" name="' + name + '"';
+                                if (filter.placeholder) h += ' placeholder="' + filter.placeholder + '"';
+                                if (filter.type === 'string' && validation.min !== undefined) h += ' minlength="' + validation.min + '"';
+                                if (filter.type === 'string' && validation.max !== undefined) h += ' maxlength="' + validation.max + '"';
+                                if (filter.size) h += ' size="' + filter.size + '"';
+                                h += '>';
+                        }
+                }
             }
-                // unordered map
-            else {
-                $.each(options, function (key, val) {
-                    tpl(key, val);
-                });
+
+            return this.change('getRuleInput', h, rule, name);
+        };
+
+        // Model CLASS
+        // ===============================
+        /**
+         * Main object storing data model and emitting events
+         * ---------
+         * Access Node object stored in jQuery objects
+         * @param el {jQuery|Node}
+         * @return {Node}
+         */
+        function Model(el) {
+            if (!(this instanceof Model)) {
+                return Model.getModel(el);
             }
+
+            this.root = null;
+            this.$ = $(this);
         }
-    }
 
-    /**
-     * Replaces {0}, {1}, ... in a string
-     * @param str {string}
-     * @param args,... {string|int|float}
-     * @return {string}
-     */
-    function fmt(str, args) {
-        args = Array.prototype.slice.call(arguments);
+        $.extend(Model.prototype, {
+            trigger: function (type) {
+                this.$.triggerHandler(type, aps.call(arguments, 1));
+                return this;
+            },
 
-        return str.replace(/{([0-9]+)}/g, function (m, i) {
-            return args[parseInt(i) + 1];
+            on: function () {
+                this.$.on.apply(this.$, aps.call(arguments));
+                return this;
+            },
+
+            off: function () {
+                this.$.off.apply(this.$, aps.call(arguments));
+                return this;
+            },
+
+            once: function () {
+                this.$.one.apply(this.$, aps.call(arguments));
+                return this;
+            }
         });
-    }
 
-    /**
-     * Output internal error with jQuery.error
-     * @see fmt
-     */
-    function error() {
-        $.error(fmt.apply(null, arguments));
-    }
+        /**
+         * Access Node object stored in jQuery objects
+         * @param el {jQuery|Node}
+         * @return {Node}
+         */
+        Model.getModel = function (el) {
+            if (!el) {
+                return null;
+            }
+            else if (el instanceof Node) {
+                return el;
+            }
+            else {
+                return $(el).data('queryBuilderModel');
+            }
+        };
 
-    /**
-     * Change type of a value to int or float
-     * @param value {mixed}
-     * @param type {string} 'integer', 'double' or anything else
-     * @param boolAsInt {boolean} return 0 or 1 for booleans
-     * @return {mixed}
-     */
-    function changeType(value, type, boolAsInt) {
-        switch (type) {
-            case 'integer': return parseInt(value);
-            case 'double': return parseFloat(value);
-            case 'boolean':
-                var bool = value.trim().toLowerCase() === "true" || value.trim() === '1' || value === 1;
-                return boolAsInt ? (bool ? 1 : 0) : bool;
-            default: return value;
-        }
-    }
+        /*
+         * Define Node properties with getter and setter
+         * Update events are emitted in the setter through root Model (if any)
+         */
+        function defineModelProperties(obj, fields) {
+            fields.forEach(function (field) {
+                Object.defineProperty(obj.prototype, field, {
+                    enumerable: true,
+                    get: function () {
+                        return this.__[field];
+                    },
+                    set: function (value) {
+                        var oldValue = (this.__[field] !== null && typeof this.__[field] == 'object') ?
+                          $.extend({}, this.__[field]) :
+                          this.__[field];
 
-    /**
-     * Escape string like mysql_real_escape_string
-     * @param value {string}
-     * @return {string}
-     */
-    function escapeString(value) {
-        if (typeof value !== 'string') {
-            return value;
-        }
+                        this.__[field] = value;
 
-        return value
-          .replace(/[\0\n\r\b\\\'\"]/g, function (s) {
-              switch (s) {
-                  case '\0': return '\\0';
-                  case '\n': return '\\n';
-                  case '\r': return '\\r';
-                  case '\b': return '\\b';
-                  default: return '\\' + s;
-              }
-          })
-          // uglify compliant
-          .replace(/\t/g, '\\t')
-          .replace(/\x1a/g, '\\Z');
-    }
-
-    /**
-     * Escape value for use in regex
-     * @param value {string}
-     * @return {string}
-     */
-    function escapeRegExp(str) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-    }
-
-    $.fn.queryBuilder = function (option) {
-        if (this.length > 1) {
-            error('Unable to initialize on multiple target');
+                        if (this.model !== null) {
+                            this.model.trigger('update', this, field, value, oldValue);
+                        }
+                    }
+                });
+            });
         }
 
-        var data = this.data('queryBuilder'),
-            options = (typeof option == 'object' && option) || {};
 
-        if (!data && option == 'destroy') {
+        // Node abstract CLASS
+        // ===============================
+        /**
+         * @param {Node}
+         * @param {jQuery}
+         */
+        var Node = function (parent, $el) {
+            if (!(this instanceof Node)) {
+                return new Node();
+            }
+
+            Object.defineProperty(this, '__', { value: {} });
+
+            $el.data('queryBuilderModel', this);
+
+            this.__.level = 0;
+            this.__.error = null;
+            this.__.data = undefined;
+            this.$el = $el;
+            this.id = $el[0].id;
+            this.model = null;
+            this.parent = parent;
+        };
+
+        defineModelProperties(Node, ['level', 'error', 'data']);
+
+        Object.defineProperty(Node.prototype, 'parent', {
+            enumerable: true,
+            get: function () {
+                return this.__.parent;
+            },
+            set: function (value) {
+                this.__.parent = value;
+                this.level = value === null ? 1 : value.level + 1;
+                this.model = value === null ? null : value.model;
+            }
+        });
+
+        /**
+         * Check if this Node is the root
+         * @return {boolean}
+         */
+        Node.prototype.isRoot = function () {
+            return (this.level === 1);
+        };
+
+        /**
+         * Return node position inside parent
+         * @return {int}
+         */
+        Node.prototype.getPos = function () {
+            if (this.isRoot()) {
+                return -1;
+            }
+            else {
+                return this.parent.getNodePos(this);
+            }
+        };
+
+        /**
+         * Delete self
+         */
+        Node.prototype.drop = function () {
+            if (this.model !== null) {
+                this.model.trigger('drop', this);
+            }
+
+            if (!this.isRoot()) {
+                this.parent._dropNode(this);
+                this.parent = null;
+            }
+        };
+
+        /**
+         * Move itself after another Node
+         * @param {Node}
+         * @return {Node} self
+         */
+        Node.prototype.moveAfter = function (node) {
+            if (this.isRoot()) return;
+
+            this.parent._dropNode(this);
+            node.parent._addNode(this, node.getPos() + 1);
             return this;
+        };
+
+        /**
+         * Move itself at the beginning of parent or another Group
+         * @param {Group,optional}
+         * @return {Node} self
+         */
+        Node.prototype.moveAtBegin = function (target) {
+            if (this.isRoot()) return;
+
+            if (target === undefined) {
+                target = this.parent;
+            }
+
+            this.parent._dropNode(this);
+            target._addNode(this, 0);
+            return this;
+        };
+
+        /**
+         * Move itself at the end of parent or another Group
+         * @param {Group,optional}
+         * @return {Node} self
+         */
+        Node.prototype.moveAtEnd = function (target) {
+            if (this.isRoot()) return;
+
+            if (target === undefined) {
+                target = this.parent;
+            }
+
+            this.parent._dropNode(this);
+            target._addNode(this, target.length());
+            return this;
+        };
+
+
+        // GROUP CLASS
+        // ===============================
+        /**
+         * @param {Group}
+         * @param {jQuery}
+         */
+        var Group = function (parent, $el) {
+            if (!(this instanceof Group)) {
+                return new Group(parent, $el);
+            }
+
+            Node.call(this, parent, $el);
+
+            this.rules = [];
+            this.__.condition = null;
+        };
+
+        Group.prototype = Object.create(Node.prototype);
+        Group.prototype.constructor = Group;
+
+        defineModelProperties(Group, ['condition']);
+
+        /**
+         * Empty the Group
+         */
+        Group.prototype.empty = function () {
+            this.each('reverse', function (rule) {
+                rule.drop();
+            }, function (group) {
+                group.drop();
+            });
+        };
+
+        /**
+         * Delete self
+         */
+        Group.prototype.drop = function () {
+            this.empty();
+            Node.prototype.drop.call(this);
+        };
+
+        /**
+         * Return the number of children
+         * @return {int}
+         */
+        Group.prototype.length = function () {
+            return this.rules.length;
+        };
+
+        /**
+         * Add a Node at specified index
+         * @param {Node}
+         * @param {int,optional}
+         * @return {Node} the inserted node
+         */
+        Group.prototype._addNode = function (node, index) {
+            if (index === undefined) {
+                index = this.length();
+            }
+
+            this.rules.splice(index, 0, node);
+            node.parent = this;
+
+            if (this.model !== null) {
+                this.model.trigger('add', node, index);
+            }
+
+            return node;
+        };
+
+        /**
+         * Add a Group by jQuery element at specified index
+         * @param {jQuery}
+         * @param {int,optional}
+         * @return {Group} the inserted group
+         */
+        Group.prototype.addGroup = function ($el, index) {
+            return this._addNode(new Group(this, $el), index);
+        };
+
+        /**
+         * Add a Rule by jQuery element at specified index
+         * @param {jQuery}
+         * @param {int,optional}
+         * @return {Rule} the inserted rule
+         */
+        Group.prototype.addRule = function ($el, index) {
+            return this._addNode(new Rule(this, $el), index);
+        };
+
+        /**
+         * Delete a specific Node
+         * @param {Node}
+         * @return {Group} self
+         */
+        Group.prototype._dropNode = function (node) {
+            var index = this.getNodePos(node);
+            if (index !== -1) {
+                node.parent = null;
+                this.rules.splice(index, 1);
+            }
+
+            return this;
+        };
+
+        /**
+         * Return position of a child Node
+         * @param {Node}
+         * @return {int}
+         */
+        Group.prototype.getNodePos = function (node) {
+            return this.rules.indexOf(node);
+        };
+
+        /**
+         * Iterate over all Nodes
+         * @param {boolean,optional} iterate in reverse order, required if you delete nodes
+         * @param {function} callback for Rules
+         * @param {function,optional} callback for Groups
+         * @return {boolean}
+         */
+        Group.prototype.each = function (reverse, cbRule, cbGroup, context) {
+            if (typeof reverse === 'function') {
+                context = cbGroup;
+                cbGroup = cbRule;
+                cbRule = reverse;
+                reverse = false;
+            }
+            context = context === undefined ? null : context;
+
+            var i = reverse ? this.rules.length - 1 : 0,
+                l = reverse ? 0 : this.rules.length - 1,
+                c = reverse ? -1 : 1,
+                next = function () { return reverse ? i >= l : i <= l; },
+                stop = false;
+
+            for (; next() ; i += c) {
+                if (this.rules[i] instanceof Group) {
+                    if (cbGroup !== undefined) {
+                        stop = cbGroup.call(context, this.rules[i]) === false;
+                    }
+                }
+                else {
+                    stop = cbRule.call(context, this.rules[i]) === false;
+                }
+
+                if (stop) {
+                    break;
+                }
+            }
+
+            return !stop;
+        };
+
+        /**
+         * Return true if the group contains a particular Node
+         * @param {Node}
+         * @param {boolean,optional} recursive search
+         * @return {boolean}
+         */
+        Group.prototype.contains = function (node, deep) {
+            if (this.getNodePos(node) !== -1) {
+                return true;
+            }
+            else if (!deep) {
+                return false;
+            }
+            else {
+                // the loop will return with false as soon as the Node is found
+                return !this.each(function (rule) {
+                    return true;
+                }, function (group) {
+                    return !group.contains(node, true);
+                });
+            }
+        };
+
+
+        // RULE CLASS
+        // ===============================
+        /**
+         * @param {Group}
+         * @param {jQuery}
+         */
+        var Rule = function (parent, $el) {
+            if (!(this instanceof Rule)) {
+                return new Rule(parent, $el);
+            }
+
+            Node.call(this, parent, $el);
+
+            this.__.filter = null;
+            this.__.operator = null;
+            this.__.flags = {};
+            this.__.value = undefined;
+        };
+
+        Rule.prototype = Object.create(Node.prototype);
+        Rule.prototype.constructor = Rule;
+
+        defineModelProperties(Rule, ['filter', 'operator', 'flags', 'value']);
+
+
+        QueryBuilder.Group = Group;
+        QueryBuilder.Rule = Rule;
+
+        /**
+         * Utility to iterate over radio/checkbox/selection options.
+         * it accept three formats: array of values, map, array of 1-element maps
+         *
+         * @param options {object|array}
+         * @param tpl {callable} (takes key and text)
+         */
+        function iterateOptions(options, tpl) {
+            if (options) {
+                if ($.isArray(options)) {
+                    options.forEach(function (entry) {
+                        // array of one-element maps
+                        if ($.isPlainObject(entry)) {
+                            $.each(entry, function (key, val) {
+                                tpl(key, val);
+                                return false; // break after first entry
+                            });
+                        }
+                            // array of values
+                        else {
+                            tpl(entry, entry);
+                        }
+                    });
+                }
+                    // unordered map
+                else {
+                    $.each(options, function (key, val) {
+                        tpl(key, val);
+                    });
+                }
+            }
         }
-        if (!data) {
-            this.data('queryBuilder', new QueryBuilder(this, options));
+
+        /**
+         * Replaces {0}, {1}, ... in a string
+         * @param str {string}
+         * @param args,... {string|int|float}
+         * @return {string}
+         */
+        function fmt(str, args) {
+            args = Array.prototype.slice.call(arguments);
+
+            return str.replace(/{([0-9]+)}/g, function (m, i) {
+                return args[parseInt(i) + 1];
+            });
         }
-        if (typeof option == 'string') {
-            return data[option].apply(data, Array.prototype.slice.call(arguments, 1));
+
+        /**
+         * Output internal error with jQuery.error
+         * @see fmt
+         */
+        function error() {
+            $.error(fmt.apply(null, arguments));
         }
 
-        return this;
-    };
+        /**
+         * Change type of a value to int or float
+         * @param value {mixed}
+         * @param type {string} 'integer', 'double' or anything else
+         * @param boolAsInt {boolean} return 0 or 1 for booleans
+         * @return {mixed}
+         */
+        function changeType(value, type, boolAsInt) {
+            switch (type) {
+                case 'integer': return parseInt(value);
+                case 'double': return parseFloat(value);
+                case 'boolean':
+                    var bool = value.trim().toLowerCase() === "true" || value.trim() === '1' || value === 1;
+                    return boolAsInt ? (bool ? 1 : 0) : bool;
+                default: return value;
+            }
+        }
 
-    $.fn.queryBuilder.constructor = QueryBuilder;
-    $.fn.queryBuilder.defaults = QueryBuilder.defaults;
-    $.fn.queryBuilder.extend = QueryBuilder.extend;
-    $.fn.queryBuilder.define = QueryBuilder.define;
-    $.fn.queryBuilder.regional = QueryBuilder.regional;
+        /**
+         * Escape string like mysql_real_escape_string
+         * @param value {string}
+         * @return {string}
+         */
+        function escapeString(value) {
+            if (typeof value !== 'string') {
+                return value;
+            }
 
-    /*!
-     * jQuery QueryBuilder Awesome Bootstrap Checkbox
-     * Applies Awesome Bootstrap Checkbox for checkbox and radio inputs.
-     * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
-     */
+            return value
+              .replace(/[\0\n\r\b\\\'\"]/g, function (s) {
+                  switch (s) {
+                      case '\0': return '\\0';
+                      case '\n': return '\\n';
+                      case '\r': return '\\r';
+                      case '\b': return '\\b';
+                      default: return '\\' + s;
+                  }
+              })
+              // uglify compliant
+              .replace(/\t/g, '\\t')
+              .replace(/\x1a/g, '\\Z');
+        }
 
-    QueryBuilder.define('bt-checkbox', function (options) {
-        if (options.font == 'glyphicons') {
-            var injectCSS = document.createElement('style');
-            injectCSS.innerHTML = '\
+        /**
+         * Escape value for use in regex
+         * @param value {string}
+         * @return {string}
+         */
+        function escapeRegExp(str) {
+            return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        }
+
+        $.fn.queryBuilder = function (option) {
+            if (this.length > 1) {
+                error('Unable to initialize on multiple target');
+            }
+
+            var data = this.data('queryBuilder'),
+                options = (typeof option == 'object' && option) || {};
+
+            if (!data && option == 'destroy') {
+                return this;
+            }
+            if (!data) {
+                this.data('queryBuilder', new QueryBuilder(this, options));
+            }
+            if (typeof option == 'string') {
+                return data[option].apply(data, Array.prototype.slice.call(arguments, 1));
+            }
+
+            return this;
+        };
+
+        $.fn.queryBuilder.constructor = QueryBuilder;
+        $.fn.queryBuilder.defaults = QueryBuilder.defaults;
+        $.fn.queryBuilder.extend = QueryBuilder.extend;
+        $.fn.queryBuilder.define = QueryBuilder.define;
+        $.fn.queryBuilder.regional = QueryBuilder.regional;
+
+        /*!
+         * jQuery QueryBuilder Awesome Bootstrap Checkbox
+         * Applies Awesome Bootstrap Checkbox for checkbox and radio inputs.
+         * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+         */
+
+        QueryBuilder.define('bt-checkbox', function (options) {
+            if (options.font == 'glyphicons') {
+                var injectCSS = document.createElement('style');
+                injectCSS.innerHTML = '\
 .checkbox input[type=checkbox]:checked + label:after { \
     font-family: "Glyphicons Halflings"; \
     content: "\\e013"; \
@@ -2444,1054 +2544,1400 @@
     padding-top: 2px; \
     font-size: 9px; \
 }';
-            document.body.appendChild(injectCSS);
-        }
+                document.body.appendChild(injectCSS);
+            }
 
-        this.on('getRuleInput.filter', function (h, rule, name) {
-            var filter = rule.filter;
+            this.on('getRuleInput.filter', function (h, rule, name) {
+                var filter = rule.filter;
 
-            if ((filter.input === 'radio' || filter.input === 'checkbox') && !filter.plugin) {
-                h.value = '';
+                if ((filter.input === 'radio' || filter.input === 'checkbox') && !filter.plugin) {
+                    h.value = '';
 
-                if (!filter.colors) {
-                    filter.colors = {};
-                }
-                if (filter.color) {
-                    filter.colors._def_ = filter.color;
-                }
+                    if (!filter.colors) {
+                        filter.colors = {};
+                    }
+                    if (filter.color) {
+                        filter.colors._def_ = filter.color;
+                    }
 
-                var style = filter.vertical ? ' style="display:block"' : '',
-                    i = 0, color, id;
+                    var style = filter.vertical ? ' style="display:block"' : '',
+                        i = 0, color, id;
 
-                iterateOptions(filter.values, function (key, val) {
-                    color = filter.colors[key] || filter.colors._def_ || options.color;
-                    id = name + '_' + (i++);
+                    iterateOptions(filter.values, function (key, val) {
+                        color = filter.colors[key] || filter.colors._def_ || options.color;
+                        id = name + '_' + (i++);
 
-                    h.value += '\
+                        h.value += '\
 <div'+ style + ' class="' + filter.input + ' ' + filter.input + '-' + color + '"> \
   <input type="'+ filter.input + '" name="' + name + '" id="' + id + '" value="' + key + '"> \
   <label for="'+ id + '">' + val + '</label> \
 </div>';
-                });
-            }
-        });
-    }, {
-        font: 'glyphicons',
-        color: 'default'
-    });
-
-    /*!
-     * jQuery QueryBuilder Bootstrap Selectpicker
-     * Applies Bootstrap Select on filters and operators combo-boxes.
-     * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
-     */
-
-    QueryBuilder.define('bt-selectpicker', function (options) {
-        if (!$.fn.selectpicker || !$.fn.selectpicker.Constructor) {
-            error('Bootstrap Select is required to use "bt-selectpicker" plugin. Get it here: http://silviomoreto.github.io/bootstrap-select');
-        }
-
-        // init selectpicker
-        this.on('afterCreateRuleFilters', function (e, rule) {
-            rule.$el.find('.rule-filter-container select').removeClass('form-control').selectpicker(options);
-        });
-
-        this.on('afterCreateRuleOperators', function (e, rule) {
-            rule.$el.find('.rule-operator-container select').removeClass('form-control').selectpicker(options);
-        });
-
-        // update selectpicker on change
-        this.on('afterUpdateRuleFilter', function (e, rule) {
-            rule.$el.find('.rule-filter-container select').selectpicker('render');
-        });
-
-        this.on('afterUpdateRuleOperator', function (e, rule) {
-            rule.$el.find('.rule-operator-container select').selectpicker('render');
-        });
-    }, {
-        container: 'body',
-        style: 'btn-inverse btn-xs',
-        width: 'auto',
-        showIcon: false
-    });
-
-    /*!
-     * jQuery QueryBuilder Bootstrap Tooltip errors
-     * Applies Bootstrap Tooltips on validation error messages.
-     * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
-     */
-
-    QueryBuilder.define('bt-tooltip-errors', function (options) {
-        if (!$.fn.tooltip || !$.fn.tooltip.Constructor || !$.fn.tooltip.Constructor.prototype.fixTitle) {
-            error('Bootstrap Tooltip is required to use "bt-tooltip-errors" plugin. Get it here: http://getbootstrap.com');
-        }
-
-        var self = this;
-
-        // add BT Tooltip data
-        this.on('getRuleTemplate.filter', function (h) {
-            h.value = h.value.replace('class="error-container"', 'class="error-container" data-toggle="tooltip"');
-        });
-
-        this.on('getGroupTemplate.filter', function (h) {
-            h.value = h.value.replace('class="error-container"', 'class="error-container" data-toggle="tooltip"');
-        });
-
-        // init/refresh tooltip when title changes
-        this.model.on('update', function (e, node, field) {
-            if (field == 'error' && self.settings.display_errors) {
-                node.$el.find('.error-container').eq(0)
-                  .tooltip(options)
-                  .tooltip('hide')
-                  .tooltip('fixTitle');
-            }
-        });
-    }, {
-        placement: 'right'
-    });
-
-    /*!
-     * jQuery QueryBuilder Filter Description
-     * Provides three ways to display a description about a filter: inline, Bootsrap Popover or Bootbox.
-     * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
-     */
-
-    QueryBuilder.define('filter-description', function (options) {
-        /**
-         * INLINE
-         */
-        if (options.mode === 'inline') {
-            this.on('afterUpdateRuleFilter', function (e, rule) {
-                var $p = rule.$el.find('p.filter-description');
-
-                if (!rule.filter || !rule.filter.description) {
-                    $p.hide();
-                }
-                else {
-                    if ($p.length === 0) {
-                        $p = $('<p class="filter-description"></p>');
-                        $p.appendTo(rule.$el);
-                    }
-                    else {
-                        $p.show();
-                    }
-
-                    $p.html('<i class="' + options.icon + '"></i> ' + rule.filter.description);
-                }
-            });
-        }
-            /**
-             * POPOVER
-             */
-        else if (options.mode === 'popover') {
-            if (!$.fn.popover || !$.fn.popover.Constructor || !$.fn.popover.Constructor.prototype.fixTitle) {
-                error('Bootstrap Popover is required to use "filter-description" plugin. Get it here: http://getbootstrap.com');
-            }
-
-            this.on('afterUpdateRuleFilter', function (e, rule) {
-                var $b = rule.$el.find('button.filter-description');
-
-                if (!rule.filter || !rule.filter.description) {
-                    $b.hide();
-
-                    if ($b.data('bs.popover')) {
-                        $b.popover('hide');
-                    }
-                }
-                else {
-                    if ($b.length === 0) {
-                        $b = $('<button type="button" class="btn btn-xs btn-info filter-description" data-toggle="popover"><i class="' + options.icon + '"></i></button>');
-                        $b.prependTo(rule.$el.find('.rule-actions'));
-
-                        $b.popover({
-                            placement: 'left',
-                            container: 'body',
-                            html: true
-                        });
-
-                        $b.on('mouseout', function () {
-                            $b.popover('hide');
-                        });
-                    }
-                    else {
-                        $b.show();
-                    }
-
-                    $b.data('bs.popover').options.content = rule.filter.description;
-
-                    if ($b.attr('aria-describedby')) {
-                        $b.popover('show');
-                    }
-                }
-            });
-        }
-            /**
-             * BOOTBOX
-             */
-        else if (options.mode === 'bootbox') {
-            if (!('bootbox' in window)) {
-                error('Bootbox is required to use "filter-description" plugin. Get it here: http://bootboxjs.com');
-            }
-
-            this.on('afterUpdateRuleFilter', function (e, rule) {
-                var $b = rule.$el.find('button.filter-description');
-
-                if (!rule.filter || !rule.filter.description) {
-                    $b.hide();
-                }
-                else {
-                    if ($b.length === 0) {
-                        $b = $('<button type="button" class="btn btn-xs btn-info filter-description" data-toggle="bootbox"><i class="' + options.icon + '"></i></button>');
-                        $b.prependTo(rule.$el.find('.rule-actions'));
-
-                        $b.on('click', function () {
-                            bootbox.alert($b.data('description'));
-                        });
-                    }
-
-                    $b.data('description', rule.filter.description);
-                }
-            });
-        }
-    }, {
-        icon: 'glyphicon glyphicon-info-sign',
-        mode: 'popover'
-    });
-
-    /*!
-     * jQuery QueryBuilder Loopback Support
-     * Allows to export rules as a Loopback statement.
-     * Copyright 2015 Fabien Franzen (http://www.atelierfabien.be)
-     */
-
-    // DEFAULT CONFIG
-    // ===============================
-    QueryBuilder.defaults({
-        loopbackOperators: {
-            equal: function (v) { return v[0]; },
-            not_equal: function (v) { return { 'neq': v[0] }; },
-            in: function (v) { return { 'inq': v }; },
-            not_in: function (v) { return { 'nin': v }; },
-            less: function (v) { return { 'lt': v[0] }; },
-            less_or_equal: function (v) { return { 'lte': v[0] }; },
-            greater: function (v) { return { 'gt': v[0] }; },
-            greater_or_equal: function (v) { return { 'gte': v[0] }; },
-            between: function (v) { return { 'between': v }; },
-            begins_with: function (v) { return { 'like': '^' + escapeRegExp(v[0]) }; },
-            not_begins_with: function (v) { return { 'nlike': '^' + escapeRegExp(v[0]) }; },
-            contains: function (v) { return { 'like': escapeRegExp(v[0]) }; },
-            not_contains: function (v) { return { 'nlike': escapeRegExp(v[0]) }; },
-            ends_with: function (v) { return { 'like': escapeRegExp(v[0]) + '$' }; },
-            not_ends_with: function (v) { return { 'nlike': escapeRegExp(v[0]) + '$' }; },
-            is_empty: function (v) { return ''; },
-            is_not_empty: function (v) { return { 'neq': '' }; },
-            is_null: function (v) { return null; },
-            is_not_null: function (v) { return { 'neq': null }; }
-        }
-    });
-
-
-    // PUBLIC METHODS
-    // ===============================
-    QueryBuilder.extend({
-        /**
-         * Get rules as Loopback query
-         * @param data {object} (optional) rules
-         * @return {object}
-         */
-        getLoopback: function (data) {
-            data = (data === undefined) ? this.getRules() : data;
-
-            var that = this;
-
-            return (function parse(data) {
-                if (!data.condition) {
-                    data.condition = that.settings.default_condition;
-                }
-                if (['AND', 'OR'].indexOf(data.condition.toUpperCase()) === -1) {
-                    error('Unable to build Loopback query with condition "{0}"', data.condition);
-                }
-
-                if (!data.rules) {
-                    return {};
-                }
-
-                var parts = [];
-
-                data.rules.forEach(function (rule) {
-                    if (rule.rules && rule.rules.length > 0) {
-                        parts.push(parse(rule));
-                    }
-                    else {
-                        var mdb = that.settings.loopbackOperators[rule.operator],
-                            ope = that.getOperatorByType(rule.operator),
-                            values = [];
-
-                        if (mdb === undefined) {
-                            error('Unknown Loopback operation for operator "{0}"', rule.operator);
-                        }
-
-                        if (ope.nb_inputs !== 0) {
-                            if (!(rule.value instanceof Array)) {
-                                rule.value = [rule.value];
-                            }
-
-                            rule.value.forEach(function (v) {
-                                values.push(changeType(v, rule.type));
-                            });
-                        }
-
-                        var part = {};
-                        part[rule.field] = mdb.call(that, values);
-                        parts.push(part);
-                    }
-                });
-
-                var res = {};
-                if (parts.length > 0) {
-                    res[data.condition.toLowerCase()] = parts;
-                }
-                return res;
-            }(data));
-        }
-    });
-
-    /*!
-     * jQuery QueryBuilder MongoDB Support
-     * Allows to export rules as a MongoDB find object as well as populating the builder from a MongoDB object.
-     * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
-     */
-
-    // DEFAULT CONFIG
-    // ===============================
-    QueryBuilder.defaults({
-        mongoOperators: {
-            equal: function (v) { return v[0]; },
-            not_equal: function (v) { return { '$ne': v[0] }; },
-            in: function (v) { return { '$in': v }; },
-            not_in: function (v) { return { '$nin': v }; },
-            less: function (v) { return { '$lt': v[0] }; },
-            less_or_equal: function (v) { return { '$lte': v[0] }; },
-            greater: function (v) { return { '$gt': v[0] }; },
-            greater_or_equal: function (v) { return { '$gte': v[0] }; },
-            between: function (v) { return { '$gte': v[0], '$lte': v[1] }; },
-            begins_with: function (v) { return { '$regex': '^' + escapeRegExp(v[0]) }; },
-            not_begins_with: function (v) { return { '$regex': '^(?!' + escapeRegExp(v[0]) + ')' }; },
-            contains: function (v) { return { '$regex': escapeRegExp(v[0]) }; },
-            not_contains: function (v) { return { '$regex': '^((?!' + escapeRegExp(v[0]) + ').)*$', '$options': 's' }; },
-            ends_with: function (v) { return { '$regex': escapeRegExp(v[0]) + '$' }; },
-            not_ends_with: function (v) { return { '$regex': '(?<!' + escapeRegExp(v[0]) + ')$' }; },
-            is_empty: function (v) { return ''; },
-            is_not_empty: function (v) { return { '$ne': '' }; },
-            is_null: function (v) { return null; },
-            is_not_null: function (v) { return { '$ne': null }; }
-        },
-
-        mongoRuleOperators: {
-            $ne: function (v) {
-                v = v.$ne;
-                return {
-                    'val': v,
-                    'op': v === null ? 'is_not_null' : (v === '' ? 'is_not_empty' : 'not_equal')
-                };
-            },
-            eq: function (v) {
-                return {
-                    'val': v,
-                    'op': v === null ? 'is_null' : (v === '' ? 'is_empty' : 'equal')
-                };
-            },
-            $regex: function (v) {
-                v = v.$regex;
-                if (v.slice(0, 4) == '^(?!' && v.slice(-1) == ')') {
-                    return { 'val': v.slice(4, -1), 'op': 'not_begins_with' };
-                }
-                else if (v.slice(0, 5) == '^((?!' && v.slice(-5) == ').)*$') {
-                    return { 'val': v.slice(5, -5), 'op': 'not_contains' };
-                }
-                else if (v.slice(0, 4) == '(?<!' && v.slice(-2) == ')$') {
-                    return { 'val': v.slice(4, -2), 'op': 'not_ends_with' };
-                }
-                else if (v.slice(-1) == '$') {
-                    return { 'val': v.slice(0, -1), 'op': 'ends_with' };
-                }
-                else if (v.slice(0, 1) == '^') {
-                    return { 'val': v.slice(1), 'op': 'begins_with' };
-                }
-                else {
-                    return { 'val': v, 'op': 'contains' };
-                }
-            },
-            between: function (v) { return { 'val': [v.$gte, v.$lte], 'op': 'between' }; },
-            $in: function (v) { return { 'val': v.$in, 'op': 'in' }; },
-            $nin: function (v) { return { 'val': v.$nin, 'op': 'not_in' }; },
-            $lt: function (v) { return { 'val': v.$lt, 'op': 'less' }; },
-            $lte: function (v) { return { 'val': v.$lte, 'op': 'less_or_equal' }; },
-            $gt: function (v) { return { 'val': v.$gt, 'op': 'greater' }; },
-            $gte: function (v) { return { 'val': v.$gte, 'op': 'greater_or_equal' }; }
-        }
-    });
-
-
-    // PUBLIC METHODS
-    // ===============================
-    QueryBuilder.extend({
-        /**
-         * Get rules as MongoDB query
-         * @param data {object} (optional) rules
-         * @return {object}
-         */
-        getMongo: function (data) {
-            data = (data === undefined) ? this.getRules() : data;
-
-            var that = this;
-
-            return (function parse(data) {
-                if (!data.condition) {
-                    data.condition = that.settings.default_condition;
-                }
-                if (['AND', 'OR'].indexOf(data.condition.toUpperCase()) === -1) {
-                    error('Unable to build MongoDB query with condition "{0}"', data.condition);
-                }
-
-                if (!data.rules) {
-                    return {};
-                }
-
-                var parts = [];
-
-                data.rules.forEach(function (rule) {
-                    if (rule.rules && rule.rules.length > 0) {
-                        parts.push(parse(rule));
-                    }
-                    else {
-                        var mdb = that.settings.mongoOperators[rule.operator],
-                            ope = that.getOperatorByType(rule.operator),
-                            values = [];
-
-                        if (mdb === undefined) {
-                            error('Unknown MongoDB operation for operator "{0}"', rule.operator);
-                        }
-
-                        if (ope.nb_inputs !== 0) {
-                            if (!(rule.value instanceof Array)) {
-                                rule.value = [rule.value];
-                            }
-
-                            rule.value.forEach(function (v) {
-                                values.push(changeType(v, rule.type, false));
-                            });
-                        }
-
-                        var part = {};
-                        part[rule.field] = mdb.call(that, values);
-                        parts.push(part);
-                    }
-                });
-
-                var res = {};
-                if (parts.length > 0) {
-                    res['$' + data.condition.toLowerCase()] = parts;
-                }
-                return res;
-            }(data));
-        },
-
-        /**
-         * Convert MongoDB object to rules
-         * @param data {object} query object
-         * @return {object}
-         */
-        getRulesFromMongo: function (data) {
-            if (data === undefined || data === null) {
-                return null;
-            }
-
-            var that = this,
-                conditions = ['$and', '$or'];
-
-            return (function parse(data) {
-                var topKeys = Object.keys(data);
-
-                if (topKeys.length > 1) {
-                    error('Invalid MongoDB query format.');
-                }
-                if (conditions.indexOf(topKeys[0].toLowerCase()) === -1) {
-                    error('Unable to build Rule from MongoDB query with condition "{0}"', topKeys[0]);
-                }
-
-                var condition = topKeys[0].toLowerCase() === conditions[0] ? 'AND' : 'OR',
-                    rules = data[topKeys[0]],
-                    parts = [];
-
-                rules.forEach(function (rule) {
-                    var keys = Object.keys(rule);
-
-                    if (conditions.indexOf(keys[0].toLowerCase()) !== -1) {
-                        parts.push(parse(rule));
-                    }
-                    else {
-                        var field = keys[0],
-                            value = rule[field];
-
-                        var operator = that.determineMongoOperator(value, field);
-                        if (operator === undefined) {
-                            error('Invalid MongoDB query format.');
-                        }
-
-                        var mdbrl = that.settings.mongoRuleOperators[operator];
-                        if (mdbrl === undefined) {
-                            error('JSON Rule operation unknown for operator "{0}"', operator);
-                        }
-
-                        var opVal = mdbrl.call(that, value);
-                        parts.push({
-                            id: that.change('getMongoDBFieldID', field, value),
-                            field: field,
-                            operator: opVal.op,
-                            value: opVal.val
-                        });
-                    }
-                });
-
-                var res = {};
-                if (parts.length > 0) {
-                    res.condition = condition;
-                    res.rules = parts;
-                }
-                return res;
-            }(data));
-        },
-
-        /**
-         * Find which operator is used in a MongoDB sub-object
-         * @param {mixed} value
-         * @param {string} field
-         * @return {string|undefined}
-         */
-        determineMongoOperator: function (value, field) {
-            if (value !== null && typeof value === 'object') {
-                var subkeys = Object.keys(value);
-
-                if (subkeys.length === 1) {
-                    return subkeys[0];
-                }
-                else {
-                    if (value.$gte !== undefined && value.$lte !== undefined) {
-                        return 'between';
-                    }
-                    else if (value.$regex !== undefined) { // optional $options
-                        return '$regex';
-                    }
-                    else {
-                        return;
-                    }
-                }
-            }
-            else {
-                return 'eq';
-            }
-        },
-
-        /**
-         * Set rules from MongoDB object
-         * @param data {object}
-         */
-        setRulesFromMongo: function (data) {
-            this.setRules(this.getRulesFromMongo(data));
-        }
-    });
-
-    /*!
-     * jQuery QueryBuilder Sortable
-     * Enables drag & drop sort of rules.
-     * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
-     */
-
-    QueryBuilder.define('sortable', function (options) {
-        /**
-         * Init HTML5 drag and drop
-         */
-        this.on('afterInit', function (e) {
-            // configure jQuery to use dataTransfer
-            $.event.props.push('dataTransfer');
-
-            var placeholder, src,
-                self = e.builder;
-
-            // only add "draggable" attribute when hovering drag handle
-            // preventing text select bug in Firefox
-            self.$el.on('mouseover', '.drag-handle', function () {
-                self.$el.find('.rule-container, .rules-group-container').attr('draggable', true);
-            });
-            self.$el.on('mouseout', '.drag-handle', function () {
-                self.$el.find('.rule-container, .rules-group-container').removeAttr('draggable');
-            });
-
-            // dragstart: create placeholder and hide current element
-            self.$el.on('dragstart', '[draggable]', function (e) {
-                e.stopPropagation();
-
-                // notify drag and drop (only dummy text)
-                e.dataTransfer.setData('text', 'drag');
-
-                src = Model(e.target);
-
-                // Chrome glitchs
-                // - helper invisible if hidden immediately
-                // - "dragend" is called immediately if we modify the DOM directly
-                setTimeout(function () {
-                    var ph = $('<div class="rule-placeholder">&nbsp;</div>');
-                    ph.css('min-height', src.$el.height());
-
-                    placeholder = src.parent.addRule(ph, src.getPos());
-
-                    src.$el.hide();
-                }, 0);
-            });
-
-            // dragenter: move the placeholder
-            self.$el.on('dragenter', '[draggable]', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (placeholder) {
-                    moveSortableToTarget(placeholder, $(e.target));
-                }
-            });
-
-            // dragover: prevent glitches
-            self.$el.on('dragover', '[draggable]', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            });
-
-            // drop: move current element
-            self.$el.on('drop', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                moveSortableToTarget(src, $(e.target));
-            });
-
-            // dragend: show current element and delete placeholder
-            self.$el.on('dragend', '[draggable]', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                src.$el.show();
-                placeholder.drop();
-
-                src = placeholder = null;
-
-                self.$el.find('.rule-container, .rules-group-container').removeAttr('draggable');
-            });
-        });
-
-        /**
-         * Remove drag handle from non-sortable rules
-         */
-        this.on('parseRuleFlags.filter', function (flags) {
-            if (flags.value.no_sortable === undefined) {
-                flags.value.no_sortable = options.default_no_sortable;
-            }
-        });
-
-        this.on('afterApplyRuleFlags', function (e, rule) {
-            if (rule.flags.no_sortable) {
-                rule.$el.find('.drag-handle').remove();
-            }
-        });
-
-        /**
-         * Modify templates
-         */
-        this.on('getGroupTemplate.filter', function (h, level) {
-            if (level > 1) {
-                var $h = $(h.value);
-                $h.find('.group-conditions').after('<div class="drag-handle"><i class="' + options.icon + '"></i></div>');
-                h.value = $h.prop('outerHTML');
-            }
-        });
-
-        this.on('getRuleTemplate.filter', function (h) {
-            var $h = $(h.value);
-            $h.find('.rule-header').after('<div class="drag-handle"><i class="' + options.icon + '"></i></div>');
-            h.value = $h.prop('outerHTML');
-        });
-    }, {
-        default_no_sortable: false,
-        icon: 'glyphicon glyphicon-sort'
-    });
-
-    /**
-     * Move an element (placeholder or actual object) depending on active target
-     * @param {Node}
-     * @param {jQuery}
-     */
-    function moveSortableToTarget(element, target) {
-        var parent;
-
-        // on rule
-        parent = target.closest('.rule-container');
-        if (parent.length) {
-            element.moveAfter(Model(parent));
-            return;
-        }
-
-        // on group header
-        parent = target.closest('.rules-group-header');
-        if (parent.length) {
-            parent = target.closest('.rules-group-container');
-            element.moveAtBegin(Model(parent));
-            return;
-        }
-
-        // on group
-        parent = target.closest('.rules-group-container');
-        if (parent.length) {
-            element.moveAtEnd(Model(parent));
-            return;
-        }
-    }
-
-    /*!
-     * jQuery QueryBuilder SQL Support
-     * Allows to export rules as a SQL WHERE statement.
-     * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
-     */
-
-    // DEFAULT CONFIG
-    // ===============================
-    QueryBuilder.defaults({
-        sqlOperators: {
-            equal: '= ?',
-            not_equal: '!= ?',
-            in: { op: 'IN(?)', sep: ', ' },
-            not_in: { op: 'NOT IN(?)', sep: ', ' },
-            less: '< ?',
-            less_or_equal: '<= ?',
-            greater: '> ?',
-            greater_or_equal: '>= ?',
-            between: { op: 'BETWEEN ?', sep: ' AND ' },
-            begins_with: { op: 'LIKE(?)', fn: function (v) { return v + '%'; } },
-            not_begins_with: { op: 'NOT LIKE(?)', fn: function (v) { return v + '%'; } },
-            contains: { op: 'LIKE(?)', fn: function (v) { return '%' + v + '%'; } },
-            not_contains: { op: 'NOT LIKE(?)', fn: function (v) { return '%' + v + '%'; } },
-            ends_with: { op: 'LIKE(?)', fn: function (v) { return '%' + v; } },
-            not_ends_with: { op: 'NOT LIKE(?)', fn: function (v) { return '%' + v; } },
-            is_empty: '== ""',
-            is_not_empty: '!= ""',
-            is_null: 'IS NULL',
-            is_not_null: 'IS NOT NULL'
-        },
-
-        sqlStatements: {
-            'question_mark': function () {
-                var bind_params = [];
-                return {
-                    add: function (rule, value) {
-                        bind_params.push(value);
-                        return '?';
-                    },
-                    run: function () {
-                        return bind_params;
-                    }
-                };
-            },
-
-            'numbered': function () {
-                var bind_index = 0;
-                var bind_params = [];
-                return {
-                    add: function (rule, value) {
-                        bind_params.push(value);
-                        bind_index++;
-                        return '$' + bind_index;
-                    },
-                    run: function () {
-                        return bind_params;
-                    }
-                };
-            },
-
-            'named': function () {
-                var bind_index = {};
-                var bind_params = {};
-                return {
-                    add: function (rule, value) {
-                        if (!bind_index[rule.field]) bind_index[rule.field] = 0;
-                        bind_index[rule.field]++;
-                        var key = rule.field + '_' + bind_index[rule.field];
-                        bind_params[key] = value;
-                        return ':' + key;
-                    },
-                    run: function () {
-                        return bind_params;
-                    }
-                };
-            }
-        }
-    });
-
-
-    // PUBLIC METHODS
-    // ===============================
-    QueryBuilder.extend({
-        /**
-         * Get rules as SQL query
-         * @param stmt {false|string} use prepared statements - false, 'question_mark' or 'numbered'
-         * @param nl {bool} output with new lines
-         * @param data {object} (optional) rules
-         * @return {object}
-         */
-        getSQL: function (stmt, nl, data) {
-            data = (data === undefined) ? this.getRules() : data;
-            nl = (nl === true) ? '\n' : ' ';
-
-            if (stmt === true || stmt === undefined) stmt = 'question_mark';
-            if (typeof stmt == 'string') stmt = this.settings.sqlStatements[stmt]();
-
-            var that = this,
-                bind_index = 1,
-                bind_params = [];
-
-            var sql = (function parse(data) {
-                if (!data.condition) {
-                    data.condition = that.settings.default_condition;
-                }
-                if (['AND', 'OR'].indexOf(data.condition.toUpperCase()) === -1) {
-                    error('Unable to build SQL query with condition "{0}"', data.condition);
-                }
-
-                if (!data.rules) {
-                    return '';
-                }
-
-                var parts = [];
-
-                data.rules.forEach(function (rule) {
-                    if (rule.rules && rule.rules.length > 0) {
-                        parts.push('(' + nl + parse(rule) + nl + ')' + nl);
-                    }
-                    else {
-                        var sql = that.getSqlOperator(rule.operator),
-                            ope = that.getOperatorByType(rule.operator),
-                            value = '';
-
-                        if (sql === false) {
-                            error('Unknown SQL operation for operator "{0}"', rule.operator);
-                        }
-
-                        if (ope.nb_inputs !== 0) {
-                            if (!(rule.value instanceof Array)) {
-                                rule.value = [rule.value];
-                            }
-
-                            rule.value.forEach(function (v, i) {
-                                if (i > 0) {
-                                    value += sql.sep;
-                                }
-
-                                if (rule.type == 'integer' || rule.type == 'double' || rule.type == 'boolean') {
-                                    v = changeType(v, rule.type, true);
-                                }
-                                else if (!stmt) {
-                                    v = escapeString(v);
-                                }
-
-                                if (sql.fn) {
-                                    v = sql.fn(v);
-                                }
-
-                                if (stmt) {
-                                    value += stmt.add(rule, v);
-                                }
-                                else {
-                                    if (typeof v === 'string') {
-                                        v = '\'' + v + '\'';
-                                    }
-
-                                    value += v;
-                                }
-                            });
-                        }
-
-                        parts.push(rule.field + ' ' + sql.op.replace(/\?/, value));
-                    }
-                });
-
-                return parts.join(' ' + data.condition + nl);
-            }(data));
-
-            if (stmt) {
-                return {
-                    sql: sql,
-                    params: stmt.run()
-                };
-            }
-            else {
-                return {
-                    sql: sql
-                };
-            }
-        },
-
-        /**
-         * Sanitize the "sql" field of an operator
-         * @param sql {string|object}
-         * @return {object}
-         */
-        getSqlOperator: function (type) {
-            var sql = this.settings.sqlOperators[type];
-
-            if (sql === undefined) {
-                return false;
-            }
-
-            if (typeof sql == 'string') {
-                sql = { op: sql };
-            }
-            if (sql.list && !sql.sep) {
-                sql.sep = ', ';
-            }
-
-            return sql;
-        }
-    });
-
-    /*!
-     * jQuery QueryBuilder Unique Filter
-     * Allows to define some filters as "unique": ie which can be used for only one rule, globally or in the same group.
-     * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
-     */
-
-    QueryBuilder.define('unique-filter', function () {
-        this.status.used_filters = {};
-
-        this.on('afterUpdateRuleFilter', this.updateDisabledFilters);
-        this.on('afterDeleteRule', this.updateDisabledFilters);
-        this.on('afterCreateRuleFilters', this.applyDisabledFilters);
-    });
-
-    QueryBuilder.extend({
-        updateDisabledFilters: function (e) {
-            var self = e.builder;
-            self.status.used_filters = {};
-
-            if (!self.model) {
-                return;
-            }
-
-            // get used filters
-            (function walk(group) {
-                group.each(function (rule) {
-                    if (rule.filter && rule.filter.unique) {
-                        if (!self.status.used_filters[rule.filter.id]) {
-                            self.status.used_filters[rule.filter.id] = [];
-                        }
-                        if (rule.filter.unique == 'group') {
-                            self.status.used_filters[rule.filter.id].push(rule.parent);
-                        }
-                    }
-                }, function (group) {
-                    walk(group);
-                });
-            }(self.model.root));
-
-            self.applyDisabledFilters(e);
-        },
-
-        applyDisabledFilters: function (e) {
-            var self = e.builder;
-
-            // re-enable everything
-            self.$el.find('.rule-filter-container option').prop('disabled', false);
-
-            // disable some
-            $.each(self.status.used_filters, function (filterId, groups) {
-                if (groups.length === 0) {
-                    self.$el.find('.rule-filter-container option[value="' + filterId + '"]:not(:selected)').prop('disabled', true);
-                }
-                else {
-                    groups.forEach(function (group) {
-                        group.each(function (rule) {
-                            rule.$el.find('.rule-filter-container option[value="' + filterId + '"]:not(:selected)').prop('disabled', true);
-                        });
                     });
                 }
             });
+        }, {
+            font: 'glyphicons',
+            color: 'default'
+        });
 
-            // update Selectpicker
-            if (self.settings.plugins && self.settings.plugins['bt-selectpicker']) {
-                self.$el.find('.rule-filter-container select').selectpicker('render');
+        /*!
+         * jQuery QueryBuilder Bootstrap Selectpicker
+         * Applies Bootstrap Select on filters and operators combo-boxes.
+         * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+         */
+
+        QueryBuilder.define('bt-selectpicker', function (options) {
+            if (!$.fn.selectpicker || !$.fn.selectpicker.Constructor) {
+                error('Bootstrap Select is required to use "bt-selectpicker" plugin. Get it here: http://silviomoreto.github.io/bootstrap-select');
+            }
+
+            // init selectpicker
+            this.on('afterCreateRuleFilters', function (e, rule) {
+                rule.$el.find('.rule-filter-container select').removeClass('form-control').selectpicker(options);
+            });
+
+            this.on('afterCreateRuleOperators', function (e, rule) {
+                rule.$el.find('.rule-operator-container select').removeClass('form-control').selectpicker(options);
+            });
+
+            // update selectpicker on change
+            this.on('afterUpdateRuleFilter', function (e, rule) {
+                rule.$el.find('.rule-filter-container select').selectpicker('render');
+            });
+
+            this.on('afterUpdateRuleOperator', function (e, rule) {
+                rule.$el.find('.rule-operator-container select').selectpicker('render');
+            });
+        }, {
+            container: 'body',
+            style: 'btn-inverse btn-xs',
+            width: 'auto',
+            showIcon: false
+        });
+
+        /*!
+         * jQuery QueryBuilder Bootstrap Tooltip errors
+         * Applies Bootstrap Tooltips on validation error messages.
+         * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+         */
+
+        QueryBuilder.define('bt-tooltip-errors', function (options) {
+            if (!$.fn.tooltip || !$.fn.tooltip.Constructor || !$.fn.tooltip.Constructor.prototype.fixTitle) {
+                error('Bootstrap Tooltip is required to use "bt-tooltip-errors" plugin. Get it here: http://getbootstrap.com');
+            }
+
+            var self = this;
+
+            // add BT Tooltip data
+            this.on('getRuleTemplate.filter', function (h) {
+                h.value = h.value.replace('class="error-container"', 'class="error-container" data-toggle="tooltip"');
+            });
+
+            this.on('getGroupTemplate.filter', function (h) {
+                h.value = h.value.replace('class="error-container"', 'class="error-container" data-toggle="tooltip"');
+            });
+
+            // init/refresh tooltip when title changes
+            this.model.on('update', function (e, node, field) {
+                if (field == 'error' && self.settings.display_errors) {
+                    node.$el.find('.error-container').eq(0)
+                      .tooltip(options)
+                      .tooltip('hide')
+                      .tooltip('fixTitle');
+                }
+            });
+        }, {
+            placement: 'right'
+        });
+
+        /*!
+         * jQuery QueryBuilder Filter Description
+         * Provides three ways to display a description about a filter: inline, Bootsrap Popover or Bootbox.
+         * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+         */
+
+        QueryBuilder.define('filter-description', function (options) {
+            /**
+             * INLINE
+             */
+            if (options.mode === 'inline') {
+                this.on('afterUpdateRuleFilter', function (e, rule) {
+                    var $p = rule.$el.find('p.filter-description');
+
+                    if (!rule.filter || !rule.filter.description) {
+                        $p.hide();
+                    }
+                    else {
+                        if ($p.length === 0) {
+                            $p = $('<p class="filter-description"></p>');
+                            $p.appendTo(rule.$el);
+                        }
+                        else {
+                            $p.show();
+                        }
+
+                        $p.html('<i class="' + options.icon + '"></i> ' + rule.filter.description);
+                    }
+                });
+            }
+                /**
+                 * POPOVER
+                 */
+            else if (options.mode === 'popover') {
+                if (!$.fn.popover || !$.fn.popover.Constructor || !$.fn.popover.Constructor.prototype.fixTitle) {
+                    error('Bootstrap Popover is required to use "filter-description" plugin. Get it here: http://getbootstrap.com');
+                }
+
+                this.on('afterUpdateRuleFilter', function (e, rule) {
+                    var $b = rule.$el.find('button.filter-description');
+
+                    if (!rule.filter || !rule.filter.description) {
+                        $b.hide();
+
+                        if ($b.data('bs.popover')) {
+                            $b.popover('hide');
+                        }
+                    }
+                    else {
+                        if ($b.length === 0) {
+                            $b = $('<button type="button" class="btn btn-xs btn-info filter-description" data-toggle="popover"><i class="' + options.icon + '"></i></button>');
+                            $b.prependTo(rule.$el.find('.rule-actions'));
+
+                            $b.popover({
+                                placement: 'left',
+                                container: 'body',
+                                html: true
+                            });
+
+                            $b.on('mouseout', function () {
+                                $b.popover('hide');
+                            });
+                        }
+                        else {
+                            $b.show();
+                        }
+
+                        $b.data('bs.popover').options.content = rule.filter.description;
+
+                        if ($b.attr('aria-describedby')) {
+                            $b.popover('show');
+                        }
+                    }
+                });
+            }
+                /**
+                 * BOOTBOX
+                 */
+            else if (options.mode === 'bootbox') {
+                if (!('bootbox' in window)) {
+                    error('Bootbox is required to use "filter-description" plugin. Get it here: http://bootboxjs.com');
+                }
+
+                this.on('afterUpdateRuleFilter', function (e, rule) {
+                    var $b = rule.$el.find('button.filter-description');
+
+                    if (!rule.filter || !rule.filter.description) {
+                        $b.hide();
+                    }
+                    else {
+                        if ($b.length === 0) {
+                            $b = $('<button type="button" class="btn btn-xs btn-info filter-description" data-toggle="bootbox"><i class="' + options.icon + '"></i></button>');
+                            $b.prependTo(rule.$el.find('.rule-actions'));
+
+                            $b.on('click', function () {
+                                bootbox.alert($b.data('description'));
+                            });
+                        }
+
+                        $b.data('description', rule.filter.description);
+                    }
+                });
+            }
+        }, {
+            icon: 'glyphicon glyphicon-info-sign',
+            mode: 'popover'
+        });
+
+        QueryBuilder.define('location', function (options) {
+             //init country typeahead.
+            this.on('afterCreateRuleInput', function (e, rule) {
+
+                var locationCountry = rule.$el.find('.rule-value-container input[data-location-type="country"]');
+                var locationCity = rule.$el.find('.rule-value-container input[data-location-type="city"]');
+                var locationState = rule.$el.find('.rule-value-container input[data-location-type="state"]');
+
+                var countryEngine = new Bloodhound({
+                    datumTokenizer : Bloodhound.tokenizers.whitespace,
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    local: ["Afghanistan", "Aland Islands", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "CA", "Cambodia", "Cameroon", "Canada", "Cayman Islands", "CH", "Chad", "Chile", "China", "CN", "Colombia", "Congo", "Congo, The Democratic Republic of the", "Cook Islands", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Eritrea", "ES", "Estonia", "Ethiopia", "Faroe Islands", "Fiji", "Finland", "FR", "France", "French Guiana", "French Polynesia", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guyana", "Haiti", "Honduras", "Hong Kong", "HU", "Hungary", "Iceland", "IL", "India", "Indonesia", "Iran, Islamic Republic of", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "JP", "Kazakhstan", "Kenya", "Korea, Democratic People's Republic of", "Korea, Republic of", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic", "Latvia", "Lebanon", "Liberia", "Libyan Arab Jamahiriya", "Liechtenstein", "Lithuania", "Luxembourg", "Macao", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritius", "Mayotte", "Mexico", "Moldova, Republic of", "Monaco", "Mongolia", "Montenegro", "Morocco", "Myanmar", "Namibia", "Nepal", "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Northern Mariana Islands", "Norway", "Oman", "Pakistan", "Palau", "Palestinian Territory", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russian Federation", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Singapore", "Sint Maarten", "SK", "Slovakia", "Slovenia", "Solomon Islands", "South Africa", "Spain", "Sri Lanka", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syrian Arab Republic", "Taiwan", "Tajikistan", "Tanzania, United Republic of", "Thailand", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Virgin Islands, British", "Virgin Islands, U.S.", "Yemen", "Zambia", "Zimbabwe"],
+                    remote: {
+                        url: "/querytool/query/location.php",
+                        replace: function(url, query) {
+                            return url + "?cc=" +query;
+                    }
+                    },
+                    initialize: true
+                });
+
+                var cityEngine = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.whitespace,
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    remote: {
+                        url: "/querytool/query/location.php",
+                                replace: function (url, query) {
+                                    return url + "?cc=" +locationCountry.typeahead('val') + "&r=c" + "&c=" + query;
+                                }
+                            },
+                    initialize: true
+                });
+
+                var stateEngine = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.whitespace,
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    local: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming' ],
+                    remote: {
+                        url: "/querytool/query/location.php",
+                                replace: function (url, query) {
+                                    return url + "?cc=" +locationCountry.typeahead('val') + "&r=s" + "&s=" +query;
+                                }
+                            },
+                    initialize: true
+                });
+
+                locationCountry.typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                    },
+                    {
+                    name : 'countries',
+                    source: countryEngine
+                });
+
+                locationCity.typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 2
+                },
+                {
+                    name: 'cities',
+                    source: cityEngine
+                });
+
+                locationState.typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                    },
+                    {
+                    name: 'states',
+                    source: stateEngine
+                });
+            });
+
+            //this.on('afterCreateRuleOperators', function (e, rule) {
+            //    rule.$el.find('.rule-operator-container select').removeClass('form-control').selectpicker(options);
+            //});
+
+            //// update selectpicker on change
+            //this.on('afterUpdateRuleFilter', function (e, rule) {
+            //    rule.$el.find('.rule-filter-container select').selectpicker('render');
+            //});
+
+            //this.on('afterUpdateRuleOperator', function (e, rule) {
+            //    rule.$el.find('.rule-operator-container select').selectpicker('render');
+            //});
+        }, {});
+
+
+        /*!
+         * jQuery QueryBuilder API support
+         * Allows to export rules as a API statement.
+         */
+
+        // DEFAULT CONFIG
+        // ===============================
+        QueryBuilder.defaults({
+            apiOperators: {
+                equal: function (r, v) {
+                    var part = {};
+
+                    if (r.input === 'location') {
+                        for (var i = 0; i < v.length; i++) {
+                            var field = r.field;
+                            if (i == 0) {
+                                part[field.replace(/location/g, 'country')] = v[i];
+                            } else if (i == 1) {
+                                part[field.replace(/location/g, 'city')] = v[i];
+                            } else {
+                                part[field.replace(/location/g, 'state')] = v[i];
+                            }
+                        }
+                    } else {
+                        part[r.field] = v[0];
+                    }
+
+                    return part;
+                },
+                not_equal: function (r, v) {
+                    var part = {};
+                    part[r.field] = v[0];
+
+                    return { '_neq': part };
+                },
+                in: function (r, v) {
+                    var part = {};
+                    part[r.field] = v[0];
+
+                    return { '_in': part };
+                },
+                not_in: function (r, v) {
+                    var part = {};
+                    part[r.field] = v[0];
+
+                    return { '_nin': part };
+                },
+                less: function (r, v) {
+                    var part = {};
+                    part[r.field] = v[0];
+
+                    return { '_lt': part };
+                },
+                less_or_equal: function (r, v) {
+                    var part = {};
+                    part[r.field] = v[0];
+
+                    return { '_lte': part };
+                },
+                greater: function (r, v) {
+                    var part = {};
+                    part[r.field] = v[0];
+
+                    return { '_gt': part };
+                },
+                greater_or_equal: function (r, v) {
+                    var part = {};
+                    part[r.field] = v[0];
+
+                    return { '_gte': part };
+                },
+                between: function (r, v) {
+                    var part = {};
+                    part[r.field] = v[0];
+
+                    return { '_between': part };
+                },//Not Supported.
+                begins_with: function (r, v) {
+                    var part = {};
+                    part[r.field] = '^' + escapeRegExp(v[0]);
+
+                    return { '_begins': part };
+                },
+                not_begins_with: function (r, v) {
+                    var part = {};
+                    part[r.field] = '^' + escapeRegExp(v[0]);
+
+                    return { '_nbegins': part };
+                },//Not Supported.
+                contains: function (r, v) {
+                    var part = {};
+                    part[r.field] = escapeRegExp(v[0]);
+
+                    return { '_contains': part };
+                },
+                not_contains: function (r, v) {
+                    var part = {};
+                    part[r.field] = escapeRegExp(v[0]);
+
+                    return { '_ncontains': part };
+                }, //Not Supported.
+                ends_with: function (r, v) {
+                    var part = {};
+                    part[r.field] = escapeRegExp(v[0]) + '$';
+
+                    return { '_ew': part };
+                }, //Not Supported.
+                not_ends_with: function (r, v) {
+                    var part = {};
+                    part[r.field] = escapeRegExp(v[0]) + '$';
+
+                    return { '_new': part};
+                },//Not Supported.
+                is_empty: function (r, v) {
+                    var part = {};
+                    part[r.field] = '';
+
+                    return part;
+                },//Not Supported.
+                is_not_empty: function (r, v) {
+                    var part = {};
+                    part[r.field] = '';
+
+                    return { 'neq': part };
+                },//Not Supported.
+                is_null: function (r, v) {
+                    var part = {};
+                    part[r.field] = null;
+
+                    return part;
+                },//Not Supported.
+                is_not_null: function (r, v) {
+                    var part = {};
+                    part[r.field] = null;
+
+                    return { 'neq': part };
+                },
+                all: function (r, v) {
+                    var part = {};
+                    part[r.field] = escapeRegExp(v[0]);
+
+                    return { '_text_all': part };
+                },
+                any: function (r, v) {
+                    var part = {};
+                    part[r.field] = escapeRegExp(v[0]);
+
+                    return { '_text_any': part };
+                },
+                phrase: function (r, v) {
+                    var part = {};
+                    part[r.field] = escapeRegExp(v[0]);
+
+                    return { '_text_phrase': part };
+                }
+            }
+        });
+
+
+        QueryBuilder.extend({
+            /**
+             * Get rules as API query
+             * @param data {object} (optional) rules
+             * @return {object}
+             */
+            getQuery: function(data) {
+                data = (data === undefined) ? this.getRules() : data;
+
+                var that = this;
+                var isSimplePair = true;
+
+                var query = (function parse(data) {
+                    if (!data.condition) {
+                        data.condition = that.settings.default_condition;
+                    }
+                    if (['AND', 'OR'].indexOf(data.condition.toUpperCase()) === -1) {
+                        error('Unable to build API query with condition "{0}"', data.condition);
+                    }
+
+                    if (!data.rules) {
+                        return {};
+                    }
+
+                    var parts = [];
+
+                    data.rules.forEach(function(rule) {
+
+                        if (rule.rules && rule.rules.length > 0) {
+                            isSimplePair = false;
+                            parts.push(parse(rule));
+                        } else {
+
+                            //If we find anything other than a simple equal then this is not a simple pair.
+                            if (isSimplePair && rule.operator !== "equal") {
+                                isSimplePair = false;
+                            }
+
+                            var mdb = that.settings.apiOperators[rule.operator],
+                                ope = that.getOperatorByType(rule.operator),
+                                values = [];
+
+                            if (mdb === undefined) {
+                                error('Unknown API operation for operator "{0}"', rule.operator);
+                            }
+
+                            if (ope.nb_inputs !== 0) {
+                                if (!(rule.value instanceof Array)) {
+                                    rule.value = [rule.value];
+                                }
+
+                                rule.value.forEach(function(v) {
+                                    values.push(changeType(v, rule.type));
+                                });
+                            }
+
+                            // part[rule.field] = mdb.call(that, rule.field, values);
+                            parts.push(mdb.call(that, rule, values));
+                        }
+                    });
+
+                    var res = {};
+                    if (parts.length > 0) {
+                        if (parts.length > 1) {
+                            isSimplePair = false;
+                        }
+
+                        res['_' + data.condition.toLowerCase()] = parts;
+                    }
+                    return res;
+                }(data));
+
+                if (isSimplePair) {
+                    var pairs = query[Object.keys(query)[0]];
+                    var pairsObject = {};
+
+                    if (pairs !== undefined) {
+                        for (var i = 0; i < pairs.length; i++) {
+                            var name = Object.keys(pairs[i])[0];
+                            pairsObject[name] = pairs[i][name];
+                        }
+                    }
+
+                    return pairsObject;
+                }
+
+                return query;
+            }
+        });
+
+
+        /*!
+         * jQuery QueryBuilder Loopback Support
+         * Allows to export rules as a Loopback statement.
+         * Copyright 2015 Fabien Franzen (http://www.atelierfabien.be)
+         */
+
+        // DEFAULT CONFIG
+        // ===============================
+        QueryBuilder.defaults({
+            loopbackOperators: {
+                equal: function (v) { return v[0]; },
+                not_equal: function (v) { return { 'neq': v[0] }; },
+                in: function (v) { return { 'inq': v }; },
+                not_in: function (v) { return { 'nin': v }; },
+                less: function (v) { return { 'lt': v[0] }; },
+                less_or_equal: function (v) { return { 'lte': v[0] }; },
+                greater: function (v) { return { 'gt': v[0] }; },
+                greater_or_equal: function (v) { return { 'gte': v[0] }; },
+                between: function (v) { return { 'between': v }; },
+                begins_with: function (v) { return { 'like': '^' + escapeRegExp(v[0]) }; },
+                not_begins_with: function (v) { return { 'nlike': '^' + escapeRegExp(v[0]) }; },
+                contains: function (v) { return { 'like': escapeRegExp(v[0]) }; },
+                not_contains: function (v) { return { 'nlike': escapeRegExp(v[0]) }; },
+                ends_with: function (v) { return { 'like': escapeRegExp(v[0]) + '$' }; },
+                not_ends_with: function (v) { return { 'nlike': escapeRegExp(v[0]) + '$' }; },
+                is_empty: function (v) { return ''; },
+                is_not_empty: function (v) { return { 'neq': '' }; },
+                is_null: function (v) { return null; },
+                is_not_null: function (v) { return { 'neq': null }; }
+            }
+        });
+
+
+        // PUBLIC METHODS
+        // ===============================
+        QueryBuilder.extend({
+            /**
+             * Get rules as Loopback query
+             * @param data {object} (optional) rules
+             * @return {object}
+             */
+            getLoopback: function (data) {
+                data = (data === undefined) ? this.getRules() : data;
+
+                var that = this;
+
+                return (function parse(data) {
+                    if (!data.condition) {
+                        data.condition = that.settings.default_condition;
+                    }
+                    if (['AND', 'OR'].indexOf(data.condition.toUpperCase()) === -1) {
+                        error('Unable to build Loopback query with condition "{0}"', data.condition);
+                    }
+
+                    if (!data.rules) {
+                        return {};
+                    }
+
+                    var parts = [];
+
+                    data.rules.forEach(function (rule) {
+                        if (rule.rules && rule.rules.length > 0) {
+                            parts.push(parse(rule));
+                        }
+                        else {
+                            var mdb = that.settings.loopbackOperators[rule.operator],
+                                ope = that.getOperatorByType(rule.operator),
+                                values = [];
+
+                            if (mdb === undefined) {
+                                error('Unknown Loopback operation for operator "{0}"', rule.operator);
+                            }
+
+                            if (ope.nb_inputs !== 0) {
+                                if (!(rule.value instanceof Array)) {
+                                    rule.value = [rule.value];
+                                }
+
+                                rule.value.forEach(function (v) {
+                                    values.push(changeType(v, rule.type));
+                                });
+                            }
+
+                            var part = {};
+                            part[rule.field] = mdb.call(that, values);
+                            parts.push(part);
+                        }
+                    });
+
+                    var res = {};
+                    if (parts.length > 0) {
+                        res[data.condition.toLowerCase()] = parts;
+                    }
+                    return res;
+                }(data));
+            }
+        });
+
+        /*!
+         * jQuery QueryBuilder MongoDB Support
+         * Allows to export rules as a MongoDB find object as well as populating the builder from a MongoDB object.
+         * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+         */
+
+        // DEFAULT CONFIG
+        // ===============================
+        QueryBuilder.defaults({
+            mongoOperators: {
+                equal: function (v) { return v[0]; },
+                not_equal: function (v) { return { '$ne': v[0] }; },
+                in: function (v) { return { '$in': v }; },
+                not_in: function (v) { return { '$nin': v }; },
+                less: function (v) { return { '$lt': v[0] }; },
+                less_or_equal: function (v) { return { '$lte': v[0] }; },
+                greater: function (v) { return { '$gt': v[0] }; },
+                greater_or_equal: function (v) { return { '$gte': v[0] }; },
+                between: function (v) { return { '$gte': v[0], '$lte': v[1] }; },
+                begins_with: function (v) { return { '$regex': '^' + escapeRegExp(v[0]) }; },
+                not_begins_with: function (v) { return { '$regex': '^(?!' + escapeRegExp(v[0]) + ')' }; },
+                contains: function (v) { return { '$regex': escapeRegExp(v[0]) }; },
+                not_contains: function (v) { return { '$regex': '^((?!' + escapeRegExp(v[0]) + ').)*$', '$options': 's' }; },
+                ends_with: function (v) { return { '$regex': escapeRegExp(v[0]) + '$' }; },
+                not_ends_with: function (v) { return { '$regex': '(?<!' + escapeRegExp(v[0]) + ')$' }; },
+                is_empty: function (v) { return ''; },
+                is_not_empty: function (v) { return { '$ne': '' }; },
+                is_null: function (v) { return null; },
+                is_not_null: function (v) { return { '$ne': null }; }
+            },
+
+            mongoRuleOperators: {
+                $ne: function (v) {
+                    v = v.$ne;
+                    return {
+                        'val': v,
+                        'op': v === null ? 'is_not_null' : (v === '' ? 'is_not_empty' : 'not_equal')
+                    };
+                },
+                eq: function (v) {
+                    return {
+                        'val': v,
+                        'op': v === null ? 'is_null' : (v === '' ? 'is_empty' : 'equal')
+                    };
+                },
+                $regex: function (v) {
+                    v = v.$regex;
+                    if (v.slice(0, 4) == '^(?!' && v.slice(-1) == ')') {
+                        return { 'val': v.slice(4, -1), 'op': 'not_begins_with' };
+                    }
+                    else if (v.slice(0, 5) == '^((?!' && v.slice(-5) == ').)*$') {
+                        return { 'val': v.slice(5, -5), 'op': 'not_contains' };
+                    }
+                    else if (v.slice(0, 4) == '(?<!' && v.slice(-2) == ')$') {
+                        return { 'val': v.slice(4, -2), 'op': 'not_ends_with' };
+                    }
+                    else if (v.slice(-1) == '$') {
+                        return { 'val': v.slice(0, -1), 'op': 'ends_with' };
+                    }
+                    else if (v.slice(0, 1) == '^') {
+                        return { 'val': v.slice(1), 'op': 'begins_with' };
+                    }
+                    else {
+                        return { 'val': v, 'op': 'contains' };
+                    }
+                },
+                between: function (v) { return { 'val': [v.$gte, v.$lte], 'op': 'between' }; },
+                $in: function (v) { return { 'val': v.$in, 'op': 'in' }; },
+                $nin: function (v) { return { 'val': v.$nin, 'op': 'not_in' }; },
+                $lt: function (v) { return { 'val': v.$lt, 'op': 'less' }; },
+                $lte: function (v) { return { 'val': v.$lte, 'op': 'less_or_equal' }; },
+                $gt: function (v) { return { 'val': v.$gt, 'op': 'greater' }; },
+                $gte: function (v) { return { 'val': v.$gte, 'op': 'greater_or_equal' }; }
+            }
+        });
+
+
+        // PUBLIC METHODS
+        // ===============================
+        QueryBuilder.extend({
+            /**
+             * Get rules as MongoDB query
+             * @param data {object} (optional) rules
+             * @return {object}
+             */
+            getMongo: function (data) {
+                data = (data === undefined) ? this.getRules() : data;
+
+                var that = this;
+
+                return (function parse(data) {
+                    if (!data.condition) {
+                        data.condition = that.settings.default_condition;
+                    }
+                    if (['AND', 'OR'].indexOf(data.condition.toUpperCase()) === -1) {
+                        error('Unable to build MongoDB query with condition "{0}"', data.condition);
+                    }
+
+                    if (!data.rules) {
+                        return {};
+                    }
+
+                    var parts = [];
+
+                    data.rules.forEach(function (rule) {
+                        if (rule.rules && rule.rules.length > 0) {
+                            parts.push(parse(rule));
+                        }
+                        else {
+                            var mdb = that.settings.mongoOperators[rule.operator],
+                                ope = that.getOperatorByType(rule.operator),
+                                values = [];
+
+                            if (mdb === undefined) {
+                                error('Unknown MongoDB operation for operator "{0}"', rule.operator);
+                            }
+
+                            if (ope.nb_inputs !== 0) {
+                                if (!(rule.value instanceof Array)) {
+                                    rule.value = [rule.value];
+                                }
+
+                                rule.value.forEach(function (v) {
+                                    values.push(changeType(v, rule.type, false));
+                                });
+                            }
+
+                            var part = {};
+                            part[rule.field] = mdb.call(that, values);
+                            parts.push(part);
+                        }
+                    });
+
+                    var res = {};
+                    if (parts.length > 0) {
+                        res['$' + data.condition.toLowerCase()] = parts;
+                    }
+                    return res;
+                }(data));
+            },
+
+            /**
+             * Convert MongoDB object to rules
+             * @param data {object} query object
+             * @return {object}
+             */
+            getRulesFromMongo: function (data) {
+                if (data === undefined || data === null) {
+                    return null;
+                }
+
+                var that = this,
+                    conditions = ['$and', '$or'];
+
+                return (function parse(data) {
+                    var topKeys = Object.keys(data);
+
+                    if (topKeys.length > 1) {
+                        error('Invalid MongoDB query format.');
+                    }
+                    if (conditions.indexOf(topKeys[0].toLowerCase()) === -1) {
+                        error('Unable to build Rule from MongoDB query with condition "{0}"', topKeys[0]);
+                    }
+
+                    var condition = topKeys[0].toLowerCase() === conditions[0] ? 'AND' : 'OR',
+                        rules = data[topKeys[0]],
+                        parts = [];
+
+                    rules.forEach(function (rule) {
+                        var keys = Object.keys(rule);
+
+                        if (conditions.indexOf(keys[0].toLowerCase()) !== -1) {
+                            parts.push(parse(rule));
+                        }
+                        else {
+                            var field = keys[0],
+                                value = rule[field];
+
+                            var operator = that.determineMongoOperator(value, field);
+                            if (operator === undefined) {
+                                error('Invalid MongoDB query format.');
+                            }
+
+                            var mdbrl = that.settings.mongoRuleOperators[operator];
+                            if (mdbrl === undefined) {
+                                error('JSON Rule operation unknown for operator "{0}"', operator);
+                            }
+
+                            var opVal = mdbrl.call(that, value);
+                            parts.push({
+                                id: that.change('getMongoDBFieldID', field, value),
+                                field: field,
+                                operator: opVal.op,
+                                value: opVal.val
+                            });
+                        }
+                    });
+
+                    var res = {};
+                    if (parts.length > 0) {
+                        res.condition = condition;
+                        res.rules = parts;
+                    }
+                    return res;
+                }(data));
+            },
+
+            /**
+             * Find which operator is used in a MongoDB sub-object
+             * @param {mixed} value
+             * @param {string} field
+             * @return {string|undefined}
+             */
+            determineMongoOperator: function (value, field) {
+                if (value !== null && typeof value === 'object') {
+                    var subkeys = Object.keys(value);
+
+                    if (subkeys.length === 1) {
+                        return subkeys[0];
+                    }
+                    else {
+                        if (value.$gte !== undefined && value.$lte !== undefined) {
+                            return 'between';
+                        }
+                        else if (value.$regex !== undefined) { // optional $options
+                            return '$regex';
+                        }
+                        else {
+                            return;
+                        }
+                    }
+                }
+                else {
+                    return 'eq';
+                }
+            },
+
+            /**
+             * Set rules from MongoDB object
+             * @param data {object}
+             */
+            setRulesFromMongo: function (data) {
+                this.setRules(this.getRulesFromMongo(data));
+            }
+        });
+
+        /*!
+         * jQuery QueryBuilder Sortable
+         * Enables drag & drop sort of rules.
+         * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+         */
+
+        QueryBuilder.define('sortable', function (options) {
+            /**
+             * Init HTML5 drag and drop
+             */
+            this.on('afterInit', function (e) {
+                // configure jQuery to use dataTransfer
+                $.event.props.push('dataTransfer');
+
+                var placeholder, src,
+                    self = e.builder;
+
+                // only add "draggable" attribute when hovering drag handle
+                // preventing text select bug in Firefox
+                self.$el.on('mouseover', '.drag-handle', function () {
+                    self.$el.find('.rule-container, .rules-group-container').attr('draggable', true);
+                });
+                self.$el.on('mouseout', '.drag-handle', function () {
+                    self.$el.find('.rule-container, .rules-group-container').removeAttr('draggable');
+                });
+
+                // dragstart: create placeholder and hide current element
+                self.$el.on('dragstart', '[draggable]', function (e) {
+                    e.stopPropagation();
+
+                    // notify drag and drop (only dummy text)
+                    e.dataTransfer.setData('text', 'drag');
+
+                    src = Model(e.target);
+
+                    // Chrome glitchs
+                    // - helper invisible if hidden immediately
+                    // - "dragend" is called immediately if we modify the DOM directly
+                    setTimeout(function () {
+                        var ph = $('<div class="rule-placeholder">&nbsp;</div>');
+                        ph.css('min-height', src.$el.height());
+
+                        placeholder = src.parent.addRule(ph, src.getPos());
+
+                        src.$el.hide();
+                    }, 0);
+                });
+
+                // dragenter: move the placeholder
+                self.$el.on('dragenter', '[draggable]', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (placeholder) {
+                        moveSortableToTarget(placeholder, $(e.target));
+                    }
+                });
+
+                // dragover: prevent glitches
+                self.$el.on('dragover', '[draggable]', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+
+                // drop: move current element
+                self.$el.on('drop', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    moveSortableToTarget(src, $(e.target));
+                });
+
+                // dragend: show current element and delete placeholder
+                self.$el.on('dragend', '[draggable]', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    src.$el.show();
+                    placeholder.drop();
+
+                    src = placeholder = null;
+
+                    self.$el.find('.rule-container, .rules-group-container').removeAttr('draggable');
+                });
+            });
+
+            /**
+             * Remove drag handle from non-sortable rules
+             */
+            this.on('parseRuleFlags.filter', function (flags) {
+                if (flags.value.no_sortable === undefined) {
+                    flags.value.no_sortable = options.default_no_sortable;
+                }
+            });
+
+            this.on('afterApplyRuleFlags', function (e, rule) {
+                if (rule.flags.no_sortable) {
+                    rule.$el.find('.drag-handle').remove();
+                }
+            });
+
+            /**
+             * Modify templates
+             */
+            this.on('getGroupTemplate.filter', function (h, level) {
+                if (level > 1) {
+                    var $h = $(h.value);
+                    $h.find('.group-conditions').after('<div class="drag-handle"><i class="' + options.icon + '"></i></div>');
+                    h.value = $h.prop('outerHTML');
+                }
+            });
+
+            this.on('getRuleTemplate.filter', function (h) {
+                var $h = $(h.value);
+                $h.find('.rule-header').after('<div class="drag-handle"><i class="' + options.icon + '"></i></div>');
+                h.value = $h.prop('outerHTML');
+            });
+        }, {
+            default_no_sortable: false,
+            icon: 'glyphicon glyphicon-sort'
+        });
+
+        /**
+         * Move an element (placeholder or actual object) depending on active target
+         * @param {Node}
+         * @param {jQuery}
+         */
+        function moveSortableToTarget(element, target) {
+            var parent;
+
+            // on rule
+            parent = target.closest('.rule-container');
+            if (parent.length) {
+                element.moveAfter(Model(parent));
+                return;
+            }
+
+            // on group header
+            parent = target.closest('.rules-group-header');
+            if (parent.length) {
+                parent = target.closest('.rules-group-container');
+                element.moveAtBegin(Model(parent));
+                return;
+            }
+
+            // on group
+            parent = target.closest('.rules-group-container');
+            if (parent.length) {
+                element.moveAtEnd(Model(parent));
+                return;
             }
         }
-    });
 
-    /*!
-     * jQuery QueryBuilder 2.1.0
-     * Locale: English (en)
-     * Author: Damien "Mistic" Sorel, http://www.strangeplanet.fr
-     * Licensed under MIT (http://opensource.org/licenses/MIT)
-     */
+        /*!
+         * jQuery QueryBuilder SQL Support
+         * Allows to export rules as a SQL WHERE statement.
+         * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+         */
 
-    QueryBuilder.regional['en'] = {
-        "__locale": "English (en)",
-        "__author": "Damien \"Mistic\" Sorel, http://www.strangeplanet.fr",
-        "add_rule": "Add Criterion",
-        "add_group": "Add Set",
-        "delete_rule": "Delete",
-        "delete_group": "Delete",
-        "conditions": {
-            "AND": "AND",
-            "OR": "OR"
-        },
-        "operators": {
-            "equal": "equal",
-            "not_equal": "not equal",
-            "in": "in",
-            "not_in": "not in",
-            "less": "less",
-            "less_or_equal": "less or equal",
-            "greater": "greater",
-            "greater_or_equal": "greater or equal",
-            "between": "between",
-            "begins_with": "begins with",
-            "not_begins_with": "doesn't begin with",
-            "contains": "contains",
-            "not_contains": "doesn't contain",
-            "ends_with": "ends with",
-            "not_ends_with": "doesn't end with",
-            "is_empty": "is empty",
-            "is_not_empty": "is not empty",
-            "is_null": "is null",
-            "is_not_null": "is not null"
-        },
-        "errors": {
-            "no_filter": "No field selected",
-            "empty_group": "The group is empty",
-            "radio_empty": "No value selected",
-            "checkbox_empty": "No value selected",
-            "select_empty": "No value selected",
-            "string_empty": "Empty value",
-            "string_exceed_min_length": "Must contain at least {0} characters",
-            "string_exceed_max_length": "Must not contain more than {0} characters",
-            "string_invalid_format": "Invalid format ({0})",
-            "number_nan": "Not a number",
-            "number_not_integer": "Not an integer",
-            "number_not_double": "Not a real number",
-            "number_exceed_min": "Must be greater than {0}",
-            "number_exceed_max": "Must be lower than {0}",
-            "number_wrong_step": "Must be a multiple of {0}",
-            "datetime_empty": "Empty value",
-            "datetime_invalid": "Invalid date format ({0})",
-            "datetime_exceed_min": "Must be after {0}",
-            "datetime_exceed_max": "Must be before {0}",
-            "boolean_not_valid": "Not a boolean",
-            "operator_not_multiple": "Operator {0} cannot accept multiple values"
-        }
-    };
+        // DEFAULT CONFIG
+        // ===============================
+        QueryBuilder.defaults({
+            sqlOperators: {
+                equal: '= ?',
+                not_equal: '!= ?',
+                in: { op: 'IN(?)', sep: ', ' },
+                not_in: { op: 'NOT IN(?)', sep: ', ' },
+                less: '< ?',
+                less_or_equal: '<= ?',
+                greater: '> ?',
+                greater_or_equal: '>= ?',
+                between: { op: 'BETWEEN ?', sep: ' AND ' },
+                begins_with: { op: 'LIKE(?)', fn: function (v) { return v + '%'; } },
+                not_begins_with: { op: 'NOT LIKE(?)', fn: function (v) { return v + '%'; } },
+                contains: { op: 'LIKE(?)', fn: function (v) { return '%' + v + '%'; } },
+                not_contains: { op: 'NOT LIKE(?)', fn: function (v) { return '%' + v + '%'; } },
+                ends_with: { op: 'LIKE(?)', fn: function (v) { return '%' + v; } },
+                not_ends_with: { op: 'NOT LIKE(?)', fn: function (v) { return '%' + v; } },
+                is_empty: '== ""',
+                is_not_empty: '!= ""',
+                is_null: 'IS NULL',
+                is_not_null: 'IS NOT NULL'
+            },
 
-    QueryBuilder.defaults({ lang_code: 'en' });
-}));
+            sqlStatements: {
+                'question_mark': function () {
+                    var bind_params = [];
+                    return {
+                        add: function (rule, value) {
+                            bind_params.push(value);
+                            return '?';
+                        },
+                        run: function () {
+                            return bind_params;
+                        }
+                    };
+                },
+
+                'numbered': function () {
+                    var bind_index = 0;
+                    var bind_params = [];
+                    return {
+                        add: function (rule, value) {
+                            bind_params.push(value);
+                            bind_index++;
+                            return '$' + bind_index;
+                        },
+                        run: function () {
+                            return bind_params;
+                        }
+                    };
+                },
+
+                'named': function () {
+                    var bind_index = {};
+                    var bind_params = {};
+                    return {
+                        add: function (rule, value) {
+                            if (!bind_index[rule.field]) bind_index[rule.field] = 0;
+                            bind_index[rule.field]++;
+                            var key = rule.field + '_' + bind_index[rule.field];
+                            bind_params[key] = value;
+                            return ':' + key;
+                        },
+                        run: function () {
+                            return bind_params;
+                        }
+                    };
+                }
+            }
+        });
+
+
+        // PUBLIC METHODS
+        // ===============================
+        QueryBuilder.extend({
+            /**
+             * Get rules as SQL query
+             * @param stmt {false|string} use prepared statements - false, 'question_mark' or 'numbered'
+             * @param nl {bool} output with new lines
+             * @param data {object} (optional) rules
+             * @return {object}
+             */
+            getSQL: function (stmt, nl, data) {
+                data = (data === undefined) ? this.getRules() : data;
+                nl = (nl === true) ? '\n' : ' ';
+
+                if (stmt === true || stmt === undefined) stmt = 'question_mark';
+                if (typeof stmt == 'string') stmt = this.settings.sqlStatements[stmt]();
+
+                var that = this,
+                    bind_index = 1,
+                    bind_params = [];
+
+                var sql = (function parse(data) {
+                    if (!data.condition) {
+                        data.condition = that.settings.default_condition;
+                    }
+                    if (['AND', 'OR'].indexOf(data.condition.toUpperCase()) === -1) {
+                        error('Unable to build SQL query with condition "{0}"', data.condition);
+                    }
+
+                    if (!data.rules) {
+                        return '';
+                    }
+
+                    var parts = [];
+
+                    data.rules.forEach(function (rule) {
+                        if (rule.rules && rule.rules.length > 0) {
+                            parts.push('(' + nl + parse(rule) + nl + ')' + nl);
+                        }
+                        else {
+                            var sql = that.getSqlOperator(rule.operator),
+                                ope = that.getOperatorByType(rule.operator),
+                                value = '';
+
+                            if (sql === false) {
+                                error('Unknown SQL operation for operator "{0}"', rule.operator);
+                            }
+
+                            if (ope.nb_inputs !== 0) {
+                                if (!(rule.value instanceof Array)) {
+                                    rule.value = [rule.value];
+                                }
+
+                                rule.value.forEach(function (v, i) {
+                                    if (i > 0) {
+                                        value += sql.sep;
+                                    }
+
+                                    if (rule.type == 'integer' || rule.type == 'double' || rule.type == 'boolean') {
+                                        v = changeType(v, rule.type, true);
+                                    }
+                                    else if (!stmt) {
+                                        v = escapeString(v);
+                                    }
+
+                                    if (sql.fn) {
+                                        v = sql.fn(v);
+                                    }
+
+                                    if (stmt) {
+                                        value += stmt.add(rule, v);
+                                    }
+                                    else {
+                                        if (typeof v === 'string') {
+                                            v = '\'' + v + '\'';
+                                        }
+
+                                        value += v;
+                                    }
+                                });
+                            }
+
+                            parts.push(rule.field + ' ' + sql.op.replace(/\?/, value));
+                        }
+                    });
+
+                    return parts.join(' ' + data.condition + nl);
+                }(data));
+
+                if (stmt) {
+                    return {
+                        sql: sql,
+                        params: stmt.run()
+                    };
+                }
+                else {
+                    return {
+                        sql: sql
+                    };
+                }
+            },
+
+            /**
+             * Sanitize the "sql" field of an operator
+             * @param sql {string|object}
+             * @return {object}
+             */
+            getSqlOperator: function (type) {
+                var sql = this.settings.sqlOperators[type];
+
+                if (sql === undefined) {
+                    return false;
+                }
+
+                if (typeof sql == 'string') {
+                    sql = { op: sql };
+                }
+                if (sql.list && !sql.sep) {
+                    sql.sep = ', ';
+                }
+
+                return sql;
+            }
+        });
+
+        /*!
+         * jQuery QueryBuilder Unique Filter
+         * Allows to define some filters as "unique": ie which can be used for only one rule, globally or in the same group.
+         * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+         */
+
+        QueryBuilder.define('unique-filter', function () {
+            this.status.used_filters = {};
+
+            this.on('afterUpdateRuleFilter', this.updateDisabledFilters);
+            this.on('afterDeleteRule', this.updateDisabledFilters);
+            this.on('afterCreateRuleFilters', this.applyDisabledFilters);
+        });
+
+        QueryBuilder.extend({
+            updateDisabledFilters: function (e) {
+                var self = e.builder;
+                self.status.used_filters = {};
+
+                if (!self.model) {
+                    return;
+                }
+
+                // get used filters
+                (function walk(group) {
+                    group.each(function (rule) {
+                        if (rule.filter && rule.filter.unique) {
+                            if (!self.status.used_filters[rule.filter.id]) {
+                                self.status.used_filters[rule.filter.id] = [];
+                            }
+                            if (rule.filter.unique == 'group') {
+                                self.status.used_filters[rule.filter.id].push(rule.parent);
+                            }
+                        }
+                    }, function (group) {
+                        walk(group);
+                    });
+                }(self.model.root));
+
+                self.applyDisabledFilters(e);
+            },
+
+            applyDisabledFilters: function (e) {
+                var self = e.builder;
+
+                // re-enable everything
+                self.$el.find('.rule-filter-container option').prop('disabled', false);
+
+                // disable some
+                $.each(self.status.used_filters, function (filterId, groups) {
+                    if (groups.length === 0) {
+                        self.$el.find('.rule-filter-container option[value="' + filterId + '"]:not(:selected)').prop('disabled', true);
+                    }
+                    else {
+                        groups.forEach(function (group) {
+                            group.each(function (rule) {
+                                rule.$el.find('.rule-filter-container option[value="' + filterId + '"]:not(:selected)').prop('disabled', true);
+                            });
+                        });
+                    }
+                });
+
+                // update Selectpicker
+                if (self.settings.plugins && self.settings.plugins['bt-selectpicker']) {
+                    self.$el.find('.rule-filter-container select').selectpicker('render');
+                }
+            }
+        });
+
+        /*!
+         * jQuery QueryBuilder 2.1.0
+         * Locale: English (en)
+         * Author: Damien "Mistic" Sorel, http://www.strangeplanet.fr
+         * Licensed under MIT (http://opensource.org/licenses/MIT)
+         */
+
+        QueryBuilder.regional['en'] = {
+            "__locale": "English (en)",
+            "__author": "Damien \"Mistic\" Sorel, http://www.strangeplanet.fr",
+            "add_rule": "Add Criterion",
+            "add_group": "Add Subset",
+            "delete_rule": "Delete",
+            "delete_group": "Delete",
+            "conditions": {
+                "AND": "AND",
+                "OR": "OR"
+            },
+            "operators": {
+                "equal": "equal",
+                "not_equal": "not equal",
+                "in": "in",
+                "not_in": "not in",
+                "less": "less",
+                "less_or_equal": "less or equal",
+                "greater": "greater",
+                "greater_or_equal": "greater or equal",
+                "between": "between",
+                "begins_with": "begins with",
+                "not_begins_with": "doesn't begin with",
+                "contains": "contains",
+                "not_contains": "doesn't contain",
+                "ends_with": "ends with",
+                "not_ends_with": "doesn't end with",
+                "is_empty": "is empty",
+                "is_not_empty": "is not empty",
+                "is_null": "is null",
+                "is_not_null": "is not null",
+                "any": "any",
+                "all": "all",
+                "phrase": "phrase"
+            },
+            "errors": {
+                "no_filter": "No field selected",
+                "empty_group": "The group is empty",
+                "radio_empty": "No value selected",
+                "checkbox_empty": "No value selected",
+                "select_empty": "No value selected",
+                "string_empty": "Empty value",
+                "string_exceed_min_length": "Must contain at least {0} characters",
+                "string_exceed_max_length": "Must not contain more than {0} characters",
+                "string_invalid_format": "Invalid format ({0})",
+                "number_nan": "Not a number",
+                "number_not_integer": "Not an integer",
+                "number_not_double": "Not a real number",
+                "number_exceed_min": "Must be greater than {0}",
+                "number_exceed_max": "Must be lower than {0}",
+                "number_wrong_step": "Must be a multiple of {0}",
+                "datetime_empty": "Empty value",
+                "datetime_invalid": "Invalid date format ({0})",
+                "datetime_exceed_min": "Must be after {0}",
+                "datetime_exceed_max": "Must be before {0}",
+                "boolean_not_valid": "Not a boolean",
+                "operator_not_multiple": "Operator {0} cannot accept multiple values",
+                "location_empty": "No location specified"
+            }
+        };
+
+        QueryBuilder.defaults({ lang_code: 'en' });
+    }));

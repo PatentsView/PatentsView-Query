@@ -1,13 +1,12 @@
 ﻿/**************************************************************/
-
+// Step by step view that conrols what views get loaded in what order.
 /**************************************************************/
-
 define([
     'jquery',
     'underscore',
     'backbone',
     'handlebars',
-    'text!../../../templates/query/stepbystep.html',
+    'text!views/query/templates/stepbystep.html',
     'recaptcha'
 ], function ($, _, Backbone, Handlebars, stepbystepTemplate, Recaptcha) {
 
@@ -15,60 +14,70 @@ define([
 
         var StepViews = function () {
 
-            var Node = function (view) {
-                var _next = null;
-                var _previous = null;
-                var _view = view.ref;
-                var _tab = view.tab;
-                var _hideTab = view.hideTab || false;
-                var _hideNav = view.hideNav || false;
-                var _pos = view.pos;
+            var Node = function (viewArg) {
+                var next = null;
+                var previous = null;
+                var view = viewArg.ref;
+                var tab = viewArg.tab;
+                var hideTab = viewArg.hideTab || false;
+                var hideNav = viewArg.hideNav || false;
+                var pos = viewArg.pos;
                 return {
-                    setPrevious: function (node) { _previous = node; return this; },
-                    getPrevious: function () { return _previous; },
-                    setNext: function (node) { _next = node; return this; },
-                    getNext: function () { return _next; },
-                    getView: function () { return _view; },
-                    getTab: function () { return _tab; },
-                    getPos: function() { return _pos;  },
-                    getHideTab: function() { return _hideTab; },
-                    getHideNav: function () { return _hideNav; },
+                    setPrevious: function (node) { previous = node; return this; },
+                    getPrevious: function () { return previous; },
+                    setNext: function (node) { next = node; return this; },
+                    getNext: function () { return next; },
+                    getView: function () { return view; },
+                    getTab: function () { return tab; },
+                    getPos: function() { return pos;  },
+                    getHideTab: function() { return hideTab; },
+                    getHideNav: function () { return hideNav; },
                 };
             };
 
-            var _head = null;
-            var _tail = null;
-            var _current = null;
-            var _list = new Array();
+            var head = null;
+            var tail = null;
+            var current = null;
+            var list = new Array();
 
             return {
-                all: function() { return _list; },
-                first: function () { return _head; },
-                last: function () { return _tail; },
+                all: function() { return list; },
+                first: function () { return head; },
+                last: function () { return tail; },
                 moveNext: function () {
-                    return (_current !== null) ? _current = _current.getNext() : null;
-                }, //set current to next and return current or return null
+                    return (current !== null) ? current = current.getNext() : null;
+                },
                 movePrevious: function () {
-                    return (_current !== null) ? _current = _current.getPrevious() : null;
-                }, //set current to previous and return current or return null
-                getCurrent: function () { return _current; },
+                    return (current !== null) ? current = current.getPrevious() : null;
+                },
+                getCurrent: function () { return current; },
+                getByTab: function (tab) {
+                    var node = head;
+
+                    while (node !== undefined && node !== null) {
+                        if (node.getTab() !== tab) { node = node.getNext(); }
+                        else {return node; }
+                    }
+
+                    return null;
+                },
                 insertView: function (view) {
                     var node = new Node(view);
 
-                    if (_tail === null) { // list is empty (implied head is null)
-                        _current = _tail = _head = node;
+                    if (tail === null) {
+                        current = tail = head = node;
                     }
-                    else {//list has nodes
-                        _tail = _tail.setNext(node.setPrevious(_tail)).getNext();
+                    else {
+                        tail = tail.setNext(node.setPrevious(tail)).getNext();
                     }
 
-                    _list.push(node);
+                    list.push(node);
                 },
                 setCurrentByTab: function (tab) {
-                    var node = _head;
-                    while (node !== null) {
+                    var node = head;
+                    while (node !== undefined && node !== null) {
                         if (node.getTab() !== tab) { node = node.getNext(); }
-                        else { _current = node; break; }
+                        else { current = node; break; }
                     }
                 }
             };
@@ -79,7 +88,6 @@ define([
             id: 'step-by-step',
             initialize: function () {
                 _.bindAll(this, 'render', 'insertView', 'save', 'routeStep');
-
                 $(this.el).append(Handlebars.compile(stepbystepTemplate));
                 this.stepViewTabs = $(this.el).find('#step-view-progress');
                 this.stepViewContainer = $(this.el).find('#step-view-container');
@@ -88,48 +96,31 @@ define([
             events: {
                 "click .btn-previous": "routeStep",
                 "click #next": "routeStep",
-                "click .nav-tabs a": "routeStep"
+                "click .nav-tabs a": "routeStep",
+                "click #save": "save" 
             },
             render: function () {
-                
                 var currentView = this.stepViews.getCurrent();
-                var firstView = this.stepViews.first();
-                if (currentView !== null) {
+
+                if (!_.isUndefined(currentView) && !_.isNull(currentView)) {
                     if (currentView.getNext() === null) {
                         $('#next', this.el).hide();
                         $('.form-actions').show();
                         $('#captcha-container').empty();
+                        $('#save').prop("disabled", true);
 
-                        grecaptcha.render('captcha-container', {
-                            "sitekey": "6LcUEgYTAAAAAPXnyayKNTkx4nZsgQoBG52pD9_D"
-                        });
-
-                        $('#save').on('click', function() {
-                            var response = grecaptcha.getResponse();
-                            var query = JSON.stringify(this.model.toJSON());
-
-                            jQuery.ajax({
-                                type: 'POST',
-                                url: "submit.php",
-                                data: { "g-recaptcha-response": response, "query": query },
-                                success: function (result) {
-                                    
-                                    if (result) {
-                                        //TODO: (High) Route to a different sucess route and clear the history.
-
-                                        return true;
-                                    }
-
-                                    return false;
+                        //TODO: check if this var is on the window object.
+                        if (!_.isUndefined(grecaptcha) && !_.isNull(grecaptcha)) {
+                            grecaptcha.render('captcha-container', {
+                                'sitekey': '6LdUAAkTAAAAAIJOXjy5mx50N_cUs22JM3XNNDAs',
+                                'callback': function(e) {
+                                    $('#save').prop("disabled", _.isEmpty(e));
                                 },
-                                error: function(e) {
-                                    //TODO: (High) Add Error Logic should the recaptcha or other funcitons fail.
-                                    
+                                'expired-callback': function() {
+                                    $('#save').prop("disabled", true);
                                 }
                             });
-                            
-                        });
-
+                        }
                     } else {
                         $('#next', this.el).html(this.getNextHtml());
                         $('#next', this.el).show();
@@ -149,8 +140,7 @@ define([
                     var tabPos = currentView.getPos();
                     var stepViewTabs = this.stepViewTabs;
                     
-                    _.forEach(this.stepViews.all(), function (n, key) {
-                        
+                    _.forEach(this.stepViews.all(), function (n) {
                         var view = n.getView();
                         var pos = n.getPos();
                         var anchor = stepViewTabs.find('li > a#' + view.id);
@@ -173,8 +163,7 @@ define([
                 }
                 return this;
             },
-                insertView: function (view) {
-                var tab = view.tab;
+            insertView: function (view) {
                 view.tab = view.tab.replace(/\s/g, '-');
 
                 if (!(view.hideTab || false)) {
@@ -188,21 +177,25 @@ define([
                 this.updateModel();
                 this.stepViews.movePrevious();
                 this.render();
+
                 return false;
             },
             moveNext: function () {
                 this.updateModel();
                 this.stepViews.moveNext();
                 this.render();
+
                 return false;
             },
             moveToTab: function (e) {
                 this.updateModel();
                 this.stepViews.setCurrentByTab(e);
                 this.render();
+
                 return false;
             },
             isValid: function () {
+                debugger;
                 var currentView = this.stepViews.getCurrent().getView();
 
                 return (_.isUndefined(currentView.isValid)) ? true: currentView.isValid();
@@ -210,32 +203,77 @@ define([
             updateModel: function() {
                 this.stepViews.getCurrent().getView().updateModel();
             },
-            save: function () {
-                
+            save: function (e) {
+                e = e || window.event;
+                var source = $(e.srcElement || e.target);
+                var response = (_.isUndefined(grecaptcha) || _.isNull(grecaptcha)) ? "" : grecaptcha.getResponse();
+                var model = this.model.toJSON();
+                var query = {
+                    entityId: model.entityId,
+                    groupId: model.groupId,
+                    fieldId: model.fieldId,
+                    outputIds: model.outputIds,
+                    recipient: model.recipient,
+                    resultCount: model.resultCount,
+                    xml: model.xml,
+                    json: model.json,
+                    csv: model.csv,
+                    criteria: model.criteria,
+                    query: this.model.buildQuery()
+                };
+                $(source).prop('disabled', true);
+                $(source).append('&nbsp;&nbsp;<i class="fa fa-spinner fa-pulse" />');
+                $(source).prop('disabled', true);
+
+
+                jQuery.ajax({
+                    type: 'POST',
+                    url: "querytool/query/verify.php",
+                    data: { "g-recaptcha-response": response, "query": JSON.stringify(query) },
+                    success: function (e) {
+                        $('#submit').submit();
+                    },
+                    error: function (e) {
+                        grecaptcha.reset();
+                        $(save).html("Submit Query");
+                        $(save).prop('disabled', true);
+                    }
+                });
             },
             routeStep: function (e) {
-
-                if (!this.isValid())
-                    return false;
-
                 e = e || window.event;
                 var source = $(e.srcElement || e.target);
                 var action = $(source).attr('id');
                 var dest = 'start';
 
-                if (action === 'next') {
+                if (action === 'next' ) {
+
+                    if (!this.isValid())
+                        return false;
+
                     var nextStep = this.stepViews.getCurrent().getNext();
-                    if (nextStep !== null) dest = nextStep.getTab();
+                    if (!_.isUndefined(nextStep) && !_.isNull(nextStep)) {
+                        dest = nextStep.getTab();
+                    }
                 }
                 else if (action === 'previous') {
                     var prevStep = this.stepViews.getCurrent().getPrevious();
-                    if (prevStep !== null) dest = prevStep.getTab();
+                    if (!_.isUndefined(prevStep) && !_.isNull(prevStep)) {
+                        dest = prevStep.getTab();
+                    }
                 }
                 else {
                     dest = action;
+                    var destTab = this.stepViews.getByTab(dest);
+
+                    if (destTab !== undefined)
+                    {
+                        if ((destTab.getPos() > this.stepViews.getCurrent().getPos()) && !this.isValid())
+                            return false;
+                    }
                 }
 
-                _router.navigate('step/'+dest, true);
+                router.navigate('step/' + dest, true);
 
                 return false;
             },
@@ -243,33 +281,32 @@ define([
                 if (!_.isUndefined(this.stepViews.getCurrent().getView().getNextHtml()))
                     return this.stepViews.getCurrent().getView().getNextHtml();
 
-                return 'Next';//Would rather use the template instead of sending this back.
+                return 'Next';
             }
         });
 
-        var _stepView = null;
-        var _router = null;
+        var stepView = null;
+        var router = null;
 
         return {
-            initialize: function (router, stepModel) {
-                _router = router;
-                _stepView = new StepView({ model: stepModel });
+            initialize: function (routerArg, stepModel) {
+                router = routerArg;
+                stepView = new StepView({ model: stepModel });
             },
             insertView: function (view) {
-                _stepView.insertView(view);
+                stepView.insertView(view);
             },
-            movePrevious: function () { _stepView.movePrevious(); },
-            moveNext: function () { _stepView.moveNext(); },
+            movePrevious: function () { stepView.movePrevious(); },
+            moveNext: function () { stepView.moveNext(); },
             moveToTab: function(e) {
-                return _stepView.moveToTab(e);
+                return stepView.moveToTab(e);
             },
             render: function () {
-                return _stepView.render();
+                return stepView.render();
             },
             stepEvents: function() {
-                return _stepView.stepViews.stepEvents();
+                return stepView.stepViews.stepEvents();
             }
-
         };
 
     })();
