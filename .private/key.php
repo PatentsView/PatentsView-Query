@@ -1,0 +1,3 @@
+<?php 
+$key="recaptcha-key"; 
+?>
