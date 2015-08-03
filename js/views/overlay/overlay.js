@@ -72,7 +72,7 @@ function(_, $, Backbone, OverlayModel, Lexicon, overlayTemplate) {
 				clearPrev();
 			} else {
                 //TODO: Update prior to production deployment.
-			    $.get('/querytool/overlays/' + this.model.get('sub').file + '?1', onload, 'text');
+			    $.get('/overlays/' + this.model.get('sub').file + '?1', onload, 'text');
 			}			
 		},	
 		onExternalAnchorClick: function(e) {

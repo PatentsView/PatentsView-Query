@@ -11,13 +11,13 @@ define([
 ], function ($, _, Backbone, optionsJson, OverlayModel, Lexicon) {
 
     var entities = [
-        { "id": "patent", "name": "Patent", "isActive": false, "defaults": ["patent_title"], "url": "querytool/query/fields.html#patent" },
-        { "id": "inventor", "name": "Inventor", "isActive": false, "defaults": ["inventor_id", "inventor_first_name", "inventor_last_name"], "url": "querytool/query/fields.html#inventor" },
-        { "id": "assignee", "name": "Assignee", "isActive": false, "defaults": ["assignee_id", "assignee_first_name", "assignee_last_name", "assignee_organization"], "url": "querytool/query/fields.html#assignee" },
-        { "id": "nberSubcategory", "name": "NBER Technology Area", "isActive": false, "defaults": ["nber_subcategory_id", "nber_subcategory_title"], "url": "querytool/query/fields.html#nberSubcategory" },
-        { "id": "cpcSubsection", "name": "Cooperative Patent Class", "isActive": false, "defaults": ["cpc_subsection_id", "cpc_subsection_title"], "url": "querytool/query/fields.html#cpcSubsection" },
-        { "id": "uspcMainclass", "name": "US Patent Class", "isActive": false, "defaults": ["uspc_mainclass_id", "uspc_mainclass_title"], "url": "querytool/query/fields.html#uspcMainclass" },
-        { "id": "location", "name": "Location", "isActive": false, "defaults": ["location_id", "location_city", "location_state", "location_country"], "url": "querytool/query/fields.html#location" }
+        { "id": "patent", "name": "Patent", "isActive": false, "defaults": ["patent_title"], "url": "/querytool/query/fields.html#patent" },
+        { "id": "inventor", "name": "Inventor", "isActive": false, "defaults": ["inventor_id", "inventor_first_name", "inventor_last_name"], "url": "/querytool/query/fields.html#inventor" },
+        { "id": "assignee", "name": "Assignee", "isActive": false, "defaults": ["assignee_id", "assignee_first_name", "assignee_last_name", "assignee_organization"], "url": "/querytool/query/fields.html#assignee" },
+        { "id": "nberSubcategory", "name": "NBER Technology Area", "isActive": false, "defaults": ["nber_subcategory_id", "nber_subcategory_title"], "url": "/querytool/query/fields.html#nberSubcategory" },
+        { "id": "cpcSubsection", "name": "Cooperative Patent Class", "isActive": false, "defaults": ["cpc_subsection_id", "cpc_subsection_title"], "url": "/querytool/query/fields.html#cpcSubsection" },
+        { "id": "uspcMainclass", "name": "US Patent Class", "isActive": false, "defaults": ["uspc_mainclass_id", "uspc_mainclass_title"], "url": "/querytool/query/fields.html#uspcMainclass" },
+        { "id": "location", "name": "Location", "isActive": false, "defaults": ["location_id", "location_city", "location_state", "location_country"], "url": "/querytool/query/fields.html#location" }
     ];
 
     var types = [
