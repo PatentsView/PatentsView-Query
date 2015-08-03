@@ -94,7 +94,7 @@
     },
     {
         "isQuery": "true",
-        "group": "Patent Applications Cited by Patents",
+        "group": "US only Patent Applications Cited by Patents",
         "name": "Application Number",
         "entities": [
             "patent",
@@ -113,7 +113,7 @@
     },
     {
         "isQuery": "true",
-        "group": "Patent Applications Cited by Patents",
+        "group": "US only Patent Applications Cited by Patents",
         "name": "Category",
         "entities": [
             "patent",
@@ -135,7 +135,7 @@
     },
     {
         "isQuery": "true",
-        "group": "Patent Applications Cited by Patents",
+        "group": "US only Patent Applications Cited by Patents",
         "name": "Filing Date",
         "entities": [
             "patent",
@@ -154,7 +154,7 @@
     },
     {
         "isQuery": "true",
-        "group": "Patent Applications Cited by Patents",
+        "group": "US only Patent Applications Cited by Patents",
         "name": "Kind",
         "entities": [
             "patent",
@@ -193,7 +193,7 @@
     },
     {
         "isQuery": "false",
-        "group": "Patent Applications Cited by Patents",
+        "group": "US only Patent Applications Cited by Patents",
         "name": "Sequence",
         "entities": [
             "patent",
