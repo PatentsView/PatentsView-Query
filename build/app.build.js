@@ -55,6 +55,7 @@
 		},
 		recaptcha: { exports: 'Recaptcha' }
 	},
+    urlArgs: "v=" + 1,
 	optimizeCss: 'standard.keepLines',
 	modules: [
 		{

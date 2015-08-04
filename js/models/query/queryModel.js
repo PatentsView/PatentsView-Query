@@ -196,7 +196,6 @@ define([
             return conditions;
         },
         getOutputs: function () {
-            debugger;
             var entityId = this.get('entityId');
             var groups = new Array();
             var entity = _.find(entities, { "id": entityId });
@@ -211,7 +210,6 @@ define([
 
                 if (field.isOutput) {
                     var isDefault = _.contains(entity.defaults, field.id);
-                    console.log(field.id + ', ' + isDefault);
                     var group = _.find(groups, { "id": field.group });
                     var output = { "id": field.id, "name": field.name, desc: field.desc, "isActive": isDefault };
 

@@ -21,7 +21,6 @@ define([
         className: 'step-view row',
         id: 'criteria',
         initialize: function (options) {
-            debugger;
             this.listenTo(this.model, 'entityChanged', this.entityChanged);
             _.bindAll(this, 'render', 'updateModel');
             this.template = Handlebars.compile(criteriaTemplate);
@@ -59,7 +58,6 @@ define([
             return $(this.el).find('#builder').queryBuilder('validate');
         },
         updateModel: function (e) {
-            debugger;
             var qb = this.model.get("qb");
 
             if (!_.isUndefined(qb)) {
@@ -97,7 +95,6 @@ define([
             this.resetView = true;
         },
         showOverlay: function (e) {
-            debugger;
             var overlayGroup = this.model.getOverlay(OverlayModel.overlays.patentClass);
 
             if (!overlayGroup) {

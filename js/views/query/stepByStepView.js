@@ -195,7 +195,6 @@ define([
                 return false;
             },
             isValid: function () {
-                debugger;
                 var currentView = this.stepViews.getCurrent().getView();
 
                 return (_.isUndefined(currentView.isValid)) ? true: currentView.isValid();
@@ -228,7 +227,7 @@ define([
 
                 jQuery.ajax({
                     type: 'POST',
-                    url: "querytool/query/verify.php",
+                    url: "http://www.dev.patentsview.org/querytool/query/verify.php",
                     data: { "g-recaptcha-response": response, "query": JSON.stringify(query) },
                     success: function (e) {
                         $('#submit').submit();

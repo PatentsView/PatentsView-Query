@@ -31,7 +31,6 @@ function(_, $, Backbone, OverlayModel, Lexicon, overlayTemplate) {
 			}
 
 			function onload(text) {
-			    debugger;
 				clearPrev();
 				text = _.template(text, Lexicon);
 				var attr = _.extend({}, self.model.attributes, {copy:text});
