@@ -539,7 +539,7 @@
         var that = this;
 
         // group condition change
-        this.$el.on('change.queryBuilder', '.rules-group-header [name$=_cond]', function () {
+        this.$el.on('change.queryBuilder', '.rules-group-body [name$=_cond]', function () {
             if ($(this).is(':checked')) {
                 var $group = $(this).closest('.rules-group-container');
                 Model($group).condition = $(this).val();
@@ -548,6 +548,7 @@
 
         // rule filter change
         this.$el.on('change.queryBuilder', '.rule-filter-container [name$=_filter]', function () {
+            debugger;
             var $rule = $(this).closest('.rule-container');
             Model($rule).filter = that.getFilterById($(this).val());
         });
@@ -560,6 +561,7 @@
 
         // add rule button
         this.$el.on('click.queryBuilder', '[data-add=rule]', function () {
+            debugger;
             var $group = $(this).closest('.rules-group-container');
             that.addRule(Model($group));
         });
@@ -729,7 +731,8 @@
      * @param group {Group}
      */
     QueryBuilder.prototype.updateGroupCondition = function (group) {
-        group.$el.find('>.rules-group-header [name$=_cond]').each(function () {
+        debugger;
+        group.$el.find('>.rules-group-body [name$=_cond]').each(function () {
             var $this = $(this);
             $this.prop('checked', $this.val() === group.condition);
             $this.parent().toggleClass('active', $this.val() === group.condition);
@@ -792,11 +795,13 @@
      * @param rule {Rule}
      */
     QueryBuilder.prototype.createRuleFilters = function (rule) {
+        debugger;
         var filters = this.change('getRuleFilters', this.filters, rule);
+        var $container = rule.$el.find('.rule-filter-container');
+        
 
         var $filterSelect = $(this.getRuleFilterSelect(rule, filters));
-
-        rule.$el.find('.rule-filter-container').append($filterSelect);
+        $container.append($filterSelect);
 
         this.trigger('afterCreateRuleFilters', rule);
     };
@@ -877,6 +882,17 @@
      * @param rule {Rule}
      */
     QueryBuilder.prototype.updateRuleFilter = function (rule) {
+        debugger;
+
+        //maybe use the bt formlabel class.
+        var h = '<a href="#" title="Description" class="q-desc"></a><label name="' + rule.id + '_filter_label" data-toggle="popover" data-content="' + rule.filter.desc + '">' + rule.filter.optgroup + ' - ' + rule.filter.label + '</label>';
+        rule.$el.find('.rule-filter-container [name$=_filter]').parent().parent().find('.rule-filter-label-container').html('').append(h);
+
+        $('[data-toggle="popover"]').popover({
+            trigger: 'hover',
+            'placement': 'top'
+        });
+
         this.createRuleOperators(rule);
         this.createRuleInput(rule);
 
@@ -1782,14 +1798,14 @@
         </button>'
               : '') + ' \
     </div> \
-    <div class="btn-group group-conditions"> \
-      '+ this.getGroupConditions(group_id, level) + ' \
-    </div> \
-    ' + (this.settings.display_errors ?
+     ' + (this.settings.display_errors ?
             '<div class="error-container"><sapn class="control-label"></sapn></div>'
           : '') + '\
   </dt> \
   <dd class=rules-group-body> \
+    <div class="btn-group btn-group-xs group-conditions"> \
+      '+ this.getGroupConditions(group_id, level) + ' \
+    </div> \
     <ul class=rules-list></ul> \
   </dd> \
 </dl>';
@@ -1828,6 +1844,7 @@
             var h = '\
 <li id="'+ rule_id + '" class="rule-container"> \
   <div class="rule-header"> \
+  <div class="rule-filter-label-container"></div> \
   <div class="btn-group pull-right rule-actions"> \
     <button type="button" class="btn btn-warning" data-delete="rule"> \
       <i class="' + this.icons.remove_rule + '"></i> ' + this.lang.delete_rule + ' \
@@ -1852,6 +1869,7 @@
          * @return {string}
          */
         QueryBuilder.prototype.getRuleFilterSelect = function (rule, filters) {
+            debugger;
             var optgroup = null;
 
             var h = '<select class="form-control" name="' + rule.id + '_filter">';

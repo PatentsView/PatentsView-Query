@@ -20,13 +20,26 @@ define([
         events: {
             "click button.entity": "selectEntity",
             "click #step .btn-previous": "updateModel",
-            "click #step .btn-next": "moveNext"
+            "click #step .btn-next": "moveNext",
+            "click #accordion a": "block",
         },
         render: function () {
+            debugger;
             $(this.el).empty();
             $(this.el).append(this.template(this.model.get('entities')));
+            //Add logic to select the entity if one has been selected.
             
             return this;
+        },
+        block: function (e) {
+            e.preventDefault();
+            $(this.el).find('.panel-collapse').removeClass('in');
+            $(this.el).find('.collapsed').removeClass('collapsed');
+            $($(e.currentTarget).addClass('collapsed').attr('data-target')).addClass('in');
+            var dataId = $(e.currentTarget).parent().attr('data-id');
+            var entityId = this.model.get('entityId');
+
+            return false;
         },
         selectEntity: function (e) {
             var dataId = $(e.currentTarget).attr('data-id');
@@ -46,10 +59,10 @@ define([
         },
         isValid: function()
         {
-            return (!_.isUndefined($(this.el).find('.active button.entity').attr('data-id')));
+            return (!_.isUndefined($(this.el).find('.in').parent().attr('data-id')));
         },
         updateModel: function () {
-            var dataId = $(this.el).find('.active button.entity').attr('data-id');
+            var dataId = $(this.el).find('.in').parent().attr('data-id');
 
             //Check if the entityId has changed.
             if (dataId != this.model.get('entityId')) {

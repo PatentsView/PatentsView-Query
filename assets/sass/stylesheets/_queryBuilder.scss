@@ -7,7 +7,7 @@
 $theme-name: default !default;
 
 // common
-$item-vertical-spacing: 4px !default;
+$item-vertical-spacing: 15px !default;
 $item-border-radius: 5px !default;
 
 // groups
@@ -33,7 +33,7 @@ $error-background-color: #FDD !default;
 
 // ticks
 $ticks-width: 2px !default;
-$ticks-color: #CCC !default;
+$ticks-color: #3e4b5a !default;
 $ticks-position: 5px, 10px !default;
 
 
@@ -66,24 +66,52 @@ $ticks-position: 5px, 10px !default;
 
     .rules-group-header {
       margin-bottom: $group-padding;
+	  padding-bottom: 25px; //maybe move this to a var.    
 
-      input[name$=_cond] {
-        display: none;
-      }
-    }
 
-    .rules-list {
-      list-style: none;
-      padding: 0 0 0 #{nth($ticks-position, 1) + nth($ticks-position, 2)};
-      margin: 0;
+	  
     }
 
 	.group-conditions {
+		display: inline;
+		top: 10px;
+
+		.btn-primary {
+		color: darken(#E2E2E6, 75%);
+		background-color: #E2E2E6;
+		border-color: darken(#E2E2E6, 50%);
+		}
+
+		input[name$=_cond] {
+			display: none;
+        }
+
 		.active {
+			color: #fff;
 			background-color: $active-background-color;
 			border-color: darken($active-background-color, 10%);
 		}
 	}
+
+    .rules-list {
+		  list-style: none;
+		  padding: 0 0 0 #{nth($ticks-position, 1) + nth($ticks-position, 2) + 60};
+		  margin: 0;
+
+		  .rule-filter-label-container > a.q-desc {
+				text-indent: -119988px;
+				overflow: hidden;
+				text-align: left;
+				text-transform: capitalize;
+				height: 12px;
+				width: 12px;
+				background-image: url('../img/q.png');
+				background-repeat: no-repeat;
+				background-position-y: 2px;
+				padding-right: 15px;
+    
+		  }
+    }
   }
 
   // RULES
@@ -95,6 +123,8 @@ $ticks-position: 5px, 10px !default;
     .rule-value-container {
       @extend %rule-component;
     }
+
+
 
 	.rule-operator-contianer{
 		border-left: $rule-value-separator;
@@ -151,17 +181,19 @@ $ticks-position: 5px, 10px !default;
     }
 
     &:before {
-      top: #{-2 * $ticks-width};
+      top: #{-10 * $ticks-width};
       border-width: 0 0 $ticks-width $ticks-width;
     }
     &:after {
-      top: 50%;
+      top: 35%;
       border-width: 0 0 0 $ticks-width;
     }
 
     &:first-child:before {
-      top: #{-$group-padding -$ticks-width};
-      height: calc(50% + #{$group-padding + $item-vertical-spacing});
+	  left: #{-1 * (nth($ticks-position, 2) + 5)};
+	  width: #{3 + nth($ticks-position, 2)};
+      top: 20px;
+      height: 0;
     }
     &:last-child:before {
       border-radius: 0 0 0 #{2 * $ticks-width};

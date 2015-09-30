@@ -89,6 +89,29 @@ define([
     ];
 
     var options = JSON.parse(optionsJson);
+    debugger;
+    for (var i = 0; i < entities.length; i++) {
+
+        entities[i].outputs = new Array();
+
+        _.where(options, { "entities": [entities[i].id] }).forEach(function (field) {
+
+            if (field.isOutput) {
+                var isDefault = _.contains(entities[i].defaults, field.id);
+                var group = _.find(entities[i].outputs, { "id": field.group });
+                var output = { "id": field.id, "name": field.name, desc: field.desc, "isActive": isDefault };
+
+                if (_.isUndefined(group)) {
+                    var outputGroup = _.find(outputGroups, { "name": field.group });
+                    group = { "id": field.group, "name": field.group, "isActive": isDefault, desc: (_.isUndefined(outputGroup)) ? "" : outputGroup.desc, fields: new Array() };
+                    group.fields.push(output);
+                    entities[i].outputs.push(group);
+                } else {
+                    group.fields.push(output);
+                }
+            }
+        });
+    }
 
     var QueryModel = Backbone.Model.extend({
         initialize: function () {
@@ -126,7 +149,8 @@ define([
                         input: inputMatch.type,
                         operators: typeMatch.ops,
                         values: field.values,
-                        optgroup: field.group
+                        optgroup: field.group,
+                        desc: field.desc
                     };
 
                     if (!_.isUndefined(typeMatch.validation)) {

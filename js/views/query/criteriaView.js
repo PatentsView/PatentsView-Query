@@ -36,7 +36,7 @@ define([
                 if (!_.isUndefined(qb)) {
                     qb.queryBuilder('destroy');
                 }
-
+                
                 var filters = this.model.getFilters();
 
                 if (!_.isNull(filters) && _.size(filters) > 0) {
