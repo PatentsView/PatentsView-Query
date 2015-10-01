@@ -27,7 +27,21 @@ define([
             debugger;
             $(this.el).empty();
             $(this.el).append(this.template(this.model.get('entities')));
-            //Add logic to select the entity if one has been selected.
+            
+            var checkAlls = $(this.el).find('input.check-all');
+
+            _.forEach(checkAlls, function (checkall) {
+                $(checkall).click(function () {
+                    var dataId = $(this).attr('data-id');
+                    $('ul[data-output-group-id="' + dataId + '"]').find('.check').prop('checked', $(this).prop('checked'));
+                });
+            });
+
+            //TODO: Consider using the popover that periscopic is using.
+            $(this.el).find('[data-toggle="popover"]').popover({
+                trigger: 'hover',
+                'placement': 'top'
+            });
             
             return this;
         },
@@ -62,26 +76,44 @@ define([
             return (!_.isUndefined($(this.el).find('.in').parent().attr('data-id')));
         },
         updateModel: function () {
+            debugger;
             var dataId = $(this.el).find('.in').parent().attr('data-id');
+            var entities = this.model.get('entities');
+            var entity = _.find(entities, { "id": dataId });
+            var outputs = entity.outputs;
+            var outputIds = new Array();
 
             //Check if the entityId has changed.
             if (dataId != this.model.get('entityId')) {
-                var entities = this.model.get('entities');
-                var entity = _.find(entities, { "id": dataId });
-
                 _.forEach(entities, function(opt) { opt.isActive = false; });
 
                 if (!_.isNull(entity)) {
                     entity.isActive = true;
                 }
-
+                
                 this.model.trigger('entityChanged', dataId);
                 this.model.set('entityId', dataId);
                 this.model.set('entityName', entity.name);
                 this.model.set('url', entity.url);
-                this.model.set('outputs', this.model.getOutputs());
+                //this.model.set('outputs', this.model.getOutputs());
                 this.model.set('sorts', this.model.getSorts());
             }
+
+            for (var i = 0; i < outputs.length; i++) {
+                outputs[i].isActive = $(this.el).find('#panel-' + entity.id + '').find('[data-id="' + outputs[i].id + '"]').prop('checked');
+                outputs[i].isChildActive = false;
+
+                for (var j = 0; j < outputs[i].fields.length; j++) {
+                    var output = $(this.el).find('#panel-' + entity.id + '').find('#output-field-' + outputs[i].fields[j].id + '');
+
+                    if (output.prop('checked')) {
+                        outputs[i].fields[j].isActive = true;
+                        outputIds.push(outputs[i].fields[j].id);
+                    }
+                }
+            }
+
+            this.model.set('outputIds', outputIds);
         },
         getNavHtml: function (s) {
             //s is the state requested.

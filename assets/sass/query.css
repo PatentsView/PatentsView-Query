@@ -5758,32 +5758,32 @@ button.close {
   border: 1px dashed #BBB;
   opacity: 0.7; }
 
-#accordion .panel-heading {
+#accordion > #panel-patent > .panel-heading {
+  background: url("../img/icon-ribbon.png") no-repeat left 0 #536579; }
+#accordion > #panel-inventor > .panel-heading {
+  background: url("../img/icon-bulb.png") no-repeat left 0 #536579;
+  background-position-x: 5px; }
+#accordion > #panel-assignee > .panel-heading {
+  background: url("../img/icon-case.png") no-repeat left 0 #536579; }
+#accordion > #panel-location > .panel-heading {
+  background: url("../img/icon-pin.png") no-repeat left 0 #536579;
+  background-position-x: 3px; }
+#accordion > .panel > .panel-heading {
   color: #ffffff;
   border-color: #3e4b5a;
   padding-left: 45px;
   padding-top: 15px;
   padding-bottom: 15px; }
-#accordion .panel-heading a {
+#accordion > .panel .panel-heading a {
   display: block;
   text-decoration: none; }
-#accordion .panel-heading a:after {
+#accordion > .panel .panel-heading a:after {
   font-family: 'FontAwesome';
   content: "\f078";
   float: right;
   color: #ffffff; }
-#accordion .panel-heading a.collapsed:after {
+#accordion > .panel .panel-heading a.collapsed:after {
   content: "\f054"; }
-#accordion #panel-patent .panel-heading {
-  background: url("../img/icon-ribbon.png") no-repeat left 0 #536579; }
-#accordion #panel-inventor .panel-heading {
-  background: url("../img/icon-bulb.png") no-repeat left 0 #536579;
-  background-position-x: 5px; }
-#accordion #panel-assignee .panel-heading {
-  background: url("../img/icon-case.png") no-repeat left 0 #536579; }
-#accordion #panel-location .panel-heading {
-  background: url("../img/icon-pin.png") no-repeat left 0 #536579;
-  background-position-x: 3px; }
 
 .btn-circle {
   width: 49px;
@@ -5958,7 +5958,8 @@ ul.entity-list {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-  flex: 1 1 auto; }
+  flex: 1 1 auto;
+  padding-bottom: 10px; }
   .equal .panel, .equal > div[class*='col-'] .panel {
     width: 100%; }
 

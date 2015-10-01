@@ -548,7 +548,6 @@
 
         // rule filter change
         this.$el.on('change.queryBuilder', '.rule-filter-container [name$=_filter]', function () {
-            debugger;
             var $rule = $(this).closest('.rule-container');
             Model($rule).filter = that.getFilterById($(this).val());
         });
@@ -561,7 +560,6 @@
 
         // add rule button
         this.$el.on('click.queryBuilder', '[data-add=rule]', function () {
-            debugger;
             var $group = $(this).closest('.rules-group-container');
             that.addRule(Model($group));
         });
@@ -731,7 +729,6 @@
      * @param group {Group}
      */
     QueryBuilder.prototype.updateGroupCondition = function (group) {
-        debugger;
         group.$el.find('>.rules-group-body [name$=_cond]').each(function () {
             var $this = $(this);
             $this.prop('checked', $this.val() === group.condition);
@@ -795,7 +792,6 @@
      * @param rule {Rule}
      */
     QueryBuilder.prototype.createRuleFilters = function (rule) {
-        debugger;
         var filters = this.change('getRuleFilters', this.filters, rule);
         var $container = rule.$el.find('.rule-filter-container');
         
@@ -882,8 +878,6 @@
      * @param rule {Rule}
      */
     QueryBuilder.prototype.updateRuleFilter = function (rule) {
-        debugger;
-
         //maybe use the bt formlabel class.
         var h = '<a href="#" title="Description" class="q-desc"></a><label name="' + rule.id + '_filter_label" data-toggle="popover" data-content="' + rule.filter.desc + '">' + rule.filter.optgroup + ' - ' + rule.filter.label + '</label>';
         rule.$el.find('.rule-filter-container [name$=_filter]').parent().parent().find('.rule-filter-label-container').html('').append(h);
@@ -1869,7 +1863,6 @@
          * @return {string}
          */
         QueryBuilder.prototype.getRuleFilterSelect = function (rule, filters) {
-            debugger;
             var optgroup = null;
 
             var h = '<select class="form-control" name="' + rule.id + '_filter">';

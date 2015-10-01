@@ -5,7 +5,25 @@
 
 #accordion {
 
-	.panel-heading {
+	> #panel-patent > .panel-heading  {
+		background: url("../img/icon-ribbon.png") no-repeat left 0 #536579;
+	}
+
+	> #panel-inventor > .panel-heading {
+		background: url("../img/icon-bulb.png") no-repeat left 0 #536579;
+		background-position-x: 5px;
+	}
+
+	> #panel-assignee > .panel-heading {
+		background: url("../img/icon-case.png") no-repeat left 0 #536579;
+	}
+
+	> #panel-location > .panel-heading {
+		background: url("../img/icon-pin.png") no-repeat left 0 #536579;
+		background-position-x: 3px;
+	}
+
+	> .panel > .panel-heading {
 		color: #ffffff;
 		border-color: #3e4b5a;
 		padding-left: 45px;
@@ -13,39 +31,23 @@
 		padding-bottom: 15px;
 	}
 
-	.panel-heading a {
+	> .panel .panel-heading a {
 		display: block;
 		text-decoration: none;
 	}
 
-	.panel-heading a:after {
+	> .panel .panel-heading a:after {
 		font-family:'FontAwesome';
 		content:"\f078";
 		float: right;
 		color: #ffffff;
 	}
 
-	.panel-heading a.collapsed:after {
+	> .panel .panel-heading a.collapsed:after {
 		content:"\f054";
 	}
 
-	#panel-patent .panel-heading  {
-		background: url("../img/icon-ribbon.png") no-repeat left 0 #536579;
-	}
-
-	#panel-inventor .panel-heading {
-		background: url("../img/icon-bulb.png") no-repeat left 0 #536579;
-		background-position-x: 5px;
-	}
-
-	#panel-assignee .panel-heading {
-		background: url("../img/icon-case.png") no-repeat left 0 #536579;
-	}
-
-	#panel-location .panel-heading {
-		background: url("../img/icon-pin.png") no-repeat left 0 #536579;
-		background-position-x: 3px;
-	}
+	
 }
 
 //Move to layout mixin
@@ -297,6 +299,7 @@ ul.entity-list {
     display: -webkit-flex;
     display: flex;
     flex:1 1 auto;
+	padding-bottom: 10px;
 
 	.panel {
 

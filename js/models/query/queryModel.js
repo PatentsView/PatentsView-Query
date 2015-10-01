@@ -89,7 +89,6 @@ define([
     ];
 
     var options = JSON.parse(optionsJson);
-    debugger;
     for (var i = 0; i < entities.length; i++) {
 
         entities[i].outputs = new Array();
