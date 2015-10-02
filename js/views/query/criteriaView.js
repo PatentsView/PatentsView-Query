@@ -95,6 +95,7 @@ define([
             this.resetView = true;
         },
         showOverlay: function (e) {
+            debugger;
             var overlayGroup = this.model.getOverlay(OverlayModel.overlays.patentClass);
 
             if (!overlayGroup) {

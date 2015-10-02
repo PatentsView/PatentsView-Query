@@ -745,10 +745,14 @@
      * @return rule {Rule}
      */
     QueryBuilder.prototype.addRule = function (parent, data) {
+       
         var e = this.trigger('beforeAddRule', parent);
         if (e.isDefaultPrevented()) {
             return null;
         }
+
+        if (parent.rules.length > 0)
+        { $('.rules-group-body').addClass('multi'); }
 
         var rule_id = this.nextRuleId(),
             $rule = $(this.template.rule.call(this, rule_id)),

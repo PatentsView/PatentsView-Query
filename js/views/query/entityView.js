@@ -18,26 +18,15 @@ define([
             this.template = Handlebars.compile(entityTemplate);
         },
         events: {
-            "click button.entity": "selectEntity",
             "click #step .btn-previous": "updateModel",
             "click #step .btn-next": "moveNext",
-            "click #accordion a": "block",
+            "click #accordion a": "selectEntity",
+            "click input.check-all": "checkAll",
+            "click input.check": "checkField",
         },
         render: function () {
-            debugger;
             $(this.el).empty();
             $(this.el).append(this.template(this.model.get('entities')));
-            
-            var checkAlls = $(this.el).find('input.check-all');
-
-            _.forEach(checkAlls, function (checkall) {
-                $(checkall).click(function () {
-                    var dataId = $(this).attr('data-id');
-                    $('ul[data-output-group-id="' + dataId + '"]').find('.check').prop('checked', $(this).prop('checked'));
-                });
-            });
-
-            //TODO: Consider using the popover that periscopic is using.
             $(this.el).find('[data-toggle="popover"]').popover({
                 trigger: 'hover',
                 'placement': 'top'
@@ -45,32 +34,54 @@ define([
             
             return this;
         },
-        block: function (e) {
-            e.preventDefault();
-            $(this.el).find('.panel-collapse').removeClass('in');
-            $(this.el).find('.collapsed').removeClass('collapsed');
-            $($(e.currentTarget).addClass('collapsed').attr('data-target')).addClass('in');
-            var dataId = $(e.currentTarget).parent().attr('data-id');
-            var entityId = this.model.get('entityId');
-
-            return false;
+        checkAll: function (e) {
+            var dataId =  $(e.currentTarget).attr('data-id');
+            $('ul[data-output-group-id="' + dataId + '"]').find('.check').prop('checked',  $(e.currentTarget).prop('checked'));
+        },
+        checkField: function (e) {
+            var dataid = $(this.el).find('.in').parent().attr('data-id');
+            var group = $(e.currentTarget).closest('ul').attr('data-output-group-id');
+            $(this.el).find('#panel-' + dataid + '').find('[data-id="' + group + '"]').prop('checked', ($(e.currentTarget).closest('ul').find('li input').not(':checked').length == 0) ? 'checked' : '');
         },
         selectEntity: function (e) {
-            var dataId = $(e.currentTarget).attr('data-id');
+            e.preventDefault();
+
+            var dataId = $(e.currentTarget).parent().attr('data-id');
             var entityId = this.model.get('entityId');
 
             if ((!_.isUndefined(entityId) && !_.isEmpty(entityId)) && dataId != entityId) {
                 $('.entity-change-modal').find('.ok').on('click', function () {
                     $('.entity-change-modal').modal('hide');
-                    $(e.currentTarget).closest('ul.entity-list').find('li').removeClass('active');
-                    $(e.currentTarget).closest('li').addClass('active');
+                    $(this.el).find('.panel-collapse').removeClass('in');
+                    $(this.el).find('.collapsed').removeClass('collapsed');
+                    $($(e.currentTarget).addClass('collapsed').attr('data-target')).addClass('in');
                 });
                 $('.entity-change-modal').modal('show');
             } else {
-                $(e.currentTarget).closest('ul.entity-list').find('li').removeClass('active');
-                $(e.currentTarget).closest('li').addClass('active');
+                $(this.el).find('.panel-collapse').removeClass('in');
+                $(this.el).find('.collapsed').removeClass('collapsed');
+                $($(e.currentTarget).addClass('collapsed').attr('data-target')).addClass('in');
             }
+
+            return false;
         },
+        //selectEntity: function (e) {
+
+        //    var dataId = $(e.currentTarget).attr('data-id');
+        //    var entityId = this.model.get('entityId');
+
+        //    if ((!_.isUndefined(entityId) && !_.isEmpty(entityId)) && dataId != entityId) {
+        //        $('.entity-change-modal').find('.ok').on('click', function () {
+        //            $('.entity-change-modal').modal('hide');
+        //            $(e.currentTarget).closest('ul.entity-list').find('li').removeClass('active');
+        //            $(e.currentTarget).closest('li').addClass('active');
+        //        });
+        //        $('.entity-change-modal').modal('show');
+        //    } else {
+        //        $(e.currentTarget).closest('ul.entity-list').find('li').removeClass('active');
+        //        $(e.currentTarget).closest('li').addClass('active');
+        //    }
+        //},
         isValid: function()
         {
             return (!_.isUndefined($(this.el).find('.in').parent().attr('data-id')));
@@ -95,7 +106,6 @@ define([
                 this.model.set('entityId', dataId);
                 this.model.set('entityName', entity.name);
                 this.model.set('url', entity.url);
-                //this.model.set('outputs', this.model.getOutputs());
                 this.model.set('sorts', this.model.getSorts());
             }
 
@@ -104,9 +114,11 @@ define([
                 outputs[i].isChildActive = false;
 
                 for (var j = 0; j < outputs[i].fields.length; j++) {
+                    outputs[i].fields[j].isActive = false;
                     var output = $(this.el).find('#panel-' + entity.id + '').find('#output-field-' + outputs[i].fields[j].id + '');
 
                     if (output.prop('checked')) {
+                        outputs[i].isChildActive = true;
                         outputs[i].fields[j].isActive = true;
                         outputIds.push(outputs[i].fields[j].id);
                     }

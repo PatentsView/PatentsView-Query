@@ -65,11 +65,11 @@
                             <div class="col-md-3">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <label for="output-group-{{this.id}}" data-toggle="popover" data-content="{{this.desc}}">
+                                        <label for="output-group-{{../index}}-{{@index}}" data-toggle="popover" data-content="{{this.desc}}">
                                             {{#if this.isActive}}
-                                            <input id="output-group-{{this.id}}" data-id="{{this.id}}" type="checkbox" class="check-all" checked="checked" /> {{this.name}}
+                                            <input id="output-group-{{../index}}-{{@index}}" data-id="{{this.id}}" type="checkbox" class="check-all" checked="checked" /> {{this.name}}
                                             {{else}}
-                                            <input id="output-group-{{this.id}}" data-id="{{this.id}}" type="checkbox" class="check-all" /> {{this.name}}
+                                            <input id="output-group-{{../index}}-{{@index}}" data-id="{{this.id}}" type="checkbox" class="check-all" /> {{this.name}}
                                             {{/if}}
                                         </label>
                                     </div>
