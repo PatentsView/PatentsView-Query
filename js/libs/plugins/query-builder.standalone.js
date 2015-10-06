@@ -745,14 +745,18 @@
      * @return rule {Rule}
      */
     QueryBuilder.prototype.addRule = function (parent, data) {
-       
         var e = this.trigger('beforeAddRule', parent);
         if (e.isDefaultPrevented()) {
             return null;
         }
 
         if (parent.rules.length > 0)
-        { $('.rules-group-body').addClass('multi'); }
+        { parent.$el.find('.rules-group-body').addClass('multi'); }
+        else if (parent.parent != undefined)
+        {
+            debugger;
+            parent.parent.$el.find('.rules-group-body').first().addClass('multi');
+        }
 
         var rule_id = this.nextRuleId(),
             $rule = $(this.template.rule.call(this, rule_id)),
@@ -775,6 +779,9 @@
      * @return {boolean} true if the rule has been deleted
      */
     QueryBuilder.prototype.deleteRule = function (rule) {
+
+        debugger;
+
         if (rule.flags.no_delete) {
             return false;
         }
@@ -783,6 +790,9 @@
         if (e.isDefaultPrevented()) {
             return false;
         }
+        
+        if (rule.parent.rules.length <= 2)
+        { rule.parent.$el.find('.rules-group-body').removeClass('multi'); }
 
         rule.drop();
 
@@ -2864,6 +2874,34 @@
             //});
         }, {});
 
+
+        QueryBuilder.define('typeahead', function (options) {
+            //init typeahead.
+            this.on('afterCreateRuleInput', function (e, rule) {
+                //Check if a typeahead can be added to the input.
+                if (rule.filter.type === 'string' && rule.filter.input === 'text' && rule.filter.values.length > 0)
+                {
+                    var input = rule.$el.find('.rule-value-container input');
+                    var se = new Bloodhound({
+                            datumTokenizer: Bloodhound.tokenizers.whitespace,
+                            queryTokenizer: Bloodhound.tokenizers.whitespace,
+                            local: rule.filter.values,
+                            initialize: true
+                    });
+
+                    input.typeahead({
+                            hint: true,
+                            highlight: true,
+                            minLength: 1
+                        },
+                        {
+                            name: rule.filter.id + '_engine',
+                            source: se
+                        });
+                }
+            });
+
+        }, {});
 
         /*!
          * jQuery QueryBuilder API support

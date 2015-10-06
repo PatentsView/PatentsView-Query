@@ -5656,8 +5656,6 @@ button.close {
   vertical-align: middle; }
 
 .query-builder .rules-group-container {
-  padding: 10px;
-  padding-bottom: -5px;
   border: 1px solid #b2cadd;
   background: #fff; }
   .query-builder .rules-group-container .rules-group-header {
@@ -5665,7 +5663,7 @@ button.close {
     padding-bottom: 25px; }
   .query-builder .rules-group-container .rules-group-body .group-conditions {
     display: none;
-    top: 10px; }
+    top: 0; }
     .query-builder .rules-group-container .rules-group-body .group-conditions .btn-primary {
       color: #222227;
       background-color: #E2E2E6;
@@ -5690,7 +5688,8 @@ button.close {
       background-image: url("../img/q.png");
       background-repeat: no-repeat;
       background-position-y: 2px;
-      padding-right: 15px; }
+      /*Uncomment if you need to do something with the question mark.
+      	padding-right: 15px;*/ }
   .query-builder .rules-group-container .rules-group-body .rules-list > *:before, .query-builder .rules-group-container .rules-group-body .rules-list > *:after {
     content: '';
     position: absolute;
@@ -5703,21 +5702,37 @@ button.close {
   .query-builder .rules-group-container .rules-group-body .rules-list > *:first-child:before {
     left: -15px;
     width: 13px;
-    top: 20px;
+    top: 10px;
     height: 0; }
+  .query-builder .rules-group-container .rules-group-body .rules-list > *:first-child:after {
+    top: 10px;
+    height: calc(50% + 30px); }
   .query-builder .rules-group-container .rules-group-body .rules-list > *:last-child:before {
     border-radius: 0 0 0 4px; }
   .query-builder .rules-group-container .rules-group-body .rules-list > *:last-child:after {
     display: none; }
-  .query-builder .rules-group-container .multi .group-conditions {
+  .query-builder .rules-group-container .multi > .group-conditions {
     display: inline; }
-  .query-builder .rules-group-container .multi .rules-list {
+  .query-builder .rules-group-container .multi > .rules-list {
     padding: 0 0 0 75px; }
-  .query-builder .rules-group-container .multi .rules-list > *:before {
-    top: -20px;
+  .query-builder .rules-group-container .multi > .rules-list > *:before {
+    top: -10px;
     border-width: 0 0 2px 2px; }
-  .query-builder .rules-group-container .multi .rules-list > *:after {
-    top: 35%;
+  .query-builder .rules-group-container .multi > .rules-list > *:after {
+    top: 50%;
+    border-width: 0 0 0 2px; }
+  .query-builder .rules-group-container .readonly > .group-conditions {
+    display: inline;
+    top: 25px; }
+  .query-builder .rules-group-container .readonly > .rules-list {
+    padding: 0 0 0 55px; }
+  .query-builder .rules-group-container .readonly > .rules-list > *:first-child:before {
+    margin-top: 0; }
+  .query-builder .rules-group-container .readonly > .rules-list > *:before {
+    top: -10px;
+    border-width: 0 0 2px 2px; }
+  .query-builder .rules-group-container .readonly > .rules-list > *:after {
+    top: 50%;
     border-width: 0 0 0 2px; }
 .query-builder .rule-container .rule-operator-contianer {
   border-left: 1px solid #ddd; }
@@ -5970,6 +5985,31 @@ ul.entity-list {
 
 .panel-body ul {
   padding-left: 0; }
+
+.review-entity h2.patent {
+  background: url("../img/icon-ribbon.png") no-repeat center 5px; }
+.review-entity h2.inventor {
+  background: url("../img/icon-bulb.png") no-repeat center 10px; }
+.review-entity h2.assignee {
+  background: url("../img/icon-case.png") no-repeat center 10px; }
+.review-entity h2.nberSubcategory, .review-entity button.cpcSubsection, .review-entity button.uspcMainclass {
+  background: url("../img/icon-folder.png") no-repeat center 10px; }
+.review-entity h2.location {
+  background: url("../img/icon-pin.png") no-repeat center 10px; }
+
+> #panel-patent > .panel-heading {
+  background: url("../img/icon-ribbon.png") no-repeat left 0 #536579; }
+
+> #panel-inventor > .panel-heading {
+  background: url("../img/icon-bulb.png") no-repeat left 0 #536579;
+  background-position-x: 5px; }
+
+> #panel-assignee > .panel-heading {
+  background: url("../img/icon-case.png") no-repeat left 0 #536579; }
+
+> #panel-location > .panel-heading {
+  background: url("../img/icon-pin.png") no-repeat left 0 #536579;
+  background-position-x: 3px; }
 
 .review-results .row > div {
   margin-bottom: 25px; }

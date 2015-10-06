@@ -29,7 +29,7 @@
             The PatentsView Query Tool provides an easy to use web interface for querying data on patents, inventors, assignees, patent classes, and locations from the PatentsView database.
         </p>
         <p>
-            To begin your search, click on one of the primary data output entities and click through to Step 2. Click through the steps of the query to select search criteria, identify output fields, and sort and limit results. You will receive results in the designated format via email within 24 hours.
+            To begin your search, select data output fields from the tables below. Then, click through the steps to select search criteria  and sort and limit results. You will receive results in the designated format via email within 24 hours.
         </p>
         <p>
             Similar queries can also be completed using the PatentsView API.
@@ -37,8 +37,12 @@
     </div>
 </div>
 <div class="col-md-12 r">
-    <h2>Step 1: Select outputs</h2>
-    <p class="step-desc">some stuff here.</p>
+    <h2>Step 1: Select Output Fields</h2>
+    <p class="step-desc">
+        Select fields to be include in output data.
+        <br />
+        <span class="step-tip">Hover over the text to view data group and data field definitions.</span>
+    </p>
     <div class="panel-group" id="accordion">
         {{#each this}}
         <div class="panel panel-default" id="panel-{{id}}" data-id="{{id}}">
@@ -46,11 +50,11 @@
                 <h4 class="panel-title">
                     {{#if isActive}}
                     <a data-toggle="collapse" data-target="#collapse-{{id}}" href="#collapse-{{id}}" class="collapsed">
-                    {{else}}
-                    <a data-toggle="collapse" data-target="#collapse-{{id}}" href="#collapse-{{id}}">
-                    {{/if}}
-                    {{name}}
-                    </a>
+                        {{else}}
+                        <a data-toggle="collapse" data-target="#collapse-{{id}}" href="#collapse-{{id}}">
+                            {{/if}}
+                            {{name}}
+                        </a>
                 </h4>
             </div>
             {{#if isActive}}
@@ -65,11 +69,11 @@
                             <div class="col-md-3">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <label for="output-group-{{../index}}-{{@index}}" data-toggle="popover" data-content="{{this.desc}}">
+                                        <label for="output-group-{{../../id}}-{{this.id}}" data-toggle="popover" data-content="{{this.desc}}">
                                             {{#if this.isActive}}
-                                            <input id="output-group-{{../index}}-{{@index}}" data-id="{{this.id}}" type="checkbox" class="check-all" checked="checked" /> {{this.name}}
+                                            <input id="output-group-{{../../../id}}-{{this.id}}" data-id="{{this.id}}" type="checkbox" class="check-all" checked="checked" /> {{this.name}}
                                             {{else}}
-                                            <input id="output-group-{{../index}}-{{@index}}" data-id="{{this.id}}" type="checkbox" class="check-all" /> {{this.name}}
+                                            <input id="output-group-{{../../../id}}-{{this.id}}" data-id="{{this.id}}" type="checkbox" class="check-all" /> {{this.name}}
                                             {{/if}}
                                         </label>
                                     </div>
@@ -96,7 +100,7 @@
 
                     </div>
                 </div>
+            </div>
+            {{/each}}
         </div>
-        {{/each}}
     </div>
-</div>

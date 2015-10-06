@@ -57,25 +57,19 @@ $ticks-position: 5px, 10px !default;
 
   // GROUPS
   .rules-group-container {
-    @extend %base-container;
-
-    padding: $group-padding;
-    padding-bottom: #{$group-padding - $item-vertical-spacing};
+    @extend %base-container;  
     border: $group-border;
     background: $group-background-color;
 
     .rules-group-header {
       margin-bottom: $group-padding;
-	  padding-bottom: 25px; //maybe move this to a var.    
-
-
-	  
+	  padding-bottom: 25px;
     }
 
 	.rules-group-body {
 		.group-conditions {
 			display: none;
-			top: 10px;
+			top: 0;
 
 			.btn-primary {
 			color: darken(#E2E2E6, 75%);
@@ -109,7 +103,8 @@ $ticks-position: 5px, 10px !default;
 					background-image: url('../img/q.png');
 					background-repeat: no-repeat;
 					background-position-y: 2px;
-					padding-right: 15px;
+					/*Uncomment if you need to do something with the question mark.
+						padding-right: 15px;*/
     
 			  }
 		}
@@ -131,8 +126,12 @@ $ticks-position: 5px, 10px !default;
 		&:first-child:before {
 		  left: #{-1 * (nth($ticks-position, 2) + 5)};
 		  width: #{3 + nth($ticks-position, 2)};
-		  top: 20px;
+		  top: 10px;
 		  height: 0;
+		}
+		&:first-child:after {
+			top: 10px;
+			height: calc(50% + #{$item-vertical-spacing + $item-vertical-spacing});
 		}
 		&:last-child:before {
 		  border-radius: 0 0 0 #{2 * $ticks-width};
@@ -144,23 +143,52 @@ $ticks-position: 5px, 10px !default;
 	}
 
 	.multi {
-		.group-conditions{
+		>.group-conditions{
 			display: inline;
 		}
 
-		.rules-list{
+		>.rules-list{
 			padding: 0 0 0 #{nth($ticks-position, 1) + nth($ticks-position, 2) + 60};
 		}
 
-		.rules-list>* {
+		>.rules-list>* {
 			&:before {
-			  top: #{-10 * $ticks-width};
+			  top: #{-5 * $ticks-width};
 			  border-width: 0 0 $ticks-width $ticks-width;
 			}
 			&:after {
-			  top: 35%;
+			  top: 50%;
 			  border-width: 0 0 0 $ticks-width;
 			}
+		}
+	}
+
+	.readonly {
+		>.group-conditions{
+			display: inline;
+			top: 25px;
+		}
+
+		>.rules-list{
+			padding: 0 0 0 #{nth($ticks-position, 1) + nth($ticks-position, 2) + 40};
+		}
+
+		>.rules-list>* {
+			
+			&:first-child:before{
+				margin-top: 0;
+			}
+
+			&:before {
+			  top: #{-5 * $ticks-width};
+			  border-width: 0 0 $ticks-width $ticks-width;
+			}
+			&:after {
+			  top: 50%;
+			  border-width: 0 0 0 $ticks-width;
+			}
+
+			
 		}
 	}
   }
@@ -217,8 +245,6 @@ $ticks-position: 5px, 10px !default;
       display: block !important;
     }
   }
-
- 
 }
 
 @import 'plugins/_bt-tooltip-errors';

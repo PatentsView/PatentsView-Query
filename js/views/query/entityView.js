@@ -48,46 +48,29 @@ define([
 
             var dataId = $(e.currentTarget).parent().attr('data-id');
             var entityId = this.model.get('entityId');
+            var $el = $(this.el);
 
             if ((!_.isUndefined(entityId) && !_.isEmpty(entityId)) && dataId != entityId) {
                 $('.entity-change-modal').find('.ok').on('click', function () {
                     $('.entity-change-modal').modal('hide');
-                    $(this.el).find('.panel-collapse').removeClass('in');
-                    $(this.el).find('.collapsed').removeClass('collapsed');
+                    $el.find('.panel-collapse').removeClass('in');
+                    $el.find('.collapsed').removeClass('collapsed');
                     $($(e.currentTarget).addClass('collapsed').attr('data-target')).addClass('in');
                 });
                 $('.entity-change-modal').modal('show');
             } else {
-                $(this.el).find('.panel-collapse').removeClass('in');
-                $(this.el).find('.collapsed').removeClass('collapsed');
+                $el.find('.panel-collapse').removeClass('in');
+                $el.find('.collapsed').removeClass('collapsed');
                 $($(e.currentTarget).addClass('collapsed').attr('data-target')).addClass('in');
             }
 
             return false;
         },
-        //selectEntity: function (e) {
-
-        //    var dataId = $(e.currentTarget).attr('data-id');
-        //    var entityId = this.model.get('entityId');
-
-        //    if ((!_.isUndefined(entityId) && !_.isEmpty(entityId)) && dataId != entityId) {
-        //        $('.entity-change-modal').find('.ok').on('click', function () {
-        //            $('.entity-change-modal').modal('hide');
-        //            $(e.currentTarget).closest('ul.entity-list').find('li').removeClass('active');
-        //            $(e.currentTarget).closest('li').addClass('active');
-        //        });
-        //        $('.entity-change-modal').modal('show');
-        //    } else {
-        //        $(e.currentTarget).closest('ul.entity-list').find('li').removeClass('active');
-        //        $(e.currentTarget).closest('li').addClass('active');
-        //    }
-        //},
         isValid: function()
         {
             return (!_.isUndefined($(this.el).find('.in').parent().attr('data-id')));
         },
         updateModel: function () {
-            debugger;
             var dataId = $(this.el).find('.in').parent().attr('data-id');
             var entities = this.model.get('entities');
             var entity = _.find(entities, { "id": dataId });

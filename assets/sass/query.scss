@@ -317,12 +317,56 @@ ul.entity-list {
 		
 }
 
+.review-entity {
+
+	h2.patent {
+	    background: url("../img/icon-ribbon.png") no-repeat center 5px;
+  }
+
+h2.inventor {
+	    background: url("../img/icon-bulb.png") no-repeat center 10px;
+  }
+
+h2.assignee {
+	    background: url("../img/icon-case.png") no-repeat center 10px;
+  }
+
+h2.nberSubcategory, button.cpcSubsection, button.uspcMainclass {
+	    background: url("../img/icon-folder.png") no-repeat center 10px;
+  }
+
+h2.location {
+	    background: url("../img/icon-pin.png") no-repeat center 10px;
+  }
+
+}
+
+> #panel-patent > .panel-heading  {
+		background: url("../img/icon-ribbon.png") no-repeat left 0 #536579;
+	}
+
+	> #panel-inventor > .panel-heading {
+		background: url("../img/icon-bulb.png") no-repeat left 0 #536579;
+		background-position-x: 5px;
+	}
+
+	> #panel-assignee > .panel-heading {
+		background: url("../img/icon-case.png") no-repeat left 0 #536579;
+	}
+
+	> #panel-location > .panel-heading {
+		background: url("../img/icon-pin.png") no-repeat left 0 #536579;
+		background-position-x: 3px;
+	}
+
+
+
+
 
 .review-results{
 	.row > div {
 		margin-bottom: 25px;
 	}
-	
 }
 
 .save-form {

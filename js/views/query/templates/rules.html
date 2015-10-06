@@ -1,18 +1,16 @@
 ﻿<dl class="rules-group-container">
-    <dt class="rules-group-header">
+    <dd class="rules-group-body readonly">
         <div class="btn-group group-conditions">
             <label class="label label-default">
                 {{condition}}
             </label>
         </div>
-    </dt>
-    <dd class="rules-group-body">
         <ul class="rules-list">
             {{#each this.rules}}
             {{#if rules}}
             {{> part_rules}}
             {{else}}
-            <li id="builder-rule-{{@index}}" class="rule-container">
+            <li id="builder-rule-{{@index}}" class="rule-container ">
                 <div class="rule-filter-container">
                     <span class="label label-default">Group</span>
                     {{group}}

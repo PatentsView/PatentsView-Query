@@ -5,13 +5,35 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Step 1: Primary Entity
+                    Step 1: Output Fields
                     <a href="#step/entity" class="pull-right" title="Edit the primary entity selected.">Edit</a>
                 </div>
-                <div class="panel-body text-center review-entity">
+                <div class="panel-body review-entity">
                     <h2 class="center-block">
                         {{entityName}}
                     </h2>
+                    <div class="panel-body review-outputs">
+                        {{#each entities}}
+                        {{#if isActive}}
+                        {{#each_active_output_every 4 this.outputs}}
+                        <div class="row">
+                            {{#each this}}
+                            <div class="col-md-3">
+                                <label>{{name}}</label>
+                                <ul class="list-unstyled">
+                                    {{#each this.fields}}
+                                    {{#if isActive}}
+                                    <li>{{this.name}}</li>
+                                    {{/if}}
+                                    {{/each}}
+                                </ul>
+                            </div>
+                            {{/each}}
+                        </div>
+                        {{/each_active_output_every}}
+                        {{/if}}
+                        {{/each}}
+                    </div>
                 </div>
             </div>
         </div>
@@ -29,34 +51,6 @@
                         {{> part_rules}}
                         {{/each}}
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Step 3: Output Fields
-                    <a href="#step/outputs" class="pull-right" title="Edit the fields to output in your query.">Edit</a>
-                </div>
-                <div class="panel-body review-outputs">
-                    {{#each_active_output_every 4 outputs}}
-                    <div class="row">
-                        {{#each this}}
-                        <div class="col-md-3">
-                            <label>{{name}}</label>
-                            <ul class="list-unstyled">
-                                {{#each this.fields}}
-                                {{#if isActive}}
-                                <li>{{this.name}}</li>
-                                {{/if}}
-                                {{/each}}
-                            </ul>
-                        </div>
-                        {{/each}}
-                    </div>
-                    {{/each_active_output_every}}
                 </div>
             </div>
         </div>

@@ -43,7 +43,7 @@ define([
                     $(this.el).empty();
                     $(this.el).append(this.template(this.model.toJSON()));
                     this.model.set("qb", $(this.el).find('#builder').queryBuilder({
-                        plugins: ['location'],
+                        plugins: ['location', 'typeahead'],
                         select_placeholder: '- Select Field -',
                         filters: filters
                     }));
