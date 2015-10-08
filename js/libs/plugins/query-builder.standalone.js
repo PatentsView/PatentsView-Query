@@ -754,7 +754,6 @@
         { parent.$el.find('.rules-group-body').addClass('multi'); }
         else if (parent.parent != undefined)
         {
-            debugger;
             parent.parent.$el.find('.rules-group-body').first().addClass('multi');
         }
 
@@ -779,8 +778,6 @@
      * @return {boolean} true if the rule has been deleted
      */
     QueryBuilder.prototype.deleteRule = function (rule) {
-
-        debugger;
 
         if (rule.flags.no_delete) {
             return false;

@@ -49,6 +49,16 @@
         return result;
     });
 
+    Handlebars.registerHelper('check_multi_rules', function (options) {
+
+        var result = "";
+
+        if (this.rules != undefined && this.rules.length > 1)
+        { result = "-multi"; }
+
+        return result;
+    });
+
 
     return Handlebars;
 });

@@ -5722,16 +5722,32 @@ button.close {
     top: 50%;
     border-width: 0 0 0 2px; }
   .query-builder .rules-group-container .readonly > .group-conditions {
-    display: inline;
-    top: 25px; }
+    /*display: inline;*/
+    top: 20px; }
+    .query-builder .rules-group-container .readonly > .group-conditions .label {
+      display: inline-block;
+      width: 30px;
+      height: 15px;
+      padding: .3em .6em .3em .6em; }
   .query-builder .rules-group-container .readonly > .rules-list {
-    padding: 0 0 0 55px; }
-  .query-builder .rules-group-container .readonly > .rules-list > *:first-child:before {
+    padding: 0 0 0 0; }
+  .query-builder .rules-group-container .readonly-multi > .group-conditions {
+    display: inline;
+    top: 20px; }
+    .query-builder .rules-group-container .readonly-multi > .group-conditions .label {
+      display: inline-block;
+      width: 30px;
+      height: 15px;
+      padding: .3em .6em .3em .6em;
+      margin-bottom: 0; }
+  .query-builder .rules-group-container .readonly-multi > .rules-list {
+    padding: 0 0 0 45px; }
+  .query-builder .rules-group-container .readonly-multi > .rules-list > .rule-container:first-child {
     margin-top: 0; }
-  .query-builder .rules-group-container .readonly > .rules-list > *:before {
+  .query-builder .rules-group-container .readonly-multi > .rules-list > *:before {
     top: -10px;
     border-width: 0 0 2px 2px; }
-  .query-builder .rules-group-container .readonly > .rules-list > *:after {
+  .query-builder .rules-group-container .readonly-multi > .rules-list > *:after {
     top: 50%;
     border-width: 0 0 0 2px; }
 .query-builder .rule-container .rule-operator-contianer {

@@ -1,0 +1,106 @@
+﻿<div class="modal fade entity-change-modal" tabindex="-1" role="dialog" aria-labelledby="entity-change-modal-title" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="entity-change-modal-title">Changing Primary Entity</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Warning, changing the primary entity will reset the query input values you've provided.  Click Ok to change the primary entity, or Cancel to keep your current selections.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Cancel">Cancel</button>
+                <button type="button" class="btn btn-primary ok" aria-label="Ok">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="intro">
+    <div class="col-md-3">
+        <h1>
+            The PatentsView
+            Query Tool
+        </h1>
+    </div>
+    <div class="col-md-9">
+        <p>
+            The PatentsView Query Tool provides an easy to use web interface for querying data on patents, inventors, assignees, patent classes, and locations from the PatentsView database.
+        </p>
+        <p>
+            To begin your search, select data output fields from the tables below. Then, click through the steps to select search criteria  and sort and limit results. You will receive results in the designated format via email within 24 hours.
+        </p>
+        <p>
+            Similar queries can also be completed using the PatentsView API.
+        </p>
+    </div>
+</div>
+<div class="col-md-12 r">
+    <h2>Step 1: Select Output Fields</h2>
+    <p class="step-desc">
+        Select fields to be include in output data.
+        <br />
+        <span class="step-tip">Hover over the text to view data group and data field definitions.</span>
+    </p>
+    <div class="panel-group" id="accordion">
+        {{#each this}}
+        <div class="panel panel-default" id="panel-{{id}}" data-id="{{id}}">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    {{#if isActive}}
+                    <a data-toggle="collapse" data-target="#collapse-{{id}}" href="#collapse-{{id}}" class="collapsed">
+                        {{else}}
+                        <a data-toggle="collapse" data-target="#collapse-{{id}}" href="#collapse-{{id}}">
+                            {{/if}}
+                            {{name}}
+                        </a>
+                </h4>
+            </div>
+            {{#if isActive}}
+            <div id="collapse-{{id}}" class="panel-collapse collapse in">
+                {{else}}
+                <div id="collapse-{{id}}" class="panel-collapse collapse">
+                    {{/if}}
+                    <div class="panel-body">
+                        {{#each_every 4 this.outputs}}
+                        <div class="row equal">
+                            {{#each this}}
+                            <div class="col-md-3">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <label for="output-group-{{../../id}}-{{this.id}}" data-toggle="popover" data-content="{{this.desc}}">
+                                            {{#if this.isActive}}
+                                            <input id="output-group-{{../../../id}}-{{this.id}}" data-id="{{this.id}}" type="checkbox" class="check-all" checked="checked" /> {{this.name}}
+                                            {{else}}
+                                            <input id="output-group-{{../../../id}}-{{this.id}}" data-id="{{this.id}}" type="checkbox" class="check-all" /> {{this.name}}
+                                            {{/if}}
+                                        </label>
+                                    </div>
+                                    <div class="panel-body ">
+                                        <ul class="checkbox-list output-groups" data-output-group-id="{{this.id}}">
+                                            {{#each this.fields}}
+                                            <li class="checkbox">
+                                                <label for="output-field-{{this.id}}" data-toggle="popover" data-content="{{this.desc}}">
+                                                    {{#if this.isActive}}
+                                                    <input id="output-field-{{this.id}}" type="checkbox" data-id="{{this.id}}" class="check" checked="checked"> {{this.name}}
+                                                    {{else}}
+                                                    <input id="output-field-{{this.id}}" type="checkbox" data-id="{{this.id}}" class="check"> {{this.name}}
+                                                    {{/if}}
+                                                </label>
+                                            </li>
+                                            {{/each}}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                        {{/each_every}}
+
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>

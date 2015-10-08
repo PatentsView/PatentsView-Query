@@ -165,19 +165,45 @@ $ticks-position: 5px, 10px !default;
 
 	.readonly {
 		>.group-conditions{
-			display: inline;
-			top: 25px;
+			/*display: inline;*/
+			top: 20px;
+
+			.label{
+				display: inline-block; 
+				width: 30px;
+				height: 15px;
+				padding: .3em .6em .3em .6em;
+			}
 		}
 
 		>.rules-list{
-			padding: 0 0 0 #{nth($ticks-position, 1) + nth($ticks-position, 2) + 40};
+			padding: 0 0 0 0;
+		}
+	}
+
+	.readonly-multi {
+		>.group-conditions{
+			display: inline;
+			top: 20px;
+
+			.label{
+				display: inline-block; 
+				width: 30px;
+				height: 15px;
+				padding: .3em .6em .3em .6em;
+				margin-bottom: 0;
+			}
+		}
+
+		>.rules-list{
+			padding: 0 0 0 #{nth($ticks-position, 1) + nth($ticks-position, 2) + 30};
+		}
+
+		>.rules-list>.rule-container:first-child{
+			margin-top: 0;
 		}
 
 		>.rules-list>* {
-			
-			&:first-child:before{
-				margin-top: 0;
-			}
 
 			&:before {
 			  top: #{-5 * $ticks-width};
@@ -187,8 +213,6 @@ $ticks-position: 5px, 10px !default;
 			  top: 50%;
 			  border-width: 0 0 0 $ticks-width;
 			}
-
-			
 		}
 	}
   }

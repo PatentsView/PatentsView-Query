@@ -24,7 +24,6 @@ define([
             return this;
         },
         render: function () {
-            debugger;
             $(this.el).empty();
             $(this.el).append(this.template(this.model.toJSON()));
 

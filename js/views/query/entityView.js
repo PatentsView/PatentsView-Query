@@ -112,18 +112,18 @@ define([
         },
         getNavHtml: function (s) {
             //s is the state requested.
-            var result = '<i class="fa fa-lg fa-square-o"></i> Step 1: Select Entity';
+            var result = '<i class="fa fa-lg fa-square-o"></i> Step 1: Select Output Fields';
 
             switch (s) {
                 case "active":
                     {
-                        result = '<i class="fa fa-lg fa-square-o"></i> Step 1: Select Entity';
+                        result = '<i class="fa fa-lg fa-square-o"></i> Step 1: Select Output Fields';
                     
                         break;
                     }
                 case "complete":
                     {
-                        result = '<i class="fa fa-lg fa-check-square-o"></i> Step 1: '+ this.model.get('entityName')  ;
+                        result = '<i class="fa fa-lg fa-check-square-o"></i> Step 1: ' + this.model.get('entityName') + ' - Select Output Fields';
 
                         break;
                     }
