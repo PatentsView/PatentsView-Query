@@ -148,6 +148,7 @@ define([
                         input: inputMatch.type,
                         operators: typeMatch.ops,
                         values: field.values,
+                        remoteUrl: field.remoteUrl,
                         optgroup: field.group,
                         desc: field.desc
                     };

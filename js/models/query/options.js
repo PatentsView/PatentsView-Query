@@ -1583,11 +1583,12 @@
         "patent",
         "assignee",
         "location",
-        "inventor"
+        "inventor"  
       ],
       "values": [
 
       ],
+      "remoteUrl": { "url": "/query/lookup.php", "table": "cpcsubgroup" },
       "fieldType": "input",
       "isSort": "true",
       "isDefault": "false",

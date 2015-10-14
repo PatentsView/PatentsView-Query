@@ -2875,17 +2875,38 @@
         QueryBuilder.define('typeahead', function (options) {
             //init typeahead.
             this.on('afterCreateRuleInput', function (e, rule) {
+                
                 //Check if a typeahead can be added to the input.
-                if (rule.filter.type === 'string' && rule.filter.input === 'text' && rule.filter.values.length > 0)
+                if (rule.filter.type === 'string' && rule.filter.input === 'text' && (rule.filter.values.length > 0 || rule.filter.remoteUrl != undefined))
                 {
                     var input = rule.$el.find('.rule-value-container input');
-                    var se = new Bloodhound({
+                    var se = null;
+                    debugger;
+                    if (rule.filter.remoteUrl != undefined) {
+                        se = new Bloodhound({
+                            datumTokenizer: Bloodhound.tokenizers.whitespace,
+                            queryTokenizer: Bloodhound.tokenizers.whitespace,
+                            local: rule.filter.values,
+                            remote: {
+                                url: (rule.filter.remoteUrl != undefined) ? rule.filter.remoteUrl : '',
+                                replace: function (remoteUrl, query) {
+                                    debugger;
+                                    return remoteUrl.url + "?t=" + rule.filter.remoteUrl.table + '&s=' + query;
+                                }
+                            },
+                            initialize: true
+                        });
+                    }
+                    else {
+                        debugger;
+                        se = new Bloodhound({
                             datumTokenizer: Bloodhound.tokenizers.whitespace,
                             queryTokenizer: Bloodhound.tokenizers.whitespace,
                             local: rule.filter.values,
                             initialize: true
-                    });
-
+                        });
+                    }
+                    
                     input.typeahead({
                             hint: true,
                             highlight: true,
