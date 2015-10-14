@@ -321,7 +321,7 @@
         "state",
         "country"
       ],
-      "fieldType": "select",
+      "fieldType": "location",
       "isSort": "true",
       "isDefault": "false",
       "isOutput": "true",
@@ -342,7 +342,7 @@
         "state",
         "country"
       ],
-      "fieldType": "select",
+      "fieldType": "location",
       "isSort": "true",
       "isDefault": "false",
       "isOutput": "true",
@@ -677,7 +677,7 @@
         "state",
         "country"
       ],
-      "fieldType": "select",
+      "fieldType": "location",
       "isSort": "true",
       "isDefault": "false",
       "isOutput": "true",
@@ -787,7 +787,7 @@
         "state",
         "country"
       ],
-      "fieldType": "input",
+      "fieldType": "location",
       "isSort": "true",
       "isDefault": "false",
       "isOutput": "true",
@@ -1588,7 +1588,7 @@
       "values": [
 
       ],
-      "remoteUrl": { "url": "/query/lookup.php", "table": "cpcsubgroup" },
+      "remoteUrl": { "url": "/querytool/query/lookup.php", "table": "cpcsubgroup" },
       "fieldType": "input",
       "isSort": "true",
       "isDefault": "false",
@@ -1777,7 +1777,7 @@
         "state",
         "country"
       ],
-      "fieldType": "input",
+      "fieldType": "location",
       "isSort": "true",
       "isDefault": "false",
       "isOutput": "true",
@@ -1905,7 +1905,7 @@
         "state",
         "country"
       ],
-      "fieldType": "input",
+      "fieldType": "location",
       "isSort": "true",
       "isDefault": "false",
       "isOutput": "true",
@@ -2502,7 +2502,7 @@
         "state",
         "country"
       ],
-      "fieldType": "input",
+      "fieldType": "location",
       "isSort": "true",
       "isDefault": "false",
       "isOutput": "true",
@@ -2546,7 +2546,7 @@
         "state",
         "country"
       ],
-      "fieldType": "input",
+      "fieldType": "location",
       "isSort": "true",
       "isDefault": "false",
       "isOutput": "true",
