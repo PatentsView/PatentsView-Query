@@ -139,7 +139,7 @@ define([
                 var typeMatch = _.find(types, { "matches": [field.type] });
                 var inputMatch = _.find(inputs, { "matches": [field.fieldType] });
 
-                if (field.isQuery) {
+                if (field.isQuery === "true") {
 
                     var filter = {
                         id: field.id,
