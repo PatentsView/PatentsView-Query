@@ -10,26 +10,28 @@ require.config({
         i18n: 'https://cdnjs.cloudflare.com/ajax/libs/require-i18n/2.0.4/i18n.min',
         handlebarsCore: 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min',
         handlebars: 'libs/plugins/handlebars.helpers',
-        //headfoot: 'http://ec2-54-68-66-55.us-west-2.compute.amazonaws.com/js/headfoot', //Might try to shim this later.
-        bootstrap: 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min',
+        bootstrap: 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min',
+        bootstrapSelect: 'libs/plugins/bootstrap-select',
         typeahead: 'libs/plugins/typeahead.bundle',
         bloodhound: 'libs/plugins/typeahead.bundle',
         validateCore: 'libs/plugins/jquery.validate',
         validate: 'libs/plugins/jquery.validate.additional',
-        moment: 'libs/plugins/moment',
-        'query-builder': 'libs/plugins/query-builder.standalone',
+        prism: 'libs/plugins/prism',
+        papa: 'libs/plugins/papaparse',
         recaptcha: 'https://www.google.com/recaptcha/api.js?render=explicit&response=yes'
     },
     shim: {
+        prism: { exports: 'Prism' },
+        papa: { exports: 'Papa' },
         handlebarsCore: { exports:'"Handlebars' },
         handlebars: {
             deps: ['handlebarsCore'],
             exports: 'Handlebars'
         },
-        //headfoot: { "deps": ['i18n'], 'exports': 'headfoot' }, //Might try to shim this later.
-        bootstrap: { "deps": ['jquery'] },
-        typeahead: { 'deps': ['jquery'], 'exports': 'Typeahead' },
-        bloodhound: { 'deps': ['jquery'], 'exports': 'Bloodhound' },
+        bootstrap: { deps: ['jquery'] },
+        bootstrapSelect: { deps: ['jquery'], exports: 'BootstrapSelect' },
+        typeahead: { deps: ['jquery'], exports: 'Typeahead' },
+        bloodhound: { deps: ['jquery'], exports: 'Bloodhound' },
         validateCore: { exports: 'Validate' },
         validate: {
             deps: ['validateCore'],
@@ -41,5 +43,6 @@ require.config({
 });
 
 require(["app"], function (App) {
-        App.initialize();
-    });
+    App.initialize();
+});
+

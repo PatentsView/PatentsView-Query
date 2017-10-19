@@ -32,10 +32,10 @@ header.thin-header a, header.med-header a, footer.thin-footer a, .overlay a, hea
   color: #536579; }
   header.thin-header a:hover, header.med-header a:hover, footer.thin-footer a:hover, .overlay a:hover {
     border-bottom-color: #e17954;
-    color: #e17954; 
+    color: #e17954;
     font-weight: 500;
   }
-    
+
 
   header.thin-header a[target="_blank"]:hover:after, header.med-header a[target="_blank"]:hover:after, footer.thin-footer a[target="_blank"]:hover:after, .overlay a[target="_blank"]:hover:after, header.thin-header a[target="_blank"]:active:after, header.med-header a[target="_blank"]:active:after, footer.thin-footer a[target="_blank"]:active:after, .overlay a[target="_blank"]:active:after, header.thin-header a.new-window:hover:after, header.med-header a.new-window:hover:after, footer.thin-footer a.new-window:hover:after, .overlay a.new-window:hover:after, header.thin-header a.new-window:active:after, header.med-header a.new-window:active:after, footer.thin-footer a.new-window:active:after, .overlay a.new-window:active:after {
     content: ".";
@@ -171,7 +171,7 @@ header.med-header .logo {
 
 @media (min-width: 1013px) {
   /*.centered-header {
-    width: 985px; }*/ }
+  width: 1170px; }*/ }
 @media (max-width: 1012px) {
   /*.centered-header {
     width: 758px; }*/ }
@@ -185,7 +185,7 @@ header.thin-header .centered-header, header.med-header .centered-header {
 header.thin-header a, header.thin-header a:visited, header.med-header a, header.med-header a:visited {
   color: #cde6f6 !important;
   text-decoration: none;
-  font-size: 11px; 
+  font-size: 11px;
   background-color: transparent !important;
 }
 
@@ -666,4 +666,3 @@ footer.thin-footer {
             border-color: transparent;
           }
         }
-

@@ -1,25 +1,22 @@
 ﻿<!-- step-by-step composer -->
-<!-- progress indicator -->
-<ul id="step-view-progress" class="nav nav-tabs nav-justified"></ul>
-<!-- /progress indicator -->
 <!-- step-view container -->
 <div id="step-view-container"></div>
 <!-- /step-view container -->
 <!-- step pagination -->
-<ul id="step-pager">
-    <li class="next">
-        <button id="next" type="button" class="btn btn-default" aria-label="Next">Next</button>
-    </li>
-    <li class="previous">
-        <button id="previous" type="button" class="btn btn-default" style="display: none;" aria-label="Previous">Previous</button>
-    </li>
-</ul>
+<div id="step-pager">
+    <div class="previous">
+        <button id="previous" type="button" class="prev-next-btn btn btn-lg btn-primary" aria-label="Previous"><i class="fa fa-caret-left" />Previous</button>
+    </div>
+    <div class="next">
+        <button id="next" type="button" class="prev-next-btn btn btn-lg btn-primary" aria-label="Next">Next</button>
+    </div>
+</div>
 <!-- /step pagination -->
 <!-- /step-by-step composer -->
 <!-- form action buttons -->
 <div class="form-actions col-md-12 save-form" style="display: none;">
     <div class="pull-right">
         <div id="captcha-container"></div>
-        <button id="save" type="submit" class="btn btn-lg btn-default" disabled="disabled" aria-label="Submit Query">Submit Query</button>
+        <button id="save" type="submit" class="prev-next-btn btn btn-lg btn-primary" disabled="disabled" aria-label="Submit Query">Submit Query</button>
     </div>
 </div>

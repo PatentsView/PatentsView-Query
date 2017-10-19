@@ -29,8 +29,8 @@ define([
                     getNext: function () { return next; },
                     getView: function () { return view; },
                     getTab: function () { return tab; },
-                    getPos: function() { return pos;  },
-                    getHideTab: function() { return hideTab; },
+                    getPos: function () { return pos; },
+                    getHideTab: function () { return hideTab; },
                     getHideNav: function () { return hideNav; },
                 };
             };
@@ -41,7 +41,7 @@ define([
             var list = new Array();
 
             return {
-                all: function() { return list; },
+                all: function () { return list; },
                 first: function () { return head; },
                 last: function () { return tail; },
                 moveNext: function () {
@@ -56,7 +56,7 @@ define([
 
                     while (node !== undefined && node !== null) {
                         if (node.getTab() !== tab) { node = node.getNext(); }
-                        else {return node; }
+                        else { return node; }
                     }
 
                     return null;
@@ -94,43 +94,66 @@ define([
                 this.stepViews = new StepViews();
             },
             events: {
-                "click .btn-previous": "routeStep",
+                "click #previous": "routeStep",
                 "click #next": "routeStep",
                 "click .nav-tabs a": "routeStep",
-                "click #save": "save" 
+                "click #save": "save"
             },
             render: function () {
                 var currentView = this.stepViews.getCurrent();
 
                 if (!_.isUndefined(currentView) && !_.isNull(currentView)) {
+
                     if (currentView.getNext() === null) {
+                        $('#step-pager', this.el).hide();
+                        $('#previous', this.el).hide();
                         $('#next', this.el).hide();
                         $('.form-actions').show();
-                        $('#captcha-container').empty();
                         $('#save').prop("disabled", true);
 
-                        //TODO: check if this var is on the window object.
                         if (!_.isUndefined(grecaptcha) && !_.isNull(grecaptcha)) {
-                            grecaptcha.render('captcha-container', {
-                                'sitekey': '6LdUAAkTAAAAAIJOXjy5mx50N_cUs22JM3XNNDAs',
-                                'callback': function(e) {
-                                    $('#save').prop("disabled", _.isEmpty(e));
-                                },
-                                'expired-callback': function() {
-                                    $('#save').prop("disabled", true);
-                                }
-                            });
+
+                            var captchaContiner = $('#captcha-container');
+
+                            if (captchaContiner.data('rendered')) {
+                                grecaptcha.reset();
+                            }
+                            else {
+
+                                grecaptcha.render('captcha-container', {
+                                    'sitekey': '6LcUEgYTAAAAAPXnyayKNTkx4nZsgQoBG52pD9_D',
+                                    'callback': function (e) {
+                                        $('#save').prop("disabled", _.isEmpty(e));
+                                    },
+                                    'expired-callback': function () {
+                                        $('#save').prop("disabled", true);
+                                    }
+                                });
+
+                                captchaContiner.data('rendered', true);
+                            }
                         }
                     } else {
                         $('#next', this.el).html(this.getNextHtml());
-                        $('#next', this.el).show();
                         $('.form-actions').hide();
+                        $('#next', this.el).show();
+
+                        if (currentView.getPrevious() === null) {
+                            $('#previous', this.el).hide();
+                        } else {
+                            $('#previous', this.el).show();
+                        }
+
+                        if (this.displayPager()) {
+                            $('#step-pager', this.el).show();
+                        }
+                        else {
+                            $('#step-pager', this.el).hide();
+                        }
+
+
                     }
-                    if (currentView.getPrevious() === null) {
-                        $('.btn-previous', this.el).hide();
-                    } else {
-                        $('.btn-previous', this.el).show();
-                    }
+
                     if (currentView.getHideNav()) {
                         this.stepViewTabs.hide();
                     } else {
@@ -139,13 +162,13 @@ define([
 
                     var tabPos = currentView.getPos();
                     var stepViewTabs = this.stepViewTabs;
-                    
+
                     _.forEach(this.stepViews.all(), function (n) {
                         var view = n.getView();
                         var pos = n.getPos();
                         var anchor = stepViewTabs.find('li > a#' + view.id);
                         anchor.parent().attr('class', '');
-                        
+
                         if (pos < tabPos) {
                             anchor.parent().addClass('complete');
                             anchor.empty().html(view.getNavHtml('complete'));
@@ -159,8 +182,9 @@ define([
 
                     //show only the current view
                     this.stepViewContainer.find('.step-view:parent').hide();
-                    $(currentView.getView().render().el).show();
+                    $(currentView.getView().render(true).el).show();
                 }
+
                 return this;
             },
             insertView: function (view) {
@@ -197,14 +221,19 @@ define([
             isValid: function () {
                 var currentView = this.stepViews.getCurrent().getView();
 
-                return (_.isUndefined(currentView.isValid)) ? true: currentView.isValid();
+                return (_.isUndefined(currentView.isValid)) ? true : currentView.isValid();
             },
-            updateModel: function() {
+            updateModel: function () {
                 this.stepViews.getCurrent().getView().updateModel();
             },
             save: function (e) {
                 e = e || window.event;
                 var source = $(e.srcElement || e.target);
+
+                if (!this.isValid())
+                    return;
+
+                this.updateModel();
                 var response = (_.isUndefined(grecaptcha) || _.isNull(grecaptcha)) ? "" : grecaptcha.getResponse();
                 var model = this.model.toJSON();
                 var query = {
@@ -224,12 +253,14 @@ define([
                 $(source).append('&nbsp;&nbsp;<i class="fa fa-spinner fa-pulse" />');
                 $(source).prop('disabled', true);
 
-
                 jQuery.ajax({
+                    context: this,
                     type: 'POST',
-                    url: "http://www.dev.patentsview.org/querytool/query/verify.php",
+                    url: "http://www.patentsview.org/querydev/query/verify.php", //Change for production build.
+                    //url: "/query/verify.php",
                     data: { "g-recaptcha-response": response, "query": JSON.stringify(query) },
                     success: function (e) {
+                        $('#q').val(e.id);
                         $('#submit').submit();
                     },
                     error: function (e) {
@@ -245,7 +276,7 @@ define([
                 var action = $(source).attr('id');
                 var dest = 'start';
 
-                if (action === 'next' ) {
+                if (action === 'next') {
 
                     if (!this.isValid())
                         return false;
@@ -265,8 +296,7 @@ define([
                     dest = action;
                     var destTab = this.stepViews.getByTab(dest);
 
-                    if (destTab !== undefined)
-                    {
+                    if (destTab !== undefined) {
                         if ((destTab.getPos() > this.stepViews.getCurrent().getPos()) && !this.isValid())
                             return false;
                     }
@@ -277,10 +307,16 @@ define([
                 return false;
             },
             getNextHtml: function () {
-                if (!_.isUndefined(this.stepViews.getCurrent().getView().getNextHtml()))
+                if (!_.isUndefined(this.stepViews.getCurrent().getView().getNextHtml))
                     return this.stepViews.getCurrent().getView().getNextHtml();
 
                 return 'Next';
+            },
+            displayPager: function () {
+                if (!_.isUndefined(this.stepViews.getCurrent().getView().displayPager))
+                    return this.stepViews.getCurrent().getView().displayPager();
+
+                return true;
             }
         });
 
@@ -297,14 +333,22 @@ define([
             },
             movePrevious: function () { stepView.movePrevious(); },
             moveNext: function () { stepView.moveNext(); },
-            moveToTab: function(e) {
+            moveToTab: function (e) {
                 return stepView.moveToTab(e);
             },
             render: function () {
                 return stepView.render();
             },
-            stepEvents: function() {
+            stepEvents: function () {
                 return stepView.stepViews.stepEvents();
+            },
+            displayPager: function (display) {
+                if (display) {
+                    $('#step-pager').show();
+                }
+                else {
+                    $('#step-pager').hide();
+                }
             }
         };
 

@@ -35,27 +35,24 @@
 	    bloodhound: 'libs/plugins/typeahead.bundle',
 	    validateCore: 'libs/plugins/jquery.validate',
 	    validate: 'libs/plugins/jquery.validate.additional',
-	    moment: 'libs/plugins/moment',
-	    'query-builder': 'libs/plugins/query-builder.standalone',
-		recaptcha: 'empty:'
+	    prism: 'libs/plugins/prism',
+	    papa: 'libs/plugins/papaparse',
+	    recaptcha: 'empty:'
 	},
 	shim: {
-		handlebarsCore: { exports: '"Handlebars' },
-		handlebars: {
-			deps: ['handlebarsCore'],
-			exports: 'Handlebars'
+	        prism: { exports: 'Prism' },
+	        papa: { exports: 'Papa' },
+        	handlebarsCore: { exports:'"Handlebars' },
+        	handlebars: { deps: ['handlebarsCore'], exports: 'Handlebars' },
+	        bootstrap: { deps: ['jquery'] },
+	        bootstrapSelect: { deps: ['jquery'], exports: 'BootstrapSelect' },
+	        typeahead: { deps: ['jquery'], exports: 'Typeahead' },
+	        bloodhound: { deps: ['jquery'], exports: 'Bloodhound' },
+        	validateCore: { exports: 'Validate' },
+	        validate: { deps: ['validateCore'], exports: 'Validate' },
+	        recaptcha: { exports: 'Recaptcha' }
 		},
-		bootstrap: { "deps": ['jquery'] },
-		typeahead: { 'deps': ['jquery'], 'exports': 'Typeahead' },
-		bloodhound: { 'deps': ['jquery'], 'exports': 'Bloodhound' },
-		validateCore: { exports: 'Validate' },
-		validate: {
-			deps: ['validateCore'],
-			exports: 'Validate'
-		},
-		recaptcha: { exports: 'Recaptcha' }
-	},
-    urlArgs: "v=" + 1,
+	urlArgs: "v=" + 1,
 	optimizeCss: 'standard.keepLines',
 	modules: [
 		{

@@ -1,9 +1,0 @@
-# User-specific files
-*.sln
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-*.phpproj
-/app-build
-/Properties/PublishProfiles
