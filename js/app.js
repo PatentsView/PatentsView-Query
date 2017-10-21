@@ -1,16 +1,1 @@
-/**************************************************************/
-// App initializer.
-/**************************************************************/
-define([
-  'jquery',
-  'underscore',
-  'backbone',
-  'router'
-], function ($, _, Backbone, Router) {
-
-    var initialize = function () {
-        Router.initialize();
-    }
-
-    return { initialize: initialize };
-});
+define(["jquery","underscore","backbone","router"],function(e,t,n,r){var i=function(){r.initialize()};return{initialize:i}});

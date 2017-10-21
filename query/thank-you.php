@@ -24,7 +24,7 @@ if ($result->num_rows > 0) {
 }
 
 $result->close();
-pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"));
+pclose(popen('start /B php.exe C:/querytool/backend.php '.$entity_id.' 2>nul >nul', "r"));
 
 ?>
 
@@ -40,6 +40,15 @@ pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"
     <link rel="stylesheet" href="http://ec2-54-68-66-55.us-west-2.compute.amazonaws.com/css/headfoot.css" />
     <link rel="stylesheet" href="http://www.patentsview.org/querydev/assets/css/font-awesome.min.css" />
     <link rel="stylesheet" href="http://www.patentsview.org/querydev/assets/css/pvqt.css" />
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-90540397-1', 'auto');
+    ga('send', 'pageview', {/*sequence*/ metric1: 0});
+    </script>      
 </head>
 <body>
     <noscript>This search tool requires Javascript. For more information about finding a particular patent or group of patents please visit <a href="http://uspto.gov/" title="United States Patent and Trademark Office Website">www.uspto.gov</a> or call our customer support at <a href="tel:1-800-786-9199" title="USPTO Customer Support Toll-Free Phone Number">1-800-786-9199</a>.</noscript>
@@ -48,9 +57,9 @@ pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"
             <a href="/" class="logo" title="PatentsView - USPTO" alt="PatentsView Logo"></a>
             <nav>
                 <ul>
-                    <li class="api"><a href="#">API</a><div class="nav-tooltip">provides developers and researchers programmatic access to the underlying data</div></li>
-                    <li class="data-query active"><a href="#">Data Query</a><div class="nav-tooltip">provides a graphical interface for researchers to query the entire underlying database</div></li>
-                    <li class="data-download"><a href="#">Data Download</a><div class="nav-tooltip">provides downloadable tables as csv files covering the underlying database</div></li>
+                    <li class="api"><a href="http://www.patentsview.org/api/">API</a><div class="nav-tooltip">provides developers and researchers programmatic access to the underlying data</div></li>
+                    <li class="data-query active"><a href="http://www.patentsview.org/query/">Data Query</a><div class="nav-tooltip">provides a graphical interface for researchers to query the entire underlying database</div></li>
+                    <li class="data-download"><a href="http://www.patentsview.org/download/">Data Download</a><div class="nav-tooltip">provides downloadable tables as csv files covering the underlying database</div></li>
                 </ul>
             </nav>
         </div>
