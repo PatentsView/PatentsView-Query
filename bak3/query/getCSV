@@ -1,0 +1,9 @@
+<?php
+$your_json=$_GET["cc"];
+$filename = "C:/querytool/preview/".hash("crc32", $your_json).".json";
+file_put_contents ($filename, $your_json);
+$code = 'C:/querytool/JSONtoCSV_jp.py';
+$code = escapeshellarg($code) . ' ' . $filename;
+$result = shell_exec('python '.$code);
+echo $result; 
+?>
