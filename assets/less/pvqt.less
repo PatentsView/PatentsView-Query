@@ -678,10 +678,23 @@ button.btn-lg {
     margin-top: 15px;
 }
 
+.page-wrapper {
+    min-height: 100%;
+    margin-bottom: -349.5px;
+     &:after {
+            content: "";
+            display: block;
+            height: 350px;
+        }
+}
+
+#step-by-step-container {
+    margin-bottom: 100px;
+}
+
 #step-pager{
     .make-row();
-    margin-bottom: 60px;
-
+    
     .previous{
         .make-md-column(6);
         padding-top: 10px;

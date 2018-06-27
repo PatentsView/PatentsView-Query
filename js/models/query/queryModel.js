@@ -106,6 +106,7 @@
         { "category": "Patents", "categoryId": "Patent", "shortName": "Patents", "shortNameId": "Patent", "name": "applications", "desc": "Data on patents and applications associated with patents" },
         { "category": "Assignees", "categoryId": "Assignee", "shortName": "Assignees", "shortNameId": "Assignee", "name": "assignees", "desc": "Data on assignees on the patents" },
         { "category": "Inventors", "categoryId": "Inventor", "shortName": "Inventors", "shortNameId": "Inventor", "name": "inventors", "desc": "Data on the inventors on the patents" },
+        { "category": "Lawyers", "categoryId": "Lawyer", "shortName": "Lawyers", "shortNameId": "Lawyer", "name": "lawyers", "desc": "Data on patents that have cited lawyers" },
         { "category": "Citations", "categoryId": "Citations", "shortName": "Cited Appliations", "shortNameId": "Cited_Appliations", "name": "application_citations", "desc": "Data on applications that are cited by patents" },
         { "category": "Citations", "categoryId": "Citations", "shortName": "Citing Patents", "shortNameId": "Citing_Patents", "name": "citedby_patents", "desc": "Data on patents that have cited the patents" },
         { "category": "Citations", "categoryId": "Citations", "shortName": "Cited Patents", "shortNameId": "Cited_Patents", "name": "cited_patents", "desc": "Data on patents that have been cited by the patents" },
@@ -456,7 +457,7 @@
             }
         });
     }
-
+    debugger;
     var QueryModel = Backbone.Model.extend({
         initialize: function () {
             this.set('options', options);
@@ -631,6 +632,7 @@
                     var outputGroup = _.find(outputGroups, { "name": field.group });
                     var group = null;
 
+                   
                     //Determine if the group.category matches the group.shortName.
                     if (outputGroup.category != outputGroup.shortName) {
                         //This field belongs to a subgroup. Try to retrieve the category group first.

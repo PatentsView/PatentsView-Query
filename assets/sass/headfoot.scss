@@ -1,0 +1,19 @@
+// compass mixins, from node modules
+@import "../node_modules/compass-mixins/lib/_animate.scss";
+@import "../node_modules/compass-mixins/lib/_compass.scss";
+@import "../node_modules/compass-mixins/lib/_lemonade.scss";
+
+@import "partials/_reset";
+
+// frameworks
+@import "frameworks/_boilerplate";
+
+// basics
+@import "partials/_variables";
+@import "partials/_shared";
+
+// layouts
+@import "partials/layout/_headfoot";
+@import "partials/layout/_nonMainPage";
+
+@import "partials/template/_overlay";

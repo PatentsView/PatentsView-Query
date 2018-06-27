@@ -1,0 +1,17 @@
+// Imports that should be available in every scss file. Loaded by `sass-
+// resources-loader`:
+@import "compass";
+@import "compass/css3";
+@import "compass/css3/border-radius";
+@import "compass/css3/box-shadow";
+@import "compass/css3/box-sizing";
+@import "compass/css3/opacity";
+@import "compass/css3/text-shadow";
+@import "compass/css3/transform";
+@import "compass/css3/user-interface";
+@import "compass/css3/columns";
+@import "compass/typography/text/nowrap";
+@import "compass/typography/text/replacement";
+@import "compass/utilities/general/clearfix";
+@import "compass/utilities/sprites";
+

@@ -255,8 +255,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('http://www.patentsview.org/querydev/assets/less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.eot');
-  src: url('http://www.patentsview.org/querydev/assets/less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('http://www.patentsview.org/querydev/assets/less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('http://www.patentsview.org/querydev/assets/less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.woff') format('woff'), url('http://www.patentsview.org/querydev/assets/less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('http://www.patentsview.org/querydev/assets/less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url('../less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.eot');
+  src: url('../less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../less/bootstrap-3.3.6/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 .glyphicon {
   position: relative;
@@ -6817,7 +6817,7 @@ button.close {
 .checkbox-primary input[type="radio"]:checked + label::after {
   color: #fff;
   font-size: 8px;
-  top: 0px;
+  top: 2px;
   left: -1px;
 }
 .checkbox-danger input[type="checkbox"]:checked + label::before,
@@ -7160,7 +7160,7 @@ p {
 }
 .btn-data-dict {
   font-size: 15px !important;
-  background-image: url("http://www.patentsview.org/querydev/assets/img/data-dict.png");
+  background-image: url("/assets/img/data-dict.png");
   background-repeat: no-repeat;
   background-position: 8px;
   padding-left: 42px;
@@ -7465,7 +7465,7 @@ select.form-control {
   -moz-appearance: none;
   background-position: right 50%;
   background-repeat: no-repeat;
-  background-image: url('http://www.patentsview.org/querydev/assets/img/dropdown-arrow.png');
+  background-image: url('/assets/img/dropdown-arrow.png');
   padding-left: 10px !important;
   height: 26px;
   line-height: 21px;
@@ -7569,10 +7569,21 @@ button.btn-lg i {
   padding-right: 2.5px;
   margin-top: 15px;
 }
+.page-wrapper {
+  min-height: 100%;
+  margin-bottom: -349.5px;
+}
+.page-wrapper:after {
+  content: "";
+  display: block;
+  height: 350px;
+}
+#step-by-step-container {
+  margin-bottom: 100px;
+}
 #step-pager {
   margin-left: -15px;
   margin-right: -15px;
-  margin-bottom: 60px;
 }
 #step-pager .previous {
   position: relative;
@@ -7692,14 +7703,4 @@ button.btn-lg i {
 }
 .tt-suggestion p {
   margin: 0;
-}
-.preview-csv-scroll {
-    max-height: 30em;
-    overflow-y: scroll;
-    border: 1px solid #e3e3e3;
-}
-.form-control-inline {
-    min-width: 0;
-    width: auto;
-    display: inline;
 }

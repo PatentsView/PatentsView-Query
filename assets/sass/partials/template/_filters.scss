@@ -1,0 +1,612 @@
+%filters {
+    clear: both;
+    padding-bottom: $footer-height + 38px;
+    h3 {
+        @extend .title;
+        padding-top: 1px;
+        float: left;
+    }
+    .tooltip-how-to {
+        float: left;
+        //margin-left: 8px;
+        padding: 8px;
+        margin-top: -8px;
+
+        a {
+            display: block;
+        }
+    }
+
+    .tooltip-invalid {
+        &:before {
+            //left arrow
+            content: '';
+            display: block;
+            border: 6px solid transparent;
+            border-right-color: $dark-red;
+            position: absolute;
+            top: 6px;
+            left: -12px;
+        }
+
+        position: absolute;
+        background: $light-pink;
+        border: 1px solid $dark-red;
+        color: $dark-red;
+        margin-left: 20px;
+        left: 100%;
+        top: 6px;
+        padding: 6px;
+        white-space: nowrap;
+        z-index: 1;
+    }
+
+    form {
+        float: left;
+        margin-top: 6px;
+        width: 100%;
+        > fieldset {
+            @include legacy-pie-clearfix;
+            border: $stroke-gray-light;
+            border-top: none;
+            position: relative; //tooltips relative to fieldset
+        }
+    }
+    fieldset {
+        width: 100%;
+        .filter-body {
+            position: relative;
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                background: $orange;
+                // The width is set to zero because we need this pseudo element
+                // to be present but invisible. The width will be css-
+                // transitioned to 3px when the class "active" is added.
+                width: 0;
+            }
+        }
+        &.active {
+            .filter-body {
+                &:before {
+                    width: 3px;
+                    @include single-transition(width, 0.3s, ease-in-out);
+                }
+            }
+        }
+
+
+        &.collapsed {
+            fieldset { display: none; }
+            legend {
+                border-bottom: none;
+                &:after {
+                    @extend %collapsed-icon;
+                }
+            }
+        }
+
+
+        fieldset {
+            @include legacy-pie-clearfix;
+            float: left;
+            padding: 10px 8px 6px;
+            width: auto;
+            div {
+                clear: both;
+                position: relative;
+                width: 190px;
+            }
+        }
+    }
+    legend {
+        @include box-sizing(border-box);
+        color: $gray-dark;
+        cursor: pointer;
+        height: 32px;
+        float: left;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 10px 6px 0;
+        width: 100%;
+        @extend %collapse-icon;
+    }
+    label,
+    input,
+    select,
+    button {
+        color: $gray-dark;
+        display: block;
+        float: left;
+        margin-bottom: 4px;
+        height: 16px;
+    }
+
+    .custom-dropdown-container {
+        position: relative;
+        &:after {
+            content: ".";
+            display: block;
+            clear: both;
+            visibility: hidden;
+            line-height: 0;
+            height: 0;
+        }
+
+        &[disabled="disabled"] {
+            @include opacity(.4);
+            &:hover .custom-dropdown-current {
+                background-color: #54677b;
+            }
+        }
+    }
+
+    $dropdown-width: 187px;
+    .custom-dropdown-current {
+        color: $gray-dark;
+        display: block;
+        float: left;
+        padding-left: 9px;
+        margin-bottom: 4px;
+        height: 25px;
+        line-height: 25px;
+        width: $dropdown-width - 3;
+        white-space: nowrap;
+        background-color: #54677b;
+        color: $blue-light;
+        font-size: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        @include border-radius(2px);
+        &:hover {
+            background-color: #3d4a59;
+        }
+        &:after {
+            display: block;
+            content: "";
+            @extend %sprite-dropdown-triangle;
+            position: absolute;
+            top: 8px;
+            right: 11px;
+        }
+    }
+
+    #topic-picker {
+        // The topic dropdown
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        span {
+            display: block;
+            width: 165px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .custom-dropdown-list {
+        display: none;
+
+        margin: 0;
+        padding: 0;
+        top: 26px;
+        position: absolute;
+        z-index: 30;
+        cursor: pointer;
+        max-height: 240px;
+        overflow: auto;
+        background: white;
+        $border-color: rgb(161, 180, 193);
+        border-left: 1px solid $border-color;
+        border-right: 1px solid $border-color;
+        border-bottom: 1px solid $border-color;
+
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    #funder-picker-dropdown ul {
+        width: $dropdown-width;
+    }
+
+    #topic-picker-dropdown ul {
+        width: $dropdown-width - 14;
+    }
+
+    .custom-dropdown-element {
+        padding: 5px 0 5px 9px;
+        font-family: $font-family;
+        font-weight: $weight-semi-bold;
+        font-size: 11px;
+        color: $blue-dark;
+        &:hover {
+            background: #cce6f5;
+        }
+    }
+
+    select {
+        background: $blue-mid;
+        border: $stroke-blue-dark;
+        color: $blue-light;
+        height: 25px;
+        width: 100%;
+        &[disabled="disabled"] {
+            @include opacity(.4);
+        }
+    }
+    option {
+        background: $blue-mid;
+        color: $blue-light;
+    }
+    label {
+        height: 14px;
+        padding-right: 7px;
+        padding-top: 2px;
+    }
+
+    input[type="radio"] + label {
+        padding-right: 5px;
+    }
+
+    input[type="text"] {
+        &.placeholder {
+            color: $gray-light;
+            font-style: italic;
+        }
+        @include input-placeholder {
+            color: $gray-light;
+            font-style: italic;
+        }
+        @include box-sizing(border-box);
+        border: $stroke-blue-gray-dark;
+        font-size: 12px;
+        height: 25px;
+        margin-top: 6px;
+        padding-left: 8px;
+        width: 84.98%;
+        &:focus {
+            border: 1px solid $blue-dark;
+            color: $blue-dark;
+            outline: 0;
+        }
+        &[disabled="disabled"],
+        &:disabled,
+        &.disabled {
+            @include opacity(.4);
+        }
+    }
+    button {
+        @include box-sizing(border-box);
+        @include hide-text;
+        background: $blue-mid;
+        border: $stroke-blue-gray-dark;
+        border-left: none;
+        color: $blue-light;
+        height: 25px;
+        margin-top: 6px;
+        padding: 0;
+        position: relative;
+        width: 14.51%;
+        &:before {
+            @extend %sprite-search-filter-btn;
+            content: ".";
+            display: block;
+            left: 8px;
+            position: absolute;
+            top: 6px;
+        }
+        &:hover:not(.no-hover),
+        &.hover {
+            @include single-box-shadow(0, 2px, 3px, null, rgba(0,0,0,.15), inset);
+            background: $blue-dark;
+        }
+        &[disabled="disabled"],
+        &:disabled,
+        &.disabled {
+            @include opacity(.4);
+            cursor: default;
+            &:hover,
+            &.hover {
+                @include single-box-shadow(0, 0, 0, null, rgba(0,0,0,0), inset);
+                background: $blue-mid;
+            }
+        }
+    }
+    input[type="radio"],
+    input[type="checkbox"] {
+        display:none;
+    }
+    input[type="radio"] + label:before,
+    input[type="checkbox"] + label:before {
+        @include hide-text();
+        @include border-radius(3px);
+        background-color:$white;
+        border: 1px solid $blue-mid;
+        content: ".";
+        cursor:pointer;
+        display:inline-block;
+        height:10px;
+        margin:-1px 4px 0 0;
+        vertical-align:middle;
+        width:10px;
+    }
+    input[type="checkbox"] + label:before { background-color:$white; }
+    input[type="radio"]:disabled + label,
+    input[type="checkbox"]:disabled + label { display: none; }
+    input[type="radio"] + label:before { @include border-radius(6px); }
+    input[type="radio"]:checked + label:before {
+        background-color: $blue-light;
+        border: 4px solid $blue-mid;
+        width: 4px;
+        height: 4px;
+    }
+    input[type="checkbox"]:checked + label:before {
+        @extend %sprite-checkbox-checked;
+        background-color: $blue-mid;
+        content: '×';
+        color: $blue-light;
+        text-indent: 0;
+        text-align: center;
+        font-size: 9px;
+        line-height: 10px;
+    }
+    .stackedLabel {
+        padding-right: 0;
+        width: 100%;
+    }
+    #patent-words-all-label,
+    #patent-words-any-label,
+    #patent-words-exact-label,
+    #inventor-words-all-label,
+    #inventor-words-any-label,
+    #inventor-words-exact-label,
+    #assignee-words-all-label,
+    #assignee-words-any-label,
+    #assignee-words-exact-label {
+        @extend .stackedLabel;
+    }
+    .fullWidthLabel {
+        font-weight: 600;
+        margin-bottom: 8px;
+        margin-top: 10px;
+        width: 100%;
+    }
+    #patent-type-label,
+    #inventor-funding-label {
+        @extend .fullWidthLabel;
+    }
+    #search-actions {
+        @include border-radius(2px);
+        border: $stroke-blue-gray-light;
+        margin-bottom: 8px;
+        overflow: hidden;
+        fieldset {
+            padding: 0;
+            width: 100%;
+        }
+        button {
+            @extend .gradient-blue-gray-light;
+            @include single-box-shadow(none);
+            @include single-text-shadow(0, 1px, 0, false, rgba(255,255,255,1));
+            border: none;
+            border-right: $stroke-blue-gray-light;
+            color: $blue-dark;
+            display: block;
+            height: 25px;
+            float: left;
+            font-size: 11px;
+            font-weight: 400;
+            margin: 0;
+            padding-left: 10px;
+            padding-top: 1px;
+            text-align: center;
+            text-indent: 0;
+            text-transform: uppercase;
+            width: 50%;
+
+            &:list-child {
+                border-right: none;
+            }
+            &:before {
+                top: 8px;
+            }
+            &:hover,
+            &.hover {
+                @extend .gradient-blue-gray;
+            }
+            &[disabled="disabled"],
+            &.disabled {
+                @include single-box-shadow(0, 1px, 2px, null, rgba(0,0,0,.1), inset);
+                background: $blue-gray-lighter;
+                color: $blue-gray-dark;
+            }
+        }
+    }
+    #search-patent {
+        @include border-top-radius(2px);
+        border-top: $stroke-gray-light;
+        legend {
+            @include border-top-radius(2px);
+        }
+    }
+    #search-date {
+        @include border-bottom-radius(2px);
+    }
+    #location-assignees-label {
+        padding-right: 0;
+    }
+    #search-actions legend,
+    #search-actions label,
+    #patent-submit-label,
+    #patent-phrase-label,
+    .filter-text-input-label,
+    .filter-submit-label,
+    #location-submit-country-label,
+    #location-country-label,
+    #location-submit-state-label,
+    #location-state-label,
+    #location-submit-city-label,
+    #location-city-label {
+        @include squish-text;
+        border-bottom: none;
+        float:left;
+        margin: 0;
+        height: auto;
+        padding: 0;
+        width: 0;
+    }
+
+}
+
+.search #filters {
+    @extend %filters;
+
+
+    #search-actions {
+        svg.icon {
+            margin-right: 5px;
+            margin-left: -10px;
+            position: relative;
+            top: 1px;
+            fill: #445160;
+        }
+    }
+
+    .filter-body {
+        button[type=submit] {
+
+            svg.icon {
+                position: absolute;
+                top: 6px;
+                left: 7px;
+                fill: $text-blue-light;
+
+                @include transition(fill 0.2s ease-in-out);
+            }
+
+            &:hover {
+                svg.icon {
+                    fill: $text-yellow;
+                }
+            }
+        }
+    }
+
+}
+
+#map-switcher-container {
+    @extend %filters;
+    #search-patent-map {
+        @include border-bottom-radius(2px);
+        position: absolute;
+        right: 92px;
+        top: $header-height + $data-display-collapsed-height;
+        width: 422px;
+        border-bottom: 1px solid #dfe0e1;
+        border-left: 1px solid #dfe0e1;
+        border-right: 1px solid #dfe0e1;
+        fieldset {
+            padding: 3px 12px 1px;
+        }
+        legend { display: none; }
+        label {
+            font-size: 11px;
+            padding-right: 18px;
+            padding-top: 3px;
+            text-transform: lowercase;
+            &:before {
+                margin-right: 6px;
+                margin-top: -2px;
+            }
+        }
+        #patent-map-label {
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            margin-top: 1px;
+            padding-right: 14px;
+            text-transform: uppercase;
+        }
+        #patent-map-assignee { margin-right: 0; }
+        &.disabled { display: none; }
+    }
+}
+
+.react-autosuggest__suggestions-container {
+    background: $white;
+    border-left: $stroke-blue-dark;
+    border-right: $stroke-blue-dark;
+    border-top: none;
+    padding: 0;
+    position: absolute;
+    z-index: 1;
+    top: 18px;
+    width: 84.98%;
+
+    .react-autosuggest__suggestion {
+        display: block;
+        border-bottom: 1px solid transparent;
+        border-top: 1px solid transparent;
+        padding: 6px 12px;
+        &:first-child,
+        &.first-child { border-top: $stroke-blue-dark; }
+        &:last-child,
+        &.last-child { border-bottom: $stroke-blue-dark; }
+
+        .suggestion-id {
+            float: left;
+            min-width: 20px;
+            padding-right: 4px;
+            display: block;
+        }
+        .suggestion-name {
+            overflow: hidden;
+            display: block;
+        }
+    }
+    //.ui-state-focus {
+    .react-autosuggest__suggestion--focused {
+        background: $blue-light;
+        border-bottom: $stroke-blue-dark;
+        border-top: $stroke-blue-dark;
+    }
+}
+
+.ui-helper-hidden-accessible {
+    @include squish-text;
+}
+
+.filter-body {
+    @extend %clear-fix;
+}
+
+#search-funding {
+    h4 {
+        font-size: 12px;
+        font-family: 'Open Sans';
+        color: #1e1e1e;
+        &:first-of-type {
+            margin: 9px 0 5px 2px;
+        }
+        &:last-of-type {
+            margin: 6px 0 0 2px;
+        }
+    }
+}
+
+#content {
+    .filter-body {
+        // Need the ID so that this style doesn't affect filters on the landing
+        // page.
+        @extend %filter-background-gradient;
+    }
+
+    #search-funding fieldset {
+        // Need 2 IDs to override the specificity of a prior css rule.
+        padding-top: 5px;
+    }
+}

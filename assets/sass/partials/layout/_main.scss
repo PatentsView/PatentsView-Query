@@ -1,0 +1,62 @@
+.content-wrapper {
+    margin: 0 auto;
+    width: $full-width-px;
+}
+
+
+.viz-head {
+   margin: -42px -42px 0 -42px;
+   padding: 42px;
+   position: relative;
+
+   &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        border-bottom: 1px solid $rule-gray;
+        bottom: 0;
+        left: 42px;
+        right: 42px;
+    }
+}
+
+.viz-lead {
+    max-width: 550px;
+    color: $text-blue-dark;
+
+
+    h1 {
+        @include sans(
+            $cap-height: 25
+        );
+
+        margin-top: 11px;
+    }
+
+    h2 {
+        @include sans(
+            $cap-height: 11
+        );
+
+        @extend %caps;
+        font-weight: $light-wt;
+        color: #838c95;
+    }
+
+    p {
+        @include sans(
+            $cap-height: 10,
+            $line-height: 20
+        );
+
+        font-weight: $light-wt;
+    }
+
+    h1 + p {
+        margin-top: 15px;
+    }
+}
+
+.viz {
+    padding: 42px;
+}

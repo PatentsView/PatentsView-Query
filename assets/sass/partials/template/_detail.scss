@@ -1,0 +1,874 @@
+
+
+
+.detail {
+    %no-data-text {
+        text-align: center;
+        font-size: 28px;
+        font-style: italic;
+        font-weight: $weight-light;
+        color: $gray-lightest;
+    }
+
+    .server-error-message {
+        @extend %server-error-message;
+    }
+
+
+    $detail-box-width: 290px;
+    $detail-box-height: 251px;
+    $detail-box-padding-top: 10px;
+    $detail-box-padding-bottom: 8px;
+    $detail-box-background-height: $detail-box-height - $detail-box-padding-top - $detail-box-padding-bottom;
+
+    @include clearfix;
+    background: #fcfdfd;
+    color: #868686;
+    padding: 0;
+    position: relative;
+    h1 {
+        color: $blue-mid;
+        font-size: 19px;
+        min-height: 19px;
+        font-weight: normal;
+        padding: 15px 15px 4px;
+        width: 98%;
+        b {
+            color: $orange-dark;
+            font-weight: 600;
+        }
+    }
+    h2 {
+        color: $orange-dark;
+        font-family: $font-family;
+        font-size: 11px;
+        font-weight: bold;
+        line-height: 1em;
+        text-transform: uppercase;
+        display: inline-block;
+    }
+    &.patent {
+        h2 {
+            display: block;
+        }
+        .citation-locations h2 {
+            display: inline-block;
+        }
+    }
+    a {
+        &:hover,
+        &:active { color: $orange; }
+        &.query {
+            &:after {
+                display: inline-block;
+                margin: 2px 0 0 4px;
+                position: relative;
+                right: auto;
+                top: auto;
+            }
+        }
+    }
+
+
+
+    .map-shell {
+        .map-choropleth-legend {
+            padding: 6px 6px;
+            left: auto;
+            right: 3px;
+            bottom: 3px;
+            line-height: 0;
+
+            ol li {
+                width: 11px;
+                height: 5px;
+            }
+            p {
+                margin: 0;
+                font-size: 10px;
+                line-height: 5px;
+            }
+        }
+
+        .leaflet-control.mapbox-control-info {
+            margin-left: 3px;
+            margin-bottom: 3px;
+        }
+
+    }
+
+    section ol {
+        font-weight: bold;
+        list-style: decimal;
+        padding-left: 20px;
+        li {
+            line-height: 1.5em;
+            padding: 8px 0 8px 8px;
+            position: relative;
+            &:after {
+                @include hide-text;
+                border-top: 1px dotted #a4a5a6;
+                content: '.';
+                display: block;
+                height: 1px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 290px;
+            }
+            &:first-child {
+                padding-top: 0;
+                &:after { display: none; }
+            }
+        }
+        a,
+        b {
+            color: $blue-mid;
+            display: block;
+        }
+        a {
+            font-weight: normal;
+            &:hover,
+            &:active { color: $orange; }
+
+            &.newsearch {
+                &:hover,
+                &:active {
+                    &:after {
+                        @extend %sprite-query-link;
+                        content: ".";
+                        display: inline-block;
+                        margin-left: 5px;
+                        margin-top: -3px;
+                        vertical-align: middle;
+                    }
+                }
+            }
+        }
+        b a { font-weight: bold; }
+    }
+
+    &.patent {
+        section {
+            opacity: 1;
+        }
+    }
+    $detail-box-width: 290px;
+    $detail-box-height: 251px;
+    $detail-box-padding-top: 10px;
+    $detail-box-padding-bottom: 8px;
+    section {
+        @include border-radius(2px);
+        @include box-shadow(0,0,5px,0,rgba(#d9dadb, .35), inset);
+        background: rgba(#f0f1f3, .5);
+        border: 1px solid rgba(#cfd0d1, .5);
+        float: left;
+        height: $detail-box-height;
+        margin-left: 11px;
+        margin-top: 11px;
+        padding: $detail-box-padding-top 15px $detail-box-padding-bottom;
+        position: relative;
+        width: $detail-box-width;
+
+        .noDataMessage {
+            display: none;
+        }
+
+        &.two-column,
+        .two-column { width: 623px; }
+        &.two-row,
+        .two-row { height: 533px; }
+       /*  &.map,
+        .map */
+
+        &.bar,
+        .bar,
+        &.bubble {
+            .co-inventors-canvas-container {
+                position: relative;
+                margin-top: 14px;
+                width: 100%;
+            }
+            .timeseries-axis-label,
+            .timeseries-canvas-outer,
+            .timeseries-axis-caption,
+            .timeseries-label,
+            .patents-totals-title,
+            .patents-totals-label,
+            .co-inventors-axis-caption,
+            .co-inventor-name-label { position: absolute; }
+        }
+        &.bar,
+        .bar {
+            .timeseries-canvas-container {
+                position: relative;
+                display: block;
+                margin-top: 16px;
+                height: 220px;
+                width: 96%;
+            }
+            .timeseries-axis-label {
+                font-size: 10px;
+                text-transform: lowercase;
+                &.y-axis {
+                    @include rotate(-90deg);
+                    @include transform-origin(0,0,0);
+                    left: 0;
+                }
+                &.x-axis { bottom: 0; }
+            }
+            .timeseries-canvas-outer {
+                background: #f1f1da;
+                border: 1px solid #cfd0d1;
+                @include border-radius(3px);
+                right: 0;
+                top: 0;
+                canvas { display: block; }
+                @include box-shadow(inset 0 0 0 1px #ffffff);
+            }
+            .timeseries-axis-caption { font-size: 10px; }
+            .timeseries-label {
+                @include box-shadow(0 2px 4px 0 rgba(#9fa3a6, .55));
+                @include border-radius(2px);
+                background: $white;
+                border: #bfbfbf;
+                color: #787979;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 4px 8px;
+                z-index: 4;
+                span {
+                    display: block;
+                    position: relative;
+                    text-align: center;
+                    &:after {
+                        @extend %sprite-detail-chart-tooltip-arrow;
+                        content: '.';
+                        bottom: -14px;
+                        display: block;
+                        left: 50%;
+                        margin-left: -15px;
+                        position: absolute;
+                    }
+                }
+                b {
+                    color: $orange;
+                    font-weight: bold;
+                }
+
+                &.top,
+                &.bot {
+                    // This is to fix the weird little rectangular box that
+                    // appears at the bottom left corner of the citation graph.
+                    display: none;
+                }
+            }
+        }
+        &.bubble {
+            .co-inventors-canvas-container {
+                height: 198px;
+                margin-top: 36px;
+                position: relative;
+
+                canvas {
+                    border-bottom: 1px solid #f1f2f3;
+                    display: inline-block;
+                    float: left;
+                }
+            }
+
+            .bubble-item {
+                position: absolute;
+
+                //minimum hit area
+                &:before {
+                    $rad: 6px;
+                    position: absolute;
+                    display: block;
+                    content: '';
+                    top: -$rad;
+                    left: -$rad;
+                    width: 2*$rad;
+                    height: 2*$rad;
+                    background: #000;
+                    opacity: 0.01;
+                    @include border-radius($rad);
+                }
+            }
+
+            .bubble-tip {
+
+                position: absolute;
+
+                .bubble-label {
+                    position: relative;
+                    left: -50%;
+                    bottom: 4px;
+                    background: #FFF;
+                    white-space: nowrap;
+                    font-size: 10px;
+                    padding: 3px;
+                    border-radius: 2px;
+                    border: 1px solid #DDD;
+
+                    .count {
+                        color: #d2714e;
+                        font-weight: bold;
+                    }
+                }
+
+                &:before {
+                    display: block;
+                    content: '';
+                    border: 5px solid transparent;
+                    border-top-color: #DDD;
+                    position: absolute;
+                    bottom: -5px;
+                    left: -5px;
+                }
+
+                &:after {
+                    display: block;
+                    content: '';
+                    border: 4px solid transparent;
+                    border-top-color: #FFF;
+                    position: absolute;
+                    bottom: -3px;
+                    left: -4px;
+                }
+            }
+
+            .bubble-dot {
+                background: #d2714e;
+                @include border-radius(50%);
+                position: absolute;
+            }
+
+            .bubble-item {
+                .bubble-tip {
+                    visibility: hidden;
+                    opacity: 0;
+                    @include transition(all 0.3s ease-in-out);
+                }
+
+                &:hover {
+                    .bubble-tip {
+                        visibility: visible;
+                        opacity: 1;
+
+                    }
+
+                    .bubble-dot {
+                        background-image: url(../img/texture-diag-white.png);
+                    }
+                }
+            }
+
+            .patents-totals-title {
+                font-size: 10px;
+                line-height: 11px;
+                right: -3px;
+                text-align: center;
+                text-transform: lowercase;
+                top: -27px;
+                width: 44px;
+            }
+            .patents-totals-label-box {
+                background: #f1f1da;
+                border-bottom: 1px solid #f1f2f3;
+                float: left;
+                height: 166px;
+                position: relative;
+                width: 37px;
+                .patents-totals-label {
+                    color: #4b5c6e;
+                    font-size: 13px;
+                    font-weight: bold;
+                    text-align: center;
+                    width: 100%;
+                }
+            }
+
+            .co-inventors-axis-caption {
+                bottom: 11px;
+                font-size: 10px;
+                left: 0;
+            }
+            .co-inventor-name-label {
+                font-size: 13px;
+                left: 0;
+                line-height: 13px;
+            }
+        }
+        > p {
+            bottom: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            position: absolute;
+            a {
+                color: #919192;
+                &.newsearch {
+                    &:hover,
+                    &:active {
+                        &:after {
+                            @extend %sprite-query-link;
+                            content: ".";
+                            display: inline-block;
+                            margin-left: 5px;
+                            margin-top: -3px;
+                            vertical-align: middle;
+                        }
+                    }
+                }
+            }
+        }
+
+        .loading-animation {
+            @extend %loading-animation;
+        }
+
+        @mixin loading-background($image) {
+            background: url($image) no-repeat center center;
+            height: $detail-box-background-height;
+            margin-top: 7px;
+        }
+
+        .loading-list {
+            @include loading-background('../img/list-loading.png');
+        }
+
+        .loading-timeseries-long {
+            @include loading-background('../img/bar-chart-long-loading.png');
+        }
+
+        .loading-timeseries-short {
+            @include loading-background('../img/bar-chart-short-loading.png');
+        }
+
+        .loading-bubble-chart {
+            @include loading-background('../img/bubble-chart-loading.png');
+        }
+
+        .loading-small-map {
+            @include loading-background('../img/map-sm-loading.png');
+        }
+    }
+    &.assignee,
+    &.class,
+    &.uspcClass,
+    &.nberClass,
+    &.cpcClass,
+    &.location {
+        .bar { @extend .two-column; }
+    }
+
+
+    @mixin noData($image) {
+        background-image: url($image);
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: $detail-box-background-height;
+        line-height: $detail-box-background-height;
+        text-align: center;
+        font-size: 28px;
+        font-style: italic;
+        font-weight: $weight-light;
+        color: $gray-lightest;
+    }
+
+    .noData-assignee {
+        @include noData("../img/detail-watermark-assignee.png");
+    }
+
+    .noData-patent {
+        @include noData("../img/detail-watermark-patent.png");
+    }
+
+    .noData-inventor ,
+    .noData-coinventor {
+        @include noData("../img/detail-watermark-inventor.png");
+    }
+
+    .noData-class {
+        @include noData("../img/detail-watermark-class.png");
+    }
+
+    &.patent {
+        color: $blue-mid;
+        font-size: 12px;
+        line-height: 17px;
+        > h1 { display: none; }
+        h2 {
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+        section {
+            @extend .two-row;
+
+            &:first-child{
+               overflow-x: hidden;
+               overflow-y: scroll;
+            }
+
+            .loading-animation {
+                @extend %loading-animation;
+                float: none;
+            }
+
+
+            height: 571px;
+            width: 510px;
+            &:first-child {
+                width: 400px;
+                h1 {
+                    @mixin after-download-link {
+                        content: ".";
+                        display: inline-block;
+                        margin-left: 6px;
+                        margin-top: -3px;
+                        vertical-align: middle;
+                    }
+
+                    font-size: 14px;
+                    font-weight: 600;
+                    margin-bottom: 4px;
+
+                    &:before {
+                        display: none;
+                    }
+
+                    a {
+                        &:after {
+                            @extend %sprite-new-window-link-blue;
+                            @include after-download-link;
+                        }
+
+                        &:hover,
+                        &:active {
+                            &:after {
+                                @extend %sprite-new-window-link;
+                                @include after-download-link;
+                            }
+                        }
+
+                    }
+                }
+            }
+            h1 {
+                font-size: 15px;
+                line-height: 17px;
+                margin-bottom: 12px;
+                padding: 0;
+
+                b {
+                    color: $blue-mid;
+                    font-weight: bold;
+                }
+                &:before {
+                    @extend %sprite-detail-location;
+                    content: '.';
+                    display: inline-block;
+                    margin: 0px 4px -2px 0;
+                }
+            }
+            h3 {
+                font-weight: 600;
+                margin-bottom: 3px;
+            }
+            dl,
+            dd,
+            ol,
+            li {
+                margin: 0;
+                padding: 0;
+            }
+            ol {
+                list-style: none;
+                li {
+                    &:after { display: none; }
+                }
+            }
+            .show,
+            .hide { font-style: italic; }
+            .citation-locations {
+                float: left;
+                width: 100%;
+                height: 323px;
+            }
+            .citations-per-year {
+                float: left;
+                width: 52.75%;
+            }
+            .most-recent-citations {
+                float: left;
+                width: 47.25%;
+            }
+            > div {
+                @include legacy-pie-clearfix;
+                margin-bottom: 16px;
+                .col-item {
+                    float: left;
+                    width: 47.25%;
+                    &:first-child { width: 52.75%; }
+                }
+            }
+            .dates {
+                font-weight: 600;
+                h2 { margin-bottom: 5px; }
+            }
+            .processing-time {
+                > div {
+                    height: 40px;
+                    position: relative;
+                    width: 100%;
+                }
+                span {
+                    bottom: 0;
+                    display: block;
+                    font-size: 10px;
+                    font-weight: bold;
+                    padding: 0 3px;
+                    position: absolute;
+                }
+            }
+            .abstract {
+                 > div { width: 100%; }
+            }
+            .classes {
+                margin-bottom: 18px;
+                h2 { margin-bottom: 5px; }
+                dl {
+                    margin-bottom: 0;
+                    padding-left: 47px;
+                    position: relative;
+                }
+                dt {
+                    font-weight: 600;
+                    position: absolute;
+                    top: 0;
+                    left:0;
+                }
+                dd { margin-bottom: 3px; }
+                .show,
+                .hide { margin-left: 47px; }
+                .full {
+                    dt { display: none; }
+                }
+            }
+            .co-inventors-location {
+                li {
+                    position: relative;
+                    &.main {
+                        &:before {
+                            @extend %sprite-detail-co-inventor-main-location;
+                            content: '.';
+                            display: block;
+                            position: absolute;
+                            top: 4px;
+                            left: -13px;
+                        }
+                    }
+                }
+            }
+            .citation-locations {
+                .map {
+                    @include border-radius(3px);
+                    background: #B1D1DC;
+                    border: 1px solid #cfd0d1;
+                    height: 272px;
+                    @include box-shadow(inset 0 0 0 1px #ffffff);
+                }
+                // > div {
+                .map-shell {
+                    margin-top: 8px;
+                    width: 100%;
+                }
+            }
+
+            .loading-large-map {
+                $image: '../img/map-lg-loading.png';
+                background: url($image) no-repeat center center;
+                height: image-height($image);
+                width: 100%;
+            }
+            // This variable is needed so that both the citations per year graph and the
+            // most recent citation list have the same height. The most recent citation list
+            // needs a definite height so that it will display scrollbars when the list of
+            // citations is too long.
+            $lower-divs-max-height: 230px;
+            .citations-per-year {
+                margin-bottom: 0;
+                max-height: $lower-divs-max-height;
+                h2 { margin-bottom: 20px; }
+                > div {
+                    float: none;
+                    height: 200px;
+                    padding-left: 30px;
+                    width: 216px;
+                    .timeseries-axis-label.y-axis { left: -11px; }
+                    .timeseries-axis-label.x-axis { bottom: -4px; }
+                }
+            }
+            .most-recent-citations {
+                margin-bottom: 0;
+                max-height: $lower-divs-max-height;
+                overflow: auto;
+                h2 { margin-bottom: 8px; }
+                ol { margin-bottom: 10px; }
+                li {
+                    margin-bottom: 3px;
+                    padding-left: 8px;
+                    &:before {
+                        content: '- ';
+                    }
+                }
+            }
+            .empty-message {
+                color: $gray;
+                clear: both;
+                display: none;
+                font-size: 35px;
+                font-style: italic;
+                font-weight: normal;
+                line-height: 46px;
+                margin: 0 auto;
+                padding-top: 60px;
+                text-align: center;
+                width: 85%;
+            }
+            &.citations {
+                &.empty {
+                    .citations-per-year,
+                    .most-recent-citations { display: none; }
+                    .empty-message { display: block; }
+                }
+            }
+        }
+        .full,
+        .hide { display: none; }
+    }
+    footer {
+        bottom: 5px;
+        clear: both;
+        padding: 0 15px;
+        position: absolute;
+        width: 980px;
+        a {
+            color: #787979;
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 17px;
+            text-decoration: none;
+            text-transform: uppercase;
+            &:before,
+            &:after {
+                @include opacity(.4);
+                content: '.';
+                display: inline-block;
+            }
+            &:hover,
+            &:active {
+                color: #787979;
+                &:before,
+                &:after { @include opacity(1); }
+            }
+            &.disabled {
+                @include opacity(.4);
+                cursor: default;
+                &:hover,
+                &:active {
+                    &:before,
+                    &:after { @include opacity(.4); }
+                }
+            }
+            &:before {
+                @extend %sprite-detail-back;
+                margin-right: 4px;
+            }
+            &:after {
+                @extend %sprite-detail-next;
+                margin-left: 4px;
+            }
+        }
+        p,
+        nav,
+        ul,
+        li { display: inline-block; }
+        p a:after { display: none; }
+        nav { float: right; }
+        li {
+            a {
+                &:before { display: none; }
+            }
+            &:first-child {
+                a {
+                    &:before { display: inline-block; }
+                    &:after { display: none; }
+                }
+                &:after {
+                    @extend %sprite-detail-divide;
+                    content: '.';
+                    display: inline-block;
+                    margin: 0 8px -3px 10px;
+                }
+            }
+        }
+    }
+}
+
+.dialog-detail {
+    @include border-radius(4px);
+    background: #fcfdfd;
+    border: none;
+    font-size: 13px;
+    .ui-dialog-titlebar {
+        @include border-top-radius(4px);
+        border-bottom: 1px solid $blue-dark;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        .ui-dialog-title {
+            float: left;
+            margin: 9px 18px;
+            &:before {
+                content: '.';
+                display: inline-block;
+                margin-right: 8px;
+            }
+        }
+        button {
+            margin: 9px 18px;
+            .ui-icon-closethick {
+                background-color: transparent;
+                padding: 0;
+                margin-left: 0;
+                &:before { @extend %sprite-detail-close; }
+            }
+            &:hover,
+            &:active {
+                color: $blue-dark;
+                .ui-icon-closethick {
+                    background-color: transparent;
+                    &:before { @extend %sprite-detail-close-hover; }
+                }
+            }
+        }
+    }
+    .details { @include border-bottom-radius(4px); }
+}
+
+.dialog-inventor,
+.dialog-assignee,
+.dialog-class,
+.dialog-location,
+.dialog-patent  { @extend .dialog-detail; }
+
+.dialog-inventor .ui-dialog-title:before { @extend %sprite-detail-inventor; }
+.dialog-assignee .ui-dialog-title:before { @extend %sprite-detail-assignee; }
+.dialog-class .ui-dialog-title:before { @extend %sprite-detail-class; }
+.dialog-location .ui-dialog-title:before { @extend %sprite-detail-location; }
+.dialog-patent .ui-dialog-title:before { @extend %sprite-detail-patent; }
+
+.dialog-location .ui-dialog-title:before,
+.dialog-patent .ui-dialog-title:before { margin-bottom: -2px; }

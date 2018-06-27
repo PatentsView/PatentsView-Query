@@ -1,0 +1,88 @@
+.filter-tags {
+    border-top: 1px solid #e1e1e2;
+    color: $orange-dark;
+    margin-bottom: 0;
+        margin-top: 0;
+    @include clearfix;
+    background-color: #ecedee;
+
+    &.inline-tags {
+        padding: 5px 0 3px 14px;
+        li {
+            display: inline;
+            line-height: 16px;
+        }
+    }
+
+    &.inline-block-tags  {
+        padding: 7px 0 0 14px;
+        li {
+            display: inline-block;
+            margin-bottom: 5px;
+            margin-right: 1px;
+        }
+    }
+    li {
+        list-style: none;
+        font-weight: normal;
+        cursor: pointer;
+        display: block;
+        &:hover {
+            color: $orange;
+        }
+
+        &:after {
+            content: '×';
+            font-weight: $light-wt;
+            width: 0;
+            display: inline-block;
+            position: relative;
+            top: -4px;
+            left: -7px;
+            margin-right: 5px;
+        }
+        &:hover:after {
+
+
+        }
+    }
+    .tag-label {
+        &.class {
+            text-transform: uppercase;
+        }
+        &:after {
+            content: ':';
+        }
+    }
+}
+
+.clear-tag-one-filter {
+    display: block;
+    text-indent: 0;
+    float: right;
+    cursor: pointer;
+    margin-right: 7px;
+    width: 13px;
+    height: 13px;
+    position: relative;
+    top: -1px;
+
+    &:after {
+        content: '×';
+        font-weight: $light-wt;
+        display: block;
+        text-align: center;
+        line-height: 13px;
+        font-size: 18px;
+        color: #c0c0c0;
+    }
+
+    &:hover {
+        background: #d7d8d9;
+         @include border-radius(7px);
+
+        &:after {
+            color: #b0b0b0;
+        }
+    }
+}

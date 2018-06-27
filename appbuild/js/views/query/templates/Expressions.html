@@ -1,8 +1,0 @@
-﻿{{#each expressions}}
-{{#if @first }}
-       <button id="filters-clearall" type="button" class="clear-all-btn btn btn-primary"> Clear All </button>
-{{/if}}
-<button type="button" class="clear-btn btn expression" data-field-text="{{fieldText}}" data-field="{{field}}" data-operator-Text="{{operatorText}}" data-operator="{{operator}}" data-value="{{value}}">{{fieldText}} {{operatorText}} {{value}}</button>
-{{else}}
-<p>Please select at least one search criterion to begin your search.<br />Your selected criteria will show up here as you click to “add to search”</p>
-{{/each}}

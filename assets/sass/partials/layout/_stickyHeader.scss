@@ -1,0 +1,76 @@
+body {
+    > header,
+    .data-display,
+    #filters,
+    #results h2,
+    #results .tags,
+    #results .summary,
+    #results .table-toolbar {
+        position: fixed;
+        width: 100%;
+        z-index: 1000;
+    }
+    > header { height: $header-height; }
+    .data-display {
+        height: $data-display-full-height;
+        top: $header-height;
+    }
+    &.search #content > div {
+        padding-top: $header-height + $data-display-full-height;
+    }
+    #filters {
+        top: $header-height + $data-display-full-height + $main-content-padding-top;
+        width: $sidebar-width-px;
+    }
+    #results {
+        padding-top: $main-content-padding-top + 30px + 76px + $table-toolbar-height;
+        h2,
+        .tags,
+        .summary,
+        .table-toolbar {
+            width: $main-content-width-px;
+            z-index: 996;
+        }
+        h2 {
+            background: $white;
+            margin: 0;
+            padding: $header-height + $data-display-full-height + $main-content-padding-top + 18px 0 16px; //Fix for the table showing behind this element when scrolled
+            top: 0;
+            z-index: 997;
+        }
+        ul.tags {
+            background: $white;
+            margin-bottom: 0;
+            padding: $header-height + $data-display-full-height + $main-content-padding-top + 0 0 9px; //Fix for the table showing behind this element when scrolled
+            top: 0;
+            z-index: 998;
+        }
+        .summary {
+            background: $white;
+            margin: 0;
+            padding: 0 0 0; //Using top rather than padding so we can z-index this element over the elements making the background white for scrolling
+            top: $header-height + $data-display-full-height + $main-content-padding-top + 30px;
+            z-index: 999;
+        }
+        .table-toolbar {
+            @include box-sizing(border-box);
+            height: $table-toolbar-height;
+            top: $header-height + $data-display-full-height + $main-content-padding-top + 30px + 76px;  //Using top rather than padding so we can z-index this element over the elements making the background white for scrolling
+        }
+        > table { //Fix for the table scrolling behind the table toolbar's empty space due to rounded corners
+            margin-top: -30px; //Fixed space
+            > thead th {
+                padding-top: 30px + 6px; //Fixed space plus the original th padding
+            }
+        }
+        &.empty {
+            > table {
+                position: fixed;
+                width: $main-content-width-px;
+            }
+        }
+    }
+    footer {
+        z-index: 1001;
+    }
+}

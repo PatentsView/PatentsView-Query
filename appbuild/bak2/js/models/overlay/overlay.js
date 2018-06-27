@@ -1,1 +1,0 @@
-define(["backbone"],function(e){var t=e.Model.extend({defaults:{key:null,isVisible:!1,show:!1},initialize:function(){},overlays:{patentClass:"patentClass",uspc:"uspc",cpc:"cpc",nber:"nber",about:"about",methodsSources:"methodsSources",glossary:"glossary",economist:"economist",howTo:"howTo",filterOpts:"filterOpts"}});return new t});

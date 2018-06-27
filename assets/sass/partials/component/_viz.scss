@@ -1,0 +1,48 @@
+.data-display.collapsed-data-display {
+	height: $data-display-collapsed-height;
+}
+
+.viz-head {
+	.viz-intro-text {
+		@include transition(opacity 0.3s ease-in-out);
+		position: absolute;
+		top: 60px;
+		left: $main-content-padding-side;
+		width: 500px;
+
+		@include sans(
+			$cap-height: 18,
+			$line-height: 35
+		);
+
+		color: #838b95;
+		font-weight: $normal-wt;
+
+		strong {
+			color: #3f4b58;
+			font-weight: $normal-wt;
+		}
+	}
+
+	.viz-lead {
+		@include transition(opacity 0.3s ease-in-out);
+	}
+}
+
+.viz .load-circle {
+	margin-top: 240px;
+	margin-bottom: -270px;
+}
+
+.viz {
+	.viz-head {
+		position: relative;
+	}
+
+	.export-button {
+		position: absolute;
+		top: 31px;
+		right: 32px;
+		letter-spacing: 0.15em;
+	}
+}

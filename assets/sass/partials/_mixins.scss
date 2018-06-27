@@ -1,0 +1,433 @@
+@mixin background-img($image) {
+	background: image-url($image);
+	width: image-width($image);
+	height: image-height($image);
+}
+
+@mixin retina-background-img($image, $retina-image) {
+	$width: image-width($image);
+
+	background: image-url($image);
+	width: image-width($image);
+	height: image-height($image);
+
+	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+		background: image-url($retina-image);
+		@include background-size(100% auto);
+	}
+}
+
+@mixin resizeable-background-img($image, $retina-image: null) {
+	$width: image-width($image);
+	$height: image-height($image);
+	$heightCoef: ($height / $width);
+
+	max-width: $width;
+
+	&:after {
+		content: '';
+		display: block;
+		background: image-url($image) no-repeat;
+		padding-top: $heightCoef * 100%;
+		background-repeat: no-repeat;
+		@include background-size(contain);
+
+		@if $retina-image != null {
+			@media (-webkit-min-device-pixel-ratio: 2),
+				(min-resolution: 192dpi) {
+				background-image: image-url($retina-image);
+			}
+		}
+	}
+}
+
+@mixin text-stroke($width:1px, $color:#000) {
+	$angWidth: sqrt(0.5) * $width;
+
+	// fake it til you make it!
+	// (webkit is the only one with support for actual
+	// text-stroke - and that renders on the edges verses
+	// outside)
+	// NOTE: most browsers don't support the 'spread attribute'
+	// of text-shadow, so we can't use that to simplify this
+	@include text-shadow(
+		0 -$width 0 $color,
+		$width 0 0 $color,
+		0 $width 0 $color,
+		-$width 0 0 $color,
+
+
+		-$angWidth -$angWidth 0 $color,
+		$angWidth -$angWidth 0 $color,
+		$angWidth $angWidth 0 $color,
+		-$angWidth $angWidth 0 $color
+	);
+}
+
+@mixin rem-size($size-val: 1.6,  $rem2px: 10) {
+	// Fallback
+	font-size: ($size-val * $rem2px) + px;
+
+	// Rems
+	font-size: $size-val + rem;
+}
+
+@mixin font-mixin(
+	$cap-height: null,
+	$rem-cap-height: 8,
+	$family: null,
+	$line-height: null,
+	$dimensions-only: false,
+	$round-size: true
+) {
+	$rem2px: 10;
+	$size-val: null;
+
+	@if $cap-height != null {
+		$size-val: $cap-height / $rem-cap-height;
+
+		@if $round-size == true {
+			$size-val: round($size-val * 10) / 10;
+		}
+
+		@include rem-size($size-val, $rem2px);
+	}
+
+	@if $line-height != null {
+		line-height: $line-height + px;
+
+		@if $size-val != null {
+			$line-unitless: $line-height / ($size-val * $rem2px);
+
+			// Catch case where unitless line-height would result in smaller line-height due to truncation of a long decimal
+			// (e.g. 24px line-height for 18px type is 1.33333333,
+			// but due CSS rounding down would show 23px line-height)
+			$line-unitless: ceil($line-unitless * 100000) / 100000;
+
+			line-height: $line-unitless;
+		}
+	}
+
+	@if $dimensions-only == false {
+		font-family: $family;
+	}
+}
+
+@mixin column-break-inside-avoid-hack {
+	// current best way of avoid column breaks inside elements
+	// https://bugzilla.mozilla.org/show_bug.cgi?id=549114
+	-webkit-column-break-inside: avoid; /* Chrome, Safari */
+	-moz-column-break-inside: avoid; // currently not implemented
+	-o-column-break-inside: avoid; // currently not implemented
+	column-break-inside: avoid;
+
+	display: inline-block; // hack, but it works
+	width: 100%;
+}
+
+//Significantly improves font rendering quality, and adds ligatures if they exist in small text. Note that this
+//can have performance implications if used in large amounts of text.
+@mixin quality-font-rendering($text_rendering: optimizeLegibility, $font_smoothing: antialiased, $font_kerning: auto) {
+	text-rendering: $text_rendering;
+
+	//if text_rendering = optimizeLegibility then font-kerning of auto is same as normal (on)
+	font-kerning: $font_kerning;
+
+	//font-smoothing or best equivalent
+	-webkit-font-smoothing: $font_smoothing;
+
+	@if $font_smoothing == antialiased {
+		-moz-osx-font-smoothing: grayscale;
+	} @else {
+		-moz-osx-font-smoothing: auto;
+	}
+}
+
+@mixin fade-hr ($color, $fade-color: transparent, $thickness: 1px, $fade-length: 20px, $inset-length: 0px) {
+	position: relative;
+	display: block;
+	height: $thickness;
+	background: $color;
+	border: 0;
+	margin: 0 ($fade-length + $inset-length);
+	overflow: visible;
+
+	&:after,
+	&:before {
+		display: block;
+		content: '';
+		height: $thickness;
+		width: $fade-length;
+		position: absolute;
+	}
+
+	&:before {
+		left: -$fade-length;
+		@include background-image(linear-gradient(to right, $fade-color, $color));
+	}
+
+	&:after {
+		right: -$fade-length;
+		@include background-image(linear-gradient(to right, $color, $fade-color));
+	}
+}
+
+@mixin fade-pipe ($color, $height, $fade-color: transparent, $thickness: 1px, $fade-length: 4px, $inset-length: 0px) {
+	position: relative;
+	height: $height;
+	width: $thickness;
+	background: $color;
+	border: 0;
+	margin: ($fade-length + $inset-length) 0;
+	overflow: visible;
+
+	&:after,
+	&:before {
+		display: block;
+		content: '';
+		width: $thickness;
+		height: $fade-length;
+		position: absolute;
+	}
+
+	&:before {
+		top: -$fade-length;
+		@include background-image(linear-gradient(to bottom, $fade-color, $color));
+	}
+
+	&:after {
+		bottom: -$fade-length;
+		@include background-image(linear-gradient(to bottom, $color, $fade-color));
+	}
+}
+
+@mixin tooltip-tip($bg-color, $tip-size, $border-color, $border-thickness: 0px, $tip-side: bottom) {
+	// bottom, default
+	$tip-op-side: top;
+	$tip-ortho-side: left;
+
+	@if ($tip-side == left) {
+		$tip-op-side: right;
+		$tip-ortho-side: top;
+	}
+
+	@if ($tip-side == right) {
+		$tip-op-side: left;
+		$tip-ortho-side: top;
+	}
+
+	@if ($tip-side == top) {
+		$tip-op-side: bottom;
+		$tip-ortho-side: left;
+	}
+
+	$angle-border-thickness: floor($border-thickness * 1.41);
+
+	$tip-border-size: $tip-size + $angle-border-thickness;
+
+	pointer-events: none;
+	position: absolute;
+
+	#{$tip-ortho-side}: 50%;
+	#{$tip-side}: 0; //-$tip-border-size + $border-thickness;
+
+	&:before {
+		//$size: $tip-size + $border-thickness * 1.5;
+		content: '';
+		display: block;
+		position: absolute;
+		border: $tip-border-size solid transparent;
+
+		#{$tip-ortho-side}: -$tip-border-size; //calc(50% - #{$tip-border-size});
+		#{$tip-side}: -$tip-border-size;
+		border-#{$tip-op-side}-color: $border-color;
+	}
+
+	&:after {
+		content: '';
+		display: block;
+		position: absolute;
+		border: $tip-size solid transparent;
+
+		#{$tip-ortho-side}: -$tip-size; //calc(50% - #{$tip-size});
+		#{$tip-side}: -$tip-size + $angle-border-thickness;
+		border-#{$tip-op-side}-color: $bg-color;
+	}
+}
+
+@mixin tooltip($bg-color, $tip-size, $border-color: transparent, $border-thickness: 0px, $border-radius: 2px, $tip-side: all) {
+	position: relative;
+	padding: 0;
+	//pointer-events: none;
+
+	.tt-wrap {
+		background: $bg-color;
+		border: $border-thickness solid $border-color;
+		@include border-radius($border-radius);
+	}
+
+	.tt-body {
+		padding: 6px 10px 5px 10px;
+	}
+
+	$margin: floor($tip-size + $border-thickness * 1.41);
+
+	@if $tip-side == all {
+		$sides-list: top right left;
+
+		@each $cur-side in $sides-list {
+			&.#{$cur-side} {
+				//margin-#{$cur-side}: $margin;
+
+				.tt-pointer {
+					@include tooltip-tip($bg-color: $bg-color, $tip-size: $tip-size, $border-color: $border-color, $border-thickness: $border-thickness, $tip-side: $cur-side);
+				}
+
+				.tt-align {
+					// wrapper element that positions on tip
+					padding-#{$cur-side}: $tip-size;
+
+					@if $cur-side == top {
+						@include transform(translate(-50%, 0));
+					}
+					@if $cur-side == right {
+						@include transform(translate(-100%, -50%));
+					}
+					@if $cur-side == left {
+						@include transform(translate(0, -50%));
+					}
+				}
+			}
+		}
+
+		// default
+		$tip-side: bottom;
+
+		&:not(.top):not(.right):not(.left) {
+			//margin-#{$tip-side}: $margin;
+
+			.tt-pointer {
+				@include tooltip-tip($bg-color: $bg-color, $tip-size: $tip-size, $border-color: $border-color, $border-thickness: $border-thickness, $tip-side: $tip-side);
+			}
+
+			.tt-align {
+				// wrapper element that positions on tip
+				padding-#{$tip-side}: $tip-size;
+				@include transform(translate(-50%, -100%));
+			}
+		}
+	} @else {
+		//margin-#{$tip-side}: $margin;
+
+		.tt-pointer {
+			@include tooltip-tip($bg-color: $bg-color, $tip-size: $tip-size, $border-color: $border-color, $border-thickness: $border-thickness, $tip-side: $tip-side);
+		}
+
+		.tt-align {
+			// wrapper element that positions on tip
+			padding-#{$tip-side}: $tip-size;
+
+			@if $tip-side == top {
+				@include transform(translate(-50%, 0));
+			}
+			@if $tip-side == right {
+				@include transform(translate(-100%, -50%));
+			}
+			@if $tip-side == left {
+				@include transform(translate(0, -50%));
+			}
+			@if $tip-side == bottom {
+				@include transform(translate(-50%, -100%));
+			}
+		}
+	}
+}
+
+@mixin tooltip-head-foot($bg-color, $title-bg-color, $tip-size, $border-color: #000, $border-thickness: 0px, $border-radius: 2px, $tip-side: all) {
+	@include tooltip(
+		$bg-color: $bg-color,
+		$tip-size: $tip-size,
+		$border-color: $border-color,
+		$border-thickness: $border-thickness,
+		$border-radius: $border-radius,
+		$tip-side: $tip-side
+	);
+
+	.tt-title {
+		@include border-top-radius($border-radius);
+		background: $title-bg-color;
+		padding: 6px 10px 5px 10px;
+	}
+}
+
+@mixin self-clearing {
+	&::after {
+		clear: both;
+		content: '';
+		display: table;
+	}
+}
+
+// Create a up/down pointing triangle at the top/bottom edge of a div, centered
+// horizontally.
+@mixin triangle($direction, $half-base, $height, $color, $vertical-offset: null, $left: 50%) {
+	border-left: $half-base solid transparent;
+	border-right: $half-base solid transparent;
+	content: "";
+	display: block;
+	height: 0;
+	left: $left;
+	margin-left: -$half-base;
+	position: absolute;
+	width: 0;
+
+	@if $direction == 'down' {
+		// Need to split up the border shorthand to allow `border-color` to have the
+		// value `inherit`.
+		border-top-width: $height;
+		border-top-style: solid;
+		border-top-color: $color;
+		@if ($vertical-offset) {
+			top: calc(100% + #{$vertical-offset});
+		} @else {
+			top: 100%;
+		}
+	} @else {
+		border-bottom-width: $height;
+		border-bottom-style: solid;
+		border-bottom-color: $color;
+		@if ($vertical-offset) {
+			top: -$height + $vertical-offset;
+		} @else {
+			top: -$height;
+		}
+	}
+}
+
+@mixin caret($direction: 'down', $edge-length: 3px, $stroke-width: 1px, $color: #000, $top: 0px, $right: 0px) {
+	border: $stroke-width solid transparent;
+	border-left-color: $color;
+	border-bottom-color: $color;
+	content: "";
+	display: block;
+	height: $edge-length;
+	width: $edge-length;
+	top: $top;
+	right: $right;
+
+	//margin-left: -$half-base;
+	position: absolute;
+	// default down
+	$deg: -45deg;
+
+	@if $direction == 'left' {
+		$deg: 45deg;
+		@include transform(rotate(45deg));
+	} @else if $direction == 'right' {
+		$deg: -135deg;
+	} @else if $direction == 'up' {
+		$deg: -225deg;
+	}
+
+	@include transform(rotate(#{$deg}));
+}

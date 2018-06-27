@@ -1,0 +1,412 @@
+.overlay {
+    a,
+    a:visited {
+        color: $blue-mid;
+
+        &:hover {
+            border-bottom-color: $orange;
+            color: $orange;
+        }
+    }
+
+    .overlay-shell {
+        z-index: 1001;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 0 20px;
+        bottom: 0;
+        overflow-y: scroll;
+    }
+
+    &.vertical-center {
+        text-align: center;
+
+        &:before {
+          content: '';
+          display: inline-block;
+          height: 100%;
+          vertical-align: middle;
+          margin-right: -0.25em; /* Adjusts for spacing */
+        }
+
+        .pane {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    }
+
+    &.block-mouse {
+        .overlay-shell {
+            background: rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    &:not(.block-mouse) {
+        .overlay-shell {
+            pointer-events: none;
+        }
+    }
+
+    .viz-tooltip {
+        position: absolute;
+    }
+
+
+    .pane {
+        @include border-radius(3px);
+        border: 1px solid rgb(147, 165, 165);
+        background: $blue-light;
+        position: relative;
+        top: 0;
+        pointer-events: all;
+
+        &.center-pane {
+            text-align: left;
+            margin: 96px auto 10px auto;
+            max-width: 982px;
+        }
+
+        &.right-pane {
+            width: 753px;
+            margin: 125px auto 10px auto;
+            left: 115px;
+        }
+
+        .paneNav {
+            @include border-top-radius(3px);
+            border-bottom: 1px solid $blue-dark;
+            position: relative;
+
+            height: 35px;
+            text-align: right;
+
+
+            button.close {
+                @extend %close-btn;
+                margin: 8px 7px 0 0;
+            }
+
+            ul {
+                margin: 0;
+                padding: 11px 0 0 25px;
+                float: left;
+            }
+
+            li {
+                margin: 0;
+                display: inline-block;
+                position: relative;
+                font-size: 13px;
+                font-weight: 600;
+                color: $blue-dark;
+                cursor: pointer;
+
+                //bullet styling
+                @include diamondBullet(rgb(135, 159, 214), 3px, -10px);
+
+                &.active {
+                    &:before {
+                        border-top-color: $orange;
+                    }
+
+                    &:after {
+                        border-bottom-color: $orange;
+                    }
+                }
+                //end bullet styling
+                //
+
+            }
+
+            li + li {
+                margin-left: 20px;
+            }
+        }
+
+        .col2 {
+            @include column-count(2);
+            @include column-gap(40px);
+        }
+
+        .paneCopy {
+            @include border-bottom-radius(3px);
+            padding: 25px;
+            background: rgb(229, 235, 240);
+            color: $blue-dark;
+
+            //max-height:500px;
+            //overflow-x: scroll;
+            //
+            &.patent-class-type {
+                .scroll {
+                    // This is needed so that the class overlay doesn't extend
+                    // past the bottom of the screen on an iPad.
+                    max-height: 450px;
+                }
+            }
+            .scroll {
+                max-height: 500px;
+                overflow-y: scroll;
+
+                &:after {
+                    //use pseudo element rather than padding to add space at bottom of scroll
+                    //because IE is (as usual) broken
+                    display: block;
+                    content: '';
+                    height: 15px;
+                }
+            }
+
+            h3 {
+                font-size: 16px;
+                color: $orange-dark;
+                margin-bottom: 13px;
+
+                &:not(:first-child) {
+                    margin-top: 24px;
+                }
+            }
+
+            h4 {
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 6px;
+
+                &:not(:first-child) {
+                    margin-top: 24px;
+                }
+            }
+
+            h4 {
+                @include column-break(after, avoid);
+            }
+
+            em {
+                font-style: italic;
+                font-weight: 600;
+            }
+
+            ol, ul {
+                list-style-type: disc;
+            }
+
+            p, ol, ul {
+                font-size: 12px;
+                line-height: 17px;
+            }
+
+            p + p {
+                margin-top: 17px;
+            }
+
+            p.no-internal-column-break {
+                break-inside: avoid;
+            }
+
+            p.no-top-margin {
+                margin-top: 0;
+            }
+
+
+            .icon {
+
+                display: inline-block;
+                text-indent: -9999em;
+                position: relative;
+
+                &:before {
+                    content: ".";
+                    display: block;
+                    position: absolute;
+
+                    height: 100%;
+                    width: 100%;
+                    background-repeat: no-repeat;
+                }
+
+
+                &.search {
+                    width: 17px;
+                    height: 17px;
+                    background-color: $blue-dark;
+
+                    &:before {
+                       background-image: url('../img/search/search-filter-btn.png');
+
+                        top: 3px;
+                        left: 2px;
+                    }
+                }
+
+                &.plus, &.minus, &.remove {
+                    background-color: #f4F5F6;
+                    border: 1px solid $gray;
+                    width: 13px;
+                    height: 13px;
+                    @include border-radius(7px);
+                    top: 1px;
+                }
+
+                &.plus:before {
+                     background-image: url('../img/search/expand.png');
+                    top: 3px;
+                    left: 3px;
+                }
+
+                &.minus:before {
+                    background-image: url('../img/search/collapse.png');
+                    top: 6px;
+                    left: 3px
+                }
+
+                &.remove {
+                    background-color: $orange;
+
+                    &:before {
+                        background-image: url('../img/search/tag-x.png');
+                        top: 4px;
+                        left: 4px;
+                    }
+                }
+            }
+
+            .term {
+                font-weight: 600;
+                position: relative;
+                display: inline-block;
+                text-decoration: none;
+                border-bottom: 1px dashed #919A9D;
+                cursor: pointer;
+            }
+        }
+
+        .paneCopy.filter-opts {
+            ul{
+              list-style-type: none;
+              margin: 0;
+              padding: 0;
+
+              li {
+                margin: 0;
+
+                 &:after{
+                    content: '';
+                    display: block;
+                    clear: both;
+                }
+              }
+
+              li {
+                margin-top: 11px;
+              }
+
+                h4 {
+                    float: left;
+
+                    background: #F0F1F4;
+                    border: 1px solid #D4D5D7;
+                    padding: 6px 8px;
+
+                    min-width:93px;
+                    font-size: 13px;
+                    font-weight: 600;
+
+
+                    @include box-sizing(border-box);
+                    position: relative;
+                    top: 2px;
+
+                }
+
+                p {
+                    margin-left: 108px;
+                }
+
+
+            }
+        }
+
+        .paneCopy.patent-class-type {
+            padding-bottom: 0;
+
+            ul {
+                margin: 0;
+                padding: 0;
+
+                li {
+                    margin: 0;
+                    padding: 0;
+
+                    list-style-type: none;
+
+
+                    @include column-break(inside, avoid);
+
+
+
+                    .label {
+                        display: block;
+                        min-width: 25px;
+                        text-align: right;
+                        margin-right: 8px;
+                        float: left;
+                        font-weight: $weight-semi-bold;
+
+                    }
+
+                    .description {
+                        display: block;
+                        overflow: hidden;
+
+                    }
+
+                    &:after {
+                        content: '';
+                        display: block;
+                        clear: both;
+                    }
+                }
+            }
+        }
+
+        .paneCopy.patent-class-overview {
+            h3 {
+                @include column-break(before, always);
+            }
+        }
+
+        .paneCopy.glossary {
+            padding-bottom: 0;
+
+            p {
+                @include column-break(inside, avoid);
+            }
+
+            .entryTitle {
+                font-size: 13px;
+                color: $orange-dark;
+                &:after {
+                    content: ':';
+                }
+            }
+        }
+    }
+
+    .footnotes {
+        &:before {
+            content: '';
+            display: block;
+            border-top: 1px solid #ccc;
+            margin: 19px 0 13px;
+        }
+
+    }
+}
+
+
+
+/* #footnote1 {
+    visibility: hidden;
+} */

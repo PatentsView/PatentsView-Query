@@ -1,0 +1,468 @@
+
+%filter-subtitle {
+	position: relative;
+	color: $text-orange;
+	text-transform: uppercase;
+	letter-spacing:  0.05em;
+	padding: 8px 0;
+	@include sans(
+		$cap-height: 9
+	);
+	font-weight: $semi-wt;
+}
+
+%filter-item {
+	position: relative;
+	color: $text-blue;
+	cursor: pointer;
+
+	@include sans(
+		$cap-height: 8
+	);
+
+	font-weight: $semi-wt;
+	padding: 8px 0 9px 9px;
+}
+
+.collapsible {
+	overflow: hidden;
+	position: relative;
+	@include transition(height 0.3s ease-in-out);
+
+	&.collapsed {
+		display: none;
+	}
+
+	.collapsible-wrapper {
+		// handle situation where content of wrapper has floats
+		&:after {
+			content: '';
+			display: block;
+			clear: both;
+		}
+	}
+}
+
+.accordion {
+	.accordion-section-label {
+		position: relative;
+
+		.label-with-tooltip {
+			display: inline-block;
+			position: relative;
+
+			&.has-tooltip {
+				&:after {
+					content: '';
+					display: block;
+					position: absolute;
+					border-bottom: 1px dotted $text-blue;
+					left: 0;
+					right: 0;
+					bottom: -3px;
+				}
+			}
+
+			.viz-tooltip {
+				position: absolute;
+
+				top: 6px;
+
+				&.left {
+					left: 100%;
+					left: calc(100% + 3px);
+				}
+
+				&.right {
+					left: -3px;
+				}
+			}
+		}
+
+
+		&:after {
+			color: $text-blue;
+			position: absolute;
+			display: inline-block;
+			content: '–';
+			text-align: center;
+			line-height: 0;
+			width: 11px;
+			height: 11px;
+			font-weight: $semi-wt;
+			@include sans($cap-height: 8);
+			@include box-sizing(border-box);
+			padding: 4px 0 0 1px;
+			border: 1px solid #BCCDDE;
+			background: $ui-white;
+			right: 10px;
+			top: 13px;
+			@include transition(all 0.2s ease-in-out);
+		}
+
+		&.collapsed {
+			&:after {
+				content: '+';
+				padding-top: 5px;
+			}
+		}
+	}
+}
+
+.primary-accordion {
+	background: #FFF;
+	@include border-bottom-radius(3px);
+	@include box-shadow(0 0 6px rgba(0, 0, 0, 0.05));
+
+	& > .accordion-section {
+		& > .accordion-section-label {
+			cursor: pointer;
+
+			background: $blue-lighter;
+
+			h3 {
+				@include sans(
+					$cap-height: 9
+				);
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				font-weight: $light-wt;
+			}
+
+			padding: 15px;
+
+			&:hover:after {
+				background: #bdcddc;
+				border-color: #bdcddc;
+			}
+		}
+
+		&:not(:first-child) {
+			& > .accordion-section-label {
+				border-top: 1px solid rgb(197, 209, 225);
+			}
+		}
+
+
+		.primary-accordion-collapsible:before {
+			content: '';
+			display: block;
+			border-bottom: 1px solid rgb(197, 209, 225);
+			margin: 0 -10px 0 -15px;
+		}
+	}
+
+
+	.primary-accordion-collapsible {
+		padding: 0 10px 0 15px;
+	}
+}
+
+.secondary-accordion {
+	max-height: 605px;
+	overflow: scroll;
+
+	& > .accordion-section {
+		&:not(:first-child) {
+			& > .accordion-section-label {
+				border-top: 1px solid rgb(197, 210, 194);
+			}
+		}
+
+		& > .accordion-section-label {
+			cursor: pointer;
+
+			&:after {
+				right: 0;
+			}
+
+			&:hover:after {
+				background: #e0e8f2;
+				//border-color: #e0e8f2;
+			}
+
+			@extend %filter-subtitle;
+		}
+
+		& > .collapsible > div {
+			border-top: 1px solid rgb(197, 210, 194);
+		}
+	}
+}
+
+.network {
+	position: relative;
+	opacity: 1;
+	@include transition(opacity 2s ease-in-out);
+
+	svg {
+		display: block;
+	}
+
+	.viz-tooltip {
+		position: absolute;
+	}
+
+	circle {
+		@include transition(fill 0.15s ease-in-out);
+
+		&:not(.primary-node) {
+			cursor: pointer;
+		}
+	}
+}
+
+.relationships {
+
+	.viz-head {
+		margin-bottom: 0;
+		padding-bottom: 12px;
+
+		.note {
+			@include transition(opacity 1s ease-in-out);
+			position: absolute;
+			bottom: -19px;
+			left: $main-content-padding-side;
+
+			@include sans(
+				$cap-height: 10,
+				$dimensions-only: true
+			);
+
+			font-style: italic;
+		}
+	}
+
+	.symbol-key {
+		position: relative;
+		top: 0;
+		left: 0;
+		margin-top: 24px;
+		font-size: 14px;
+		font-weight: $semi-wt;
+	}
+
+	.network-shell {
+		position: relative;
+
+		.network {
+			margin: 0 -#{$main-content-padding-side};
+		}
+
+		svg {
+			overflow: visible;
+		}
+
+		.filters {
+			@include transition(opacity 1s ease-in-out);
+
+			$border-color: rgb(208, 218, 231);
+
+
+			position: absolute;
+
+			right: 0;
+			top: 0;
+			bottom: 0;
+			width: 307px - $main-content-padding-side;
+			@include box-sizing(border-box);
+
+			.primary-accordion {
+				border: 1px solid $border-color;
+				border-top: 0;
+			}
+
+
+			h5 {
+				@extend %filter-subtitle;
+			}
+
+			.filters-header {
+				position: absolute;
+				height: 37px;
+				top: -52px;
+				right: 0;
+				left: 0;
+
+				.prompt,
+				.tag {
+                    font-size: 1.4rem;
+					font-weight: normal;
+				}
+
+				.prompt {
+					font-style: italic;
+                    padding-top: 2px;
+					@include sans(
+						$cap-height: 9,
+						$dimensions-only: true
+					);
+				}
+
+				.tag {
+					top: 15px;
+					cursor: pointer;
+
+					.tag-label {
+						max-width: 119px;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						padding-bottom: 2px;
+						display: inline-block;
+						white-space: nowrap;
+
+					}
+
+					&:hover {
+						color: $orange;
+					}
+
+					&:after {
+						content: '×';
+						font-weight: $light-wt;
+						display: inline-block;
+						position: relative;
+						top: -9px;
+						margin-left: 3px;
+					}
+				}
+
+
+
+				/*
+
+				button {
+					float: right;
+					max-width: 35%;
+					background: $blue-lighter;
+					color: $text-blue;
+					border: 1px solid $border-color;
+					@include border-radius(3px);
+					padding-top: 5px;
+					padding-bottom: 5px;
+
+					@include sans(
+						$cap-height: 9
+					);
+
+					@include transition(opacity 0.2s ease-in-out);
+					outline: 0;
+
+					&[disabled] {
+						opacity: 0.3;
+						cursor: default;
+					}
+				}*/
+
+				&:after {
+					content: '';
+					display: block;
+					clear: both;
+				}
+			}
+
+			.collapsible {
+				h5 {
+					border-bottom: 1px solid rgb(197, 210, 194);
+					padding: 15px 0 10px;
+				}
+			}
+
+
+
+			ul.filter-items{
+				margin: 0;
+				padding: 0;
+
+				li {
+					margin: 0;
+
+					@extend %filter-item;
+					@include transition(all 0.2s ease-in-out);
+
+					&:not(:first-child) {
+						border-top: 1px solid rgb(233, 232, 236);
+					}
+
+					&:not(.active) {
+						color: rgb(202, 207, 212);
+						cursor: default;
+					}
+
+					// add secondary above/below lines
+					&:before {
+						content: '';
+						display: block;
+						position: absolute;
+						top: 0;
+						right: 0;
+						left: 0;
+						bottom: 0;
+						border: 1px solid $ui-white;
+						border-left: 0;
+						border-right: 0;
+					}
+
+					&.selected {
+						background: #E7EEF6;
+					}
+
+					&.active:hover:not(.selected) {
+						color: $orange;
+						background: #E7EEF6;
+					}
+				}
+			}
+
+
+			.states-filter {
+				height: 160px;
+				width: 210px;
+				margin: 25px auto 10px auto;
+				padding: 0;
+
+				li {
+					margin: 0;
+					padding: 0;
+				}
+
+				position: relative;
+
+				li {
+					position: absolute;
+					width: 16px;
+					height: 16px;
+					border: 1px solid rgb(213, 225, 210);
+					text-align: center;
+					color: rgb(213, 225, 210);
+					@include sans(
+						$cap-height: 6,
+						$line-height: 15
+					);
+					cursor: default;
+
+					&.active {
+						background: rgb(112, 125, 137);
+						border-color: rgb(112, 125, 137);
+						color: #fff;
+						cursor: pointer;
+						@include transition(all 0.2s ease-in-out);
+
+						&.selected {
+							background: rgb(166, 106, 88);
+							border-color: rgb(166, 106, 88);
+
+						}
+
+						&:hover:not(.selected) {
+							background: #E17859;
+							border-color: #E17859;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+

@@ -1,0 +1,56 @@
+// compass mixins, from node modules
+@import "~compass-mixins/lib/_animate.scss";
+@import "~compass-mixins/lib/_compass.scss";
+@import "~compass-mixins/lib/_lemonade.scss";
+
+@import "partials/_reset";
+
+// frameworks
+@import "frameworks/_boilerplate";
+
+// libraries
+@import "partials/_openlayers";
+
+// basics
+@import "partials/_variables";
+@import "partials/_mixins";
+@import "partials/_projectMixins";
+@import "partials/_placeholders";
+@import "partials/_defaults";
+@import "partials/_noscript";
+@import "partials/_shared";
+@import "partials/_transitions";
+@import "partials/_animations";
+
+// layouts
+@import "partials/layout/_main";
+@import "partials/layout/_search";
+@import "partials/layout/_header";
+@import "partials/layout/_headfoot";
+@import "partials/layout/_findings";
+
+// components
+@import "partials/component/_viz";
+@import "partials/component/_maps";
+@import "partials/component/_compare";
+@import "partials/component/_networks";
+@import "partials/component/_series";
+@import "partials/component/_key";
+@import "partials/component/_export";
+
+// templates
+@import "partials/template/_filters";
+@import "partials/template/_results";
+@import "partials/template/_newTags";
+@import "partials/template/_list";
+// @import "partials/template/_detail";
+@import "partials/newDetails";
+@import "partials/template/_overlay";
+@import "partials/template/_landing";
+@import "partials/template/_locations";
+
+//sticky header
+// @import "partials/layout/_stickyHeader";
+
+
+

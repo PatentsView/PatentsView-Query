@@ -1,0 +1,986 @@
+/**
+ * React Select
+ * ============
+ * Created by Jed Watson and Joss Mackison for KeystoneJS, http://www.keystonejs.com/
+ * https://twitter.com/jedwatson https://twitter.com/jossmackison https://twitter.com/keystonejs
+ * MIT License: https://github.com/JedWatson/react-select
+*/
+.Select {
+  position: relative;
+}
+.Select,
+.Select div,
+.Select input,
+.Select span {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.Select.is-disabled > .Select-control {
+  background-color: #f9f9f9;
+}
+.Select.is-disabled > .Select-control:hover {
+  box-shadow: none;
+}
+.Select.is-disabled .Select-arrow-zone {
+  cursor: default;
+  pointer-events: none;
+}
+.Select-control {
+  background-color: #fff;
+  border-color: #d9d9d9 #ccc #b3b3b3;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  color: #333;
+  cursor: default;
+  display: table;
+  border-spacing: 0;
+  border-collapse: separate;
+  height: 36px;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+.Select-control:hover {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+.Select-control .Select-input:focus {
+  outline: none;
+}
+.is-searchable.is-open > .Select-control {
+  cursor: text;
+}
+.is-open > .Select-control {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: #fff;
+  border-color: #b3b3b3 #ccc #d9d9d9;
+}
+.is-open > .Select-control > .Select-arrow {
+  border-color: transparent transparent #999;
+  border-width: 0 5px 5px;
+}
+.is-searchable.is-focused:not(.is-open) > .Select-control {
+  cursor: text;
+}
+.is-focused:not(.is-open) > .Select-control {
+  border-color: #007eff;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 0 3px rgba(0, 126, 255, 0.1);
+}
+.Select-placeholder,
+.Select--single > .Select-control .Select-value {
+  bottom: 0;
+  color: #aaa;
+  left: 0;
+  line-height: 34px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.has-value.Select--single > .Select-control .Select-value .Select-value-label,
+.has-value.is-pseudo-focused.Select--single
+  > .Select-control .Select-value .Select-value-label {
+  color: #333;
+}
+.has-value.Select--single > .Select-control .Select-value a.Select-value-label,
+.has-value.is-pseudo-focused.Select--single
+  > .Select-control .Select-value a.Select-value-label {
+  cursor: pointer;
+  text-decoration: none;
+}
+.has-value.Select--single
+  > .Select-control .Select-value a.Select-value-label:hover,
+.has-value.is-pseudo-focused.Select--single
+  > .Select-control .Select-value a.Select-value-label:hover,
+.has-value.Select--single
+  > .Select-control .Select-value a.Select-value-label:focus,
+.has-value.is-pseudo-focused.Select--single
+  > .Select-control .Select-value a.Select-value-label:focus {
+  color: #007eff;
+  outline: none;
+  text-decoration: underline;
+}
+.Select-input {
+  height: 34px;
+  padding-left: 10px;
+  padding-right: 10px;
+  vertical-align: middle;
+}
+.Select-input > input {
+  width: 100%;
+  background: none transparent;
+  border: 0 none;
+  box-shadow: none;
+  cursor: default;
+  display: inline-block;
+  font-family: inherit;
+  font-size: inherit;
+  margin: 0;
+  outline: none;
+  line-height: 14px;
+  /* For IE 8 compatibility */
+  padding: 8px 0 12px;
+  /* For IE 8 compatibility */
+  -webkit-appearance: none;
+}
+.is-focused .Select-input > input {
+  cursor: text;
+}
+.has-value.is-pseudo-focused .Select-input {
+  opacity: 0;
+}
+.Select-control:not(.is-searchable) > .Select-input {
+  outline: none;
+}
+.Select-loading-zone {
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 16px;
+}
+.Select-loading {
+  -webkit-animation: Select-animation-spin 400ms infinite linear;
+  -o-animation: Select-animation-spin 400ms infinite linear;
+  animation: Select-animation-spin 400ms infinite linear;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-right-color: #333;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+}
+.Select-clear-zone {
+  -webkit-animation: Select-animation-fadeIn 200ms;
+  -o-animation: Select-animation-fadeIn 200ms;
+  animation: Select-animation-fadeIn 200ms;
+  color: #999;
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 17px;
+}
+.Select-clear-zone:hover {
+  color: #d0021b;
+}
+.Select-clear {
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
+}
+.Select--multi .Select-clear-zone {
+  width: 17px;
+}
+.Select-arrow-zone {
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 25px;
+  padding-right: 5px;
+}
+.Select-arrow {
+  border-color: #999 transparent transparent;
+  border-style: solid;
+  border-width: 5px 5px 2.5px;
+  display: inline-block;
+  height: 0;
+  width: 0;
+}
+.is-open .Select-arrow,
+.Select-arrow-zone:hover > .Select-arrow {
+  border-top-color: #666;
+}
+.Select--multi .Select-multi-value-wrapper {
+  display: inline-block;
+}
+.Select .Select-aria-only {
+  display: inline-block;
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+}
+@-webkit-keyframes Select-animation-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes Select-animation-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.Select-menu-outer {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top-color: #e6e6e6;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  margin-top: -1px;
+  max-height: 200px;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 1;
+  -webkit-overflow-scrolling: touch;
+}
+.Select-menu {
+  max-height: 198px;
+  overflow-y: auto;
+}
+.Select-option {
+  box-sizing: border-box;
+  background-color: #fff;
+  color: #666666;
+  cursor: pointer;
+  display: block;
+  padding: 8px 10px;
+}
+.Select-option:last-child {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.Select-option.is-selected {
+  background-color: #f5faff;
+  /* Fallback color for IE 8 */
+  background-color: rgba(0, 126, 255, 0.04);
+  color: #333;
+}
+.Select-option.is-focused {
+  //background-color: #ebf5ff;
+  /* Fallback color for IE 8 */
+  //background-color: rgba(0, 126, 255, 0.08);
+  color: #333;
+}
+.Select-option.is-disabled {
+  color: #cccccc;
+  cursor: default;
+}
+.Select-noresults {
+  box-sizing: border-box;
+  color: #999999;
+  cursor: default;
+  display: block;
+  padding: 8px 10px;
+}
+.Select--multi .Select-input {
+  vertical-align: middle;
+  margin-left: 10px;
+  padding: 0;
+}
+.Select--multi.has-value .Select-input {
+  margin-left: 5px;
+}
+.Select--multi .Select-value {
+  background-color: #ebf5ff;
+  /* Fallback color for IE 8 */
+  background-color: rgba(0, 126, 255, 0.08);
+  border-radius: 2px;
+  border: 1px solid #c2e0ff;
+  /* Fallback color for IE 8 */
+  border: 1px solid rgba(0, 126, 255, 0.24);
+  color: #007eff;
+  display: inline-block;
+  font-size: 0.9em;
+  line-height: 1.4;
+  margin-left: 5px;
+  margin-top: 5px;
+  vertical-align: top;
+}
+.Select--multi .Select-value-icon,
+.Select--multi .Select-value-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+.Select--multi .Select-value-label {
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  cursor: default;
+  padding: 2px 5px;
+}
+.Select--multi a.Select-value-label {
+  color: #007eff;
+  cursor: pointer;
+  text-decoration: none;
+}
+.Select--multi a.Select-value-label:hover {
+  text-decoration: underline;
+}
+.Select--multi .Select-value-icon {
+  cursor: pointer;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  border-right: 1px solid #c2e0ff;
+  /* Fallback color for IE 8 */
+  border-right: 1px solid rgba(0, 126, 255, 0.24);
+  padding: 1px 5px 3px;
+}
+.Select--multi .Select-value-icon:hover,
+.Select--multi .Select-value-icon:focus {
+  background-color: #d8eafd;
+  /* Fallback color for IE 8 */
+  background-color: rgba(0, 113, 230, 0.08);
+  color: #0071e6;
+}
+.Select--multi .Select-value-icon:active {
+  background-color: #c2e0ff;
+  /* Fallback color for IE 8 */
+  background-color: rgba(0, 126, 255, 0.24);
+}
+.Select--multi.is-disabled .Select-value {
+  background-color: #fcfcfc;
+  border: 1px solid #e3e3e3;
+  color: #333;
+}
+.Select--multi.is-disabled .Select-value-icon {
+  cursor: not-allowed;
+  border-right: 1px solid #e3e3e3;
+}
+.Select--multi.is-disabled .Select-value-icon:hover,
+.Select--multi.is-disabled .Select-value-icon:focus,
+.Select--multi.is-disabled .Select-value-icon:active {
+  background-color: #fcfcfc;
+}
+@keyframes Select-animation-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@-webkit-keyframes Select-animation-spin {
+  to {
+    -webkit-transform: rotate(1turn);
+  }
+}
+
+// custom
+
+.select-wrapper {
+  display: block;
+
+  $input-height: 26px;
+  $border-color: #7e8fa2;
+  $low-border-color: #c8d0da;
+
+  &[disabled] {
+    opacity: 0.3;
+  }
+
+  .Select.is-disabled > .Select-control {
+    background: transparent;
+  }
+
+  .select-label {
+    display: inline-block;
+    margin-right: 4px;
+    position: relative;
+    top: -11px;
+
+    @include sans(
+      $cap-height: 8,
+      $dimensions-only: true
+    );
+
+    @extend %caps;
+    color: $text-orange;
+
+    &:after {
+      content: ':';
+    }
+  }
+
+  .Select {
+    display: inline-block;
+  }
+
+  .Select-control {
+    position: relative;
+    @include border-radius(0);
+    height: $input-height;
+
+    line-height: $input-height;
+    border: 0;
+    border-bottom: 1px solid $border-color;
+    background: transparent;
+  }
+
+  .Select-arrow-zone {
+    position: absolute;
+    right: 0;
+    top: -2px;
+    width: auto;
+    padding-right: 2px;
+
+    .Select-arrow {
+      border-width: 1px;
+      border-color: transparent #999 #999 transparent;
+      padding: 2px;
+      @include transform(rotate(45deg));
+    }
+  }
+
+  .is-open {
+    .Select-arrow-zone {
+      z-index: 2;
+    }
+  }
+
+  .is-focused:not(.is-open) > .Select-control {
+    border-bottom-color: $border-color;
+    box-shadow: none;
+  }
+
+  .Select-placeholder,
+  .Select--single > .Select-control .Select-value {
+    line-height: $input-height;
+  }
+
+  .Select-input {
+    height: $input-height;
+  }
+
+  .Select-menu {
+    max-height: 298px;
+  }
+
+  .Select-menu-outer {
+    $pad: 1px;
+    top: 29px;
+    width: auto;
+    left: #{-$pad - 1px};
+    right: #{-$pad - 1px};
+    border: 0;
+    max-height: 300px;
+
+    @include border-radius(2px);
+    @include box-shadow(0 0 6px rgba(0, 0, 0, 0.1));
+
+    .Select-option {
+      padding: 9px #{$pad + 10px} 7px;
+    }
+
+    .Select-option {
+      border: 1px solid $ui-white;
+      line-height: 14px;
+
+      &.is-focused {
+        background: #dfe9f3;
+      }
+    }
+
+    .Select-option:not(:last-child) {
+      position: relative;
+
+      &:not(:last-child) {
+        border-bottom-width: 2px;
+
+        &:after {
+          content: '';
+          display: block;
+          position: absolute;
+          bottom: -2px;
+          left: $pad;
+          right: $pad;
+          border-bottom: 1px solid $low-border-color;
+        }
+
+        &:first-child {
+          &:after {
+            border-bottom-color: $border-color;
+          }
+        }
+      }
+    }
+  }
+
+  /*  .Select-placeholder,
+.Select--single > .Select-control .Select-value {
+  bottom: 0;
+  color: #aaa;
+  left: 0;
+  line-height: 34px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+} */
+}
+
+.Select {
+  width: 105px;
+}
+
+.compare.introducing {
+  .compare-tabs {
+    .compare-tab {
+      @include transition(opacity 1s ease-in-out);
+    }
+  }
+}
+
+.compare {
+  position: relative;
+  &.viz {
+    padding-bottom: 50px;
+  }
+
+  .viz-head {
+    padding-bottom: 0;
+    @extend %unselectable;
+
+    &:after {
+      display: none;
+    }
+  }
+
+  .slider-gutter {
+    fill: transparent;
+  }
+
+  .slider-rail {
+    stroke: $rule-gray;
+  }
+
+  .card-year-slider {
+    .slider-handle {
+      fill: #7d8e81;
+      cursor: pointer;
+    }
+  }
+
+  .year-slider-group {
+    @include transition(opacity 1s ease-in-out);
+    position: absolute;
+    top: 65px;
+    right: 42px;
+    width: 145px;
+
+    .year-label {
+      color: $text-blue-dark;
+
+      @include sans(
+        $cap-height: 44,
+        $dimensions-only: true
+      );
+    }
+
+    .year-slider {
+      position: relative;
+      top: -2px;
+    }
+
+    .slider-handle {
+      fill: $ui-slider-blue;
+      cursor: pointer;
+    }
+  }
+}
+
+.compare-control-bar-stuck {
+  min-height: 66px;
+
+  .compare-control-bar {
+    position: fixed;
+    top: 0;
+    width: $full-width-px;
+
+    @include box-sizing(border-box);
+    z-index: 2;
+    background: $default-bg-color;
+
+    .reset {
+      top: -24px;
+    }
+  }
+}
+
+.compare-control-bar {
+  position: relative;
+  padding-top: 27px;
+  padding-left: $main-content-padding-side;
+  padding-right: $main-content-padding-side;
+  margin-left: -#{$main-content-padding-side};
+  margin-right: -#{$main-content-padding-side};
+
+  &:after {
+    position: absolute;
+
+    content: '';
+    display: block;
+    border-bottom: 1px solid #d8e0ea;
+    bottom: 0;
+    left: $main-content-padding-side;
+    right: $main-content-padding-side;
+  }
+
+  .compare-tabs {
+    padding-top: 5px;
+  }
+
+  .compare-dropdowns {
+    @include transition(opacity 1s ease-in-out);
+
+    position: absolute;
+    top: 27px;
+    right: $main-content-padding-side;
+    //right: $main-content-padding-side;
+    //bottom: 0;
+    padding-bottom: 9px;
+    z-index: 1;
+
+    .select-wrapper {
+      display: inline-block;
+
+      & + .select-wrapper {
+        margin-left: 18px;
+      }
+
+      /* &.filter-by {
+        position: absolute;
+        top: 39px;
+        right: 0;
+      } */
+    }
+  }
+
+  .reset {
+    position: absolute;
+    top: 49px;
+    right: 0;
+
+    @include sans(
+      $cap-height: 9
+    );
+
+    @include transition(opacity 0.4s ease-in-out);
+
+    &.disabled {
+      opacity: 0.4;
+    }
+
+    &:focus {
+      outline: 0;
+    }
+  }
+}
+
+.compare-tabs {
+  .compare-tab {
+    position: relative;
+    display: inline-block;
+    @include sans(
+      $cap-height: 10,
+      $dimensions-only: true
+    );
+    font-weight: $semi-wt;
+
+    padding: 11px 11px 8px 11px;
+    cursor: pointer;
+
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    opacity: 0.8;
+    @include box-shadow(0 0 4px rgba(0, 0, 0, 0));
+
+    @include transition(all 0.2s ease-out);
+
+    &.selected {
+      opacity: 1;
+      background: $ui-white;
+      @include box-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+      border-bottom-color: #79899c;
+    }
+
+    &:not(.selected) {
+    }
+  }
+
+  %moon {
+    content: '';
+    display: inline-block;
+    height: 10px;
+  }
+
+  %full-moon {
+    @extend %moon;
+    width: 10px;
+    @include border-radius(5px);
+  }
+
+  .compare-icon {
+    display: inline-block;
+    margin-right: 5px;
+  }
+
+  .compare-all {
+    .compare-icon {
+      &:before,
+      &:after {
+        @extend %moon;
+        width: 5px;
+      }
+
+      &:before {
+        margin-right: 1px;
+        background: #efdd6b;
+        @include border-radius(5px 0 0 5px);
+      }
+
+      &:after {
+        background: #db9b6c;
+        @include border-radius(0 5px 5px 0);
+      }
+    }
+  }
+
+  .compare-assignees {
+    .compare-icon {
+      &:after {
+        @extend %full-moon;
+        background: #db9b6c;
+      }
+    }
+  }
+
+  .compare-inventors {
+    .compare-icon {
+      &:after {
+        @extend %full-moon;
+        background: #efdd6b;
+      }
+    }
+  }
+}
+
+.compare-stage-wrapper {
+  position: relative;
+}
+
+.compare-stage {
+  opacity: 1;
+  @include transition(all 1s ease-out);
+  position: relative;
+  perspective: 20px;
+
+  & + & {
+    // facilitates in place cross-fade between leaving and coming instances
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    //right: 0;
+  }
+
+  .note {
+    font-style: italic;
+    position: absolute;
+    top: 11px;
+    left: 0;
+    @include sans(
+      $cap-height: 9,
+      $dimensions-only: true
+    );
+  }
+}
+
+.compare-stage-enter {
+  opacity: 0.01;
+
+  &.compare-stage-enter-active {
+    opacity: 1;
+
+    @include transition(all 0.3s ease-out);
+  }
+}
+
+.compare-stage-leave {
+  opacity: 1;
+
+  &.compare-stage-leave-active {
+    opacity: 0.01;
+
+    @include transition(all 0.3s ease-out);
+  }
+}
+
+.compare-rose-enter {
+  opacity: 0.01;
+
+  &.compare-rose-enter-active {
+    opacity: 1;
+
+    @include transition(all 0.3s ease-out);
+  }
+}
+
+.compare-rose-leave {
+  opacity: 1;
+
+  &.compare-rose-leave-active {
+    opacity: 0.01;
+
+    @include transition(all 0.3s ease-out);
+  }
+}
+
+.compare-card {
+  $tag-height: 90px;
+  $content-height: 210px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: $text-blue-dark;
+  padding-top: $tag-height;
+  height: $content-height;
+
+  &:hover {
+    z-index: 1;
+  }
+
+  @include transition(transform 0.3s ease-in-out);
+
+  .compare-card-tag {
+    position: absolute;
+    bottom: $content-height;
+    padding-bottom: 11px;
+
+    h5 {
+      @include sans(
+        $cap-height: 8,
+
+        $dimensions-only: true
+      );
+
+      @extend %caps;
+      color: $text-blue-light;
+      margin-bottom: 5px;
+    }
+
+    h6 {
+      @include sans(
+        $cap-height: 9,
+        $line-height: 16,
+        $dimensions-only: true
+      );
+    }
+  }
+
+  .wedge {
+    // just a tad of smoothing
+    @include transition(all 0.18s cubic-bezier(0.230, 1.000, 0.320, 1.000));
+  }
+
+  .compare-card-content {
+    position: relative;
+    background: $ui-white;
+    border: 1px solid $rule-gray;
+    @include box-sizing(border-box);
+
+    &,
+    svg {
+      width: 207px;
+      height: $content-height;
+    }
+  }
+
+  .participant-list {
+    position: absolute;
+    top: 12px;
+    left: 11px;
+
+    @include sans(
+      $line-height: 14,
+      $cap-height: 7,
+      $dimensions-only: true
+    );
+
+    .participant-label {
+      &:after {
+        content: ':';
+      }
+    }
+
+    .participant-value {
+      font-weight: $semi-wt;
+    }
+
+    .participant + .participant {
+      margin-top: 1px;
+    }
+  }
+  .line-chart {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .year-label {
+    position: absolute;
+    right: 18px;
+    top: 13px;
+    @extend %unselectable;
+
+    @include sans(
+      $cap-height: 12,
+      $dimensions-only: true
+    );
+
+    font-weight: $semi-wt;
+
+    @extends %caps;
+  }
+
+  .axis-label {
+    @include sans(
+      $cap-height: 6,
+      $dimensions-only: true
+    );
+
+    @extends %caps;
+
+    fill: $text-blue-light;
+  }
+
+  .axis-tick {
+    stroke: $rule-gray;
+  }
+
+  .viz-tooltip {
+    position: absolute;
+
+    //@include transform(translate(0, -4px));
+    table {
+      width: 100px;
+    }
+  }
+}
