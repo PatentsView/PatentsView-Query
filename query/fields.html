@@ -8,10 +8,10 @@
     <meta name="description" content="Thank You!" />
     <meta name="author" content="AIR" />
     <!--<link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,700,800%7CRoboto+Slab:400,700' rel='stylesheet' type='text/css'>-->
-    <link rel="stylesheet" href="http://www.patentsview.org/api/css/custom.css" />
-    <link rel="stylesheet" href="http://www.patentsview.org/web/css/headfoot.css" />
-    <link rel="stylesheet" href="http://www.patentsview.org/querydev/assets/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="http://www.patentsview.org/querydev/assets/css/pvqt.css" />
+    <link rel="stylesheet" href="/api/css/custom.css" />
+    <link rel="stylesheet" href="/web/css/headfoot.css" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/pvqt.css" />
     
 <style>
 h1, h2, h3 {
@@ -51,9 +51,9 @@ a {
             <a href="/" class="logo" title="PatentsView - USPTO" alt="PatentsView Logo"></a>
             <nav>
                 <ul>
-                    <li class="api"><a href="http://www.patentsview.org/api/">API</a><div class="nav-tooltip">provides developers and researchers programmatic access to the underlying data</div></li>
-                    <li class="data-query active"><a href="http://www.patentsview.org/querydev/">Data Query</a><div class="nav-tooltip">provides a graphical interface for researchers to query the entire underlying database</div></li>
-                    <li class="data-download"><a href="http://www.patentsview.org/download/">Data Download</a><div class="nav-tooltip">provides downloadable tables as csv files covering the underlying database</div></li>
+                    <li class="api"><a href="/api/">API</a><div class="nav-tooltip">provides developers and researchers programmatic access to the underlying data</div></li>
+                    <li class="data-query active"><a href="">Data Query</a><div class="nav-tooltip">provides a graphical interface for researchers to query the entire underlying database</div></li>
+                    <li class="data-download"><a href="/download/">Data Download</a><div class="nav-tooltip">provides downloadable tables as csv files covering the underlying database</div></li>
                 </ul>
             </nav>
         </div>
@@ -140,7 +140,7 @@ a {
 
 <h4><a class="anchor" name="step1"></a>Step 1: Select Category</h4>
 
-<p>In Step 1, select the primary category of interest: patents, inventors, or assignees. Query results will be organized based on these primary categories, which correspond to the <a href="http://www.patentsview.org/api/" target="_blank">PatentsView API Endpoints.</a></p>
+<p>In Step 1, select the primary category of interest: patents, inventors, or assignees. Query results will be organized based on these primary categories, which correspond to the <a href="/api/" target="_blank">PatentsView API Endpoints.</a></p>
 
 <p>For example, suppose you are interested in querying the PatentsView database for a particular inventor named "Austin L. Gurney". If you want to retrieve detailed information regarding all of Austin L. Gurney’s patents (e.g. patent title and abstract, filing and grant dates, technology classification, and citations), you would select "patents" as the primary category. If, rather, you are interested in the individuals that Austin L. Gurney collaborated with on these inventions, you would select "inventors" as the primary category. This would allow you to retrieve information on Austin L. Gurney’s co-inventors (e.g. first and last name, location). Alternatively, if you are interested in where Austin L. Gurney worked when he produced his patented technology, you would select "assignee" as the primary category to obtain detailed information on those organizations (e.g. name, location, total number of patents and inventors).</p>
 
@@ -171,9 +171,9 @@ a {
 <h1>Query Builder FAQs</h1>
 <h2><a class="anchor" name="definitions"></a>Where are the data field definitions that can be queried and retrieved using the PatentsView Query Builder?</h2>
 
-<p>Key terms in the patent data are defined in the <a href="http://www.patentsview.org/api/glossary.html" target="_blank">Glossary</a>.</p>
+<p>Key terms in the patent data are defined in the <a href="/api/glossary.html" target="_blank">Glossary</a>.</p>
 
-<p>The primary category defines the search groups available to define specific criteria. The <a href="http://www.patentsview.org/querydev/query/data_dictionary.html" target="_blank">Query Tool Data Dictionary</a> provides definitions, search group, and category of all searchable and output fields.</p>
+<p>The primary category defines the search groups available to define specific criteria. The <a href="query/data_dictionary.html" target="_blank">Query Tool Data Dictionary</a> provides definitions, search group, and category of all searchable and output fields.</p>
 
 <h2><a class="anchor" name="boolean"></a>Can I use Boolean operators in Quick Search?</h2>
 
@@ -199,7 +199,7 @@ a {
 
 <p>The "Government Organization Name" search field captures the name of the U.S. government organization as reported in the government interest statement and can include high-level Federal agencies or subordinate institutions. For example, the National Institutes of Health (NIH) report to the U.S. Department of Health and Human Services (DHHS), while individual NIH institutes (e.g. National Heart, Lung, and Blood Institute, National Cancer Institute, etc.) report to the NIH. To search each level of the hierarchy, select the search field for the appropriate level (e.g., Top Level Government Organization, Second Level Government Organization, or Third Level Government Organization). For example, to find patents for which DHHS and all its subordinate institutions (i.e., NIH, Centers for Medicare & Medicaid Services, Centers for Disease Control and Prevention, etc.), select the Top Level Government Organization search field and input "Department for Health and Human Services" in the text box. Similarly, if you are looking only for the patents for which NIH and its subordinate institutes have interest, select the Second Level Government Organization Search Field and input "National Institutes of Health" in the text box.</p>
 
-<p>Consult the full agency hierarchy in the <a href="http://www.patentsview.org/data/20160715/government_organization.zip" target="_blank">government organization table</a> at PatentsView Bulk Downloads.</p>
+<p>Consult the full agency hierarchy in the <a href="/data/20160715/government_organization.zip" target="_blank">government organization table</a> at PatentsView Bulk Downloads.</p>
 
 <h2><a class="anchor" name="fullpreview"></a>Is there a way to preview results before submitting the full search?</h2>
 <p>Users can preview the results of their query before submitting the full search. The preview dataset contains up to top 10 rows of the full dataset and is presented in CSV, JSON, and XML format.</p>
@@ -209,7 +209,7 @@ a {
 
 <p>A query may also fail if the size of the output data file exceeds 1GB. If you expect your query will result in an output file of greater than 1GB in size, consider conducting multiple queries with the same search criterion but different output fields. Alternatively, you can generate several output datasets based on different date ranges and other query criteria.</p>
 
-<p>Note that the entire PatentsView database can be accessed via the <a href="http://www.patentsview.org/download/" target="_blank">PatentsView Bulk Downloads</a> or via a MySQL database dump upon request to <a href="mailto:cssip@air.org">cssip@air.org</a>.</p>
+<p>Note that the entire PatentsView database can be accessed via the <a href="/download/" target="_blank">PatentsView Bulk Downloads</a> or via a MySQL database dump upon request to <a href="mailto:cssip@air.org">cssip@air.org</a>.</p>
 
 <h2><a class="anchor" name="contact"></a>Who should I contact for other questions, additional information and feedback?</h2>
 <p>Please send questions and additional feedback to the PatentsView team at <a href="mailto:cssip@air.org">cssip@air.org</a>.</p>

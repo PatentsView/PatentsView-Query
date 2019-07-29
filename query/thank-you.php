@@ -20,7 +20,7 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $entity_id = $row["entity_id"];
     $q = $row["query_string"];
-    $url = "http://www.patentsview.org/api/".$entity_id."s/query?".$q;
+    $url = "/api/".$entity_id."s/query?".$q;
 }
 
 $result->close();
@@ -38,8 +38,8 @@ pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"
     <meta name="author" content="AIR">
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,700,800%7CRoboto+Slab:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="http://ec2-54-68-66-55.us-west-2.compute.amazonaws.com/css/headfoot.css" />
-    <link rel="stylesheet" href="http://www.patentsview.org/querydev/assets/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="http://www.patentsview.org/querydev/assets/css/pvqt.css" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/pvqt.css" />
 </head>
 <body>
     <noscript>This search tool requires Javascript. For more information about finding a particular patent or group of patents please visit <a href="http://uspto.gov/" title="United States Patent and Trademark Office Website">www.uspto.gov</a> or call our customer support at <a href="tel:1-800-786-9199" title="USPTO Customer Support Toll-Free Phone Number">1-800-786-9199</a>.</noscript>
@@ -72,7 +72,7 @@ pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"
                         <?php echo $url; ?>
                     </a>
                 </p>
-                <a href="http://www.patentsview.org/querydev" class="prev-next-btn btn btn-lg btn-primary" title="Begin New Query">
+                <a href="/querydev" class="prev-next-btn btn btn-lg btn-primary" title="Begin New Query">
                     Begin New Query <i class="fa fa-caret-right"></i>
                 </a>
             </div>

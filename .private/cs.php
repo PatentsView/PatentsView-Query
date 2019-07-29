@@ -1,5 +1,5 @@
 <?php
-$mysql_host = "host";
-$mysql_username = "username";
-$mysql_password = "password";
+$mysql_host = "pv3-ingestmysql.cckzcdkkfzqo.us-east-1.rds.amazonaws.com";
+$mysql_username = "devuser";
+$mysql_password = "iHELSMg905fOY";
 ?>

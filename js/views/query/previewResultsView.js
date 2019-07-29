@@ -43,7 +43,7 @@ define([
             if (query != "") {
                 $.ajax({
                     context: this,
-                    url: "http://www.patentsview.org/preview_api/" + entityId + "s/query?" + query,
+                    url: "/preview_api/" + entityId + "s/query?" + query,
                     dataType: "json",
                     beforeSend: function (request) {
                         request.setRequestHeader("Authorization", "Negotiate");
@@ -55,7 +55,7 @@ define([
                             $.ajax({
                                 context: this,
                                 type: 'POST',
-                                url: "http://www.patentsview.org/querydev/query/tocsv.php",
+                                url: "query/tocsv.php",
                                 dataType: "text",
                                 data: { query: data },
                                 beforeSend: function (request) {
@@ -91,7 +91,7 @@ define([
                
                 $.ajax({
                     context: this,
-                    url: "http://www.patentsview.org/preview_api/" + entityId + "s/query?" + query + "&format=xml",
+                    url: "/preview_api/" + entityId + "s/query?" + query + "&format=xml",
                     dataType: "text",
                     beforeSend: function (request) {
                         request.setRequestHeader("Authorization", "Negotiate");
@@ -110,7 +110,7 @@ define([
                             $.ajax({
                                 context: this,
                                 type: 'POST',
-                                url: "http://www.patentsview.org/querydev/query/toxml.php",
+                                url: "query/toxml.php",
                                 dataType: "text",
                                 data: { query: data },
                                 beforeSend: function (request) {

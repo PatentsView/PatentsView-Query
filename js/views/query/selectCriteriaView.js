@@ -454,7 +454,7 @@ define([
                         datumTokenizer: Bloodhound.tokenizers.whitespace,
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         remote: {
-                            url: "http://www.patentsview.org/querydev/query/location.php",
+                            url: "query/location.php",
                             //url: "/query/location.php",
                             replace: function (url, query) {
                                 return url + "?cc=" + locationCountry.typeahead('val') + "&r=c" + "&c=" + query;
@@ -502,7 +502,7 @@ define([
                         datumTokenizer: Bloodhound.tokenizers.whitespace,
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         remote: {
-                            url: "http://www.patentsview.org/querydev/query/cpc.php",
+                            url: "query/cpc.php",
                             //url: "/query/cpc.php",
                             replace: function (url, query) {
                                 return url + "?cc=" + query;
@@ -531,7 +531,7 @@ define([
                         datumTokenizer: Bloodhound.tokenizers.whitespace,
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         remote: {
-                            url: "http://www.patentsview.org/querydev/query/uspc.php",
+                            url: "query/uspc.php",
                             //url: "/query/uspc.php",
                             replace: function (url, query) {
                                 return url + "?cc=" + query;
@@ -560,7 +560,7 @@ define([
                         datumTokenizer: Bloodhound.tokenizers.whitespace,
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         remote: {
-                            url: "http://www.patentsview.org/querydev/query/ipc.php",
+                            url: "query/ipc.php",
                             //url: "/query/ipc.php",
                             replace: function (url, query) {
                                 return url + "?cc=" + query;
@@ -589,7 +589,7 @@ define([
                         datumTokenizer: Bloodhound.tokenizers.whitespace,
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         remote: {
-                            url: "http://www.patentsview.org/querydev/query/assignee.php",
+                            url: "query/assignee.php",
                             //url: "/query/assignee.php",
                             replace: function (url, query) {
                                 return url + "?o=" + query;
@@ -619,7 +619,7 @@ define([
                         datumTokenizer: Bloodhound.tokenizers.whitespace,
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         remote: {
-                            url: "http://www.patentsview.org/querydev/query/gov.php",
+                            url: "query/gov.php",
                             //url: "/query/gov.php",
                             replace: function (url, query) {
                                 return url + "?n=" + query;
@@ -648,7 +648,7 @@ define([
                         datumTokenizer: Bloodhound.tokenizers.whitespace,
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         remote: {
-                            url: "http://www.patentsview.org/querydev/query/gov.php",
+                            url: "query/gov.php",
                             //url: "/query/gov.php",
                             replace: function (url, query) {
                                 return url + "?lo=" + query;
@@ -677,7 +677,7 @@ define([
                         datumTokenizer: Bloodhound.tokenizers.whitespace,
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         remote: {
-                            url: "http://www.patentsview.org/querydev/query/gov.php",
+                            url: "query/gov.php",
                             //url: "/query/gov.php",
                             replace: function (url, query) {
                                 return url + "?ltw=" + query;
@@ -706,7 +706,7 @@ define([
                         datumTokenizer: Bloodhound.tokenizers.whitespace,
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         remote: {
-                            url: "http://www.patentsview.org/querydev/query/gov.php",
+                            url: "query/gov.php",
                             //url: "/query/gov.php",
                             replace: function (url, query) {
                                 
@@ -741,7 +741,7 @@ define([
                             datumTokenizer: Bloodhound.tokenizers.whitespace,
                             queryTokenizer: Bloodhound.tokenizers.whitespace,
                             remote: {
-                                url: "http://www.patentsview.org/querydev/query/assignee.php",
+                                url: "query/assignee.php",
                                 //url: "/query/assignee.php",
                                 replace: function (url, query) {
                                     return url + "?o=" + query;
@@ -774,7 +774,7 @@ define([
                             datumTokenizer: Bloodhound.tokenizers.whitespace,
                             queryTokenizer: Bloodhound.tokenizers.whitespace,
                             remote: {
-                                url: "http://www.patentsview.org/querydev/query/gov.php",
+                                url: "query/gov.php",
                                 //url: "/query/gov.php",
                                 replace: function (url, query) {
                                     return url + "?n=" + query;
@@ -807,7 +807,7 @@ define([
                             datumTokenizer: Bloodhound.tokenizers.whitespace,
                             queryTokenizer: Bloodhound.tokenizers.whitespace,
                             remote: {
-                                url: "http://www.patentsview.org/querydev/query/gov.php",
+                                url: "query/gov.php",
                                 //url: "/query/gov.php",
                                 replace: function (url, query) {
                                     return url + "?lo=" + query;
@@ -841,7 +841,7 @@ define([
                             datumTokenizer: Bloodhound.tokenizers.whitespace,
                             queryTokenizer: Bloodhound.tokenizers.whitespace,
                             remote: {
-                                url: "http://www.patentsview.org/querydev/query/gov.php",
+                                url: "query/gov.php",
                                 //url: "/query/gov.php",
                                 replace: function (url, query) {
                                     return url + "?ltw=" + query;
@@ -875,7 +875,7 @@ define([
                             datumTokenizer: Bloodhound.tokenizers.whitespace,
                             queryTokenizer: Bloodhound.tokenizers.whitespace,
                             remote: {
-                                url: "http://www.patentsview.org/querydev/query/gov.php",
+                                url: "query/gov.php",
                                 //url: "/query/gov.php",
                                 replace: function (url, query) {
                                     

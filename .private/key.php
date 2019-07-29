@@ -1,3 +1,3 @@
-<?php 
-$key="recaptcha-key"; 
+<?php
+$key="6LcUEgYTAAAAAGqEbmwIhc9Um8BX0x99oFrHixQg";
 ?>

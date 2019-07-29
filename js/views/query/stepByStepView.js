@@ -256,7 +256,7 @@ define([
                 jQuery.ajax({
                     context: this,
                     type: 'POST',
-                    url: "http://www.patentsview.org/querydev/query/verify.php", //Change for production build.
+                    url: "query/verify.php", //Change for production build.
                     //url: "/query/verify.php",
                     data: { "g-recaptcha-response": response, "query": JSON.stringify(query) },
                     success: function (e) {
