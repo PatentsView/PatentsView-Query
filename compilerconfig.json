@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "assets/css/pvqt.css",
+    "inputFile": "assets/less/pvqt.less"
+  },
+  {
+    "outputFile": "assets/css/font-awesome.css",
+    "inputFile": "assets/less/font-awesome-4.6.3/less/font-awesome.less"
+  }
+]

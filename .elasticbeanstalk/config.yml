@@ -1,0 +1,20 @@
+branch-defaults:
+  default:
+    environment: pvqt-lamp
+environment-defaults:
+  pvqt-lamp:
+    branch: null
+    repository: null
+global:
+  application_name: pvqt
+  default_ec2_keyname: pv-env-test
+  default_platform: arn:aws:elasticbeanstalk:us-east-1::platform/PHP 5.6 running on
+    64bit Amazon Linux/2.8.12
+  default_region: us-east-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: eb-cli
+  sc: null
+  workspace_type: Application
