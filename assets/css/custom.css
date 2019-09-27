@@ -408,3 +408,12 @@ ul.dropdown-nav li a:hover {
         min-width: 200px;
     }
 }
+
+/* for new header and footer */
+.container {
+    min-height: 600px;
+    padding-top: 50px;
+}
+.paneNav button {
+    margin-top: 12px !important;
+}
