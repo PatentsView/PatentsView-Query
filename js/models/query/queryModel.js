@@ -457,7 +457,7 @@
             }
         });
     }
-    debugger;
+    
     var QueryModel = Backbone.Model.extend({
         initialize: function () {
             this.set('options', options);
@@ -719,7 +719,7 @@
             this.set('groups', this.getGroups());
         },
         buildQuery: function () {
-            debugger;
+            
             var quickSearch = this.get('quickSearch');
             var expressions = this.get('expressions');
             var query = '';

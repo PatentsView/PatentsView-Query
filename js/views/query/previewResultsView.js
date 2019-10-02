@@ -70,7 +70,7 @@ define([
                                     }
                                 },
                                 error: function (xhr, textStatus, errorMessage) {
-                                    debugger;
+                                    
                                     $(this.el).find('#preview-csv').removeClass('preview-csv-scroll').html(noResults);
                                     $(this.el).find('#preview-json').html(noResults);
                                 }
@@ -98,7 +98,7 @@ define([
                     },
                     async: true,
                     success: function (data) {
-                        debugger;
+                        
                         if (data.indexOf("<count>0") >= 0) // no results returned.
                         {
                             $(this.el).find('#preview-xml').html(noResults);
@@ -121,7 +121,7 @@ define([
                                     $(this.el).find('#preview-xml').html('<pre style="max-height: 30em;" class="language-*"><code class="language-markup">' + Prism.highlight(data, Prism.languages.markup) + '</code></pre>');
                                 },
                                 error: function (xhr, textStatus, errorMessage) {
-                                    debugger;
+                                    
                                     $(this.el).find('#preview-csv').removeClass('preview-csv-scroll').html(noResults);
                                     $(this.el).find('#preview-json').html(noResults);
                                 }
@@ -133,7 +133,7 @@ define([
                         }
                     },
                     error: function (xhr, textStatus, errorMessage) {
-                        debugger;
+                        
                         $(this.el).find('#preview-xml').html(noResults);
                     }
                 });
