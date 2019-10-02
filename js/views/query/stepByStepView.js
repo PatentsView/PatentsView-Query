@@ -264,6 +264,7 @@ define([
                         $('#submit').submit();
                     },
                     error: function (e) {
+                        console.log('error:', e)
                         grecaptcha.reset();
                         $(save).html("Submit Query");
                         $(save).prop('disabled', true);
