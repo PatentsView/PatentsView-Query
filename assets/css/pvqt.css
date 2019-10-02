@@ -7160,7 +7160,7 @@ p {
 }
 .btn-data-dict {
   font-size: 15px !important;
-  background-image: url("/assets/img/data-dict.png");
+  background-image: url("../img/data-dict.png");
   background-repeat: no-repeat;
   background-position: 8px;
   padding-left: 42px;
@@ -7465,7 +7465,7 @@ select.form-control {
   -moz-appearance: none;
   background-position: right 50%;
   background-repeat: no-repeat;
-  background-image: url('/assets/img/dropdown-arrow.png');
+  background-image: url('../img/dropdown-arrow.png');
   padding-left: 10px !important;
   height: 26px;
   line-height: 21px;
