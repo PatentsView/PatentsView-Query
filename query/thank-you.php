@@ -20,7 +20,7 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $entity_id = $row["entity_id"];
     $q = $row["query_string"];
-    $url = "http://www.patentsview.org/api/".$entity_id."s/query?".$q;
+    $url = "https://www.patentsview.org/api/".$entity_id."s/query?".$q;
 }
 
 $result->close();
@@ -66,7 +66,7 @@ pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"
                             <?php echo $url; ?>
                         </a>
                     </p>
-                    <a href="http://www.patentsview.org/querydev" class="prev-next-btn btn btn-lg btn-primary" title="Begin New Query">
+                    <a href="https://www.patentsview.org/querydev" class="prev-next-btn btn btn-lg btn-primary" title="Begin New Query">
                         Begin New Query
                         <i class="fa fa-caret-right"></i>
                     </a>
