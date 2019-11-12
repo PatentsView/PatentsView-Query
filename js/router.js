@@ -6,7 +6,7 @@ define([
   'underscore',
   'backbone',
   'models/query/queryModel',
-  'views/query/stepbystepView',
+  'views/query/stepByStepView',
   'views/query/selectCriteriaView',
   'views/query/selectResultsView',
   'views/query/previewResultsView',

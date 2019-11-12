@@ -37,9 +37,9 @@ pclose(popen('start /B php.exe pv-qt-backend/index.php '.$id.' 2>nul >nul', "r")
     <meta name="description" content="Create a new Query">
     <meta name="author" content="AIR">
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,700,800%7CRoboto+Slab:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="../assets/css/headfoot.css" />
-    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="../assets/css/pvqt.css" />
+    <link rel="stylesheet" href="/assets/css/headfoot.css" />
+    <link rel="stylesheet" href="/assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/assets/css/pvqt.css" />
 </head>
 <body>
     <noscript>
