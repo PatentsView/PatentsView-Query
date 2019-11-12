@@ -66,7 +66,7 @@ pclose(popen('start /B php.exe pv-qt-backend/index.php '.$id.' 2>nul >nul', "r")
                             <?php echo $url; ?>
                         </a>
                     </p>
-                    <a href="https://www.patentsview.org/querydev" class="prev-next-btn btn btn-lg btn-primary" title="Begin New Query">
+                    <a href="https://www.patentsview.org/" class="prev-next-btn btn btn-lg btn-primary" title="Begin New Query">
                         Begin New Query
                         <i class="fa fa-caret-right"></i>
                     </a>
