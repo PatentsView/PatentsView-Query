@@ -24,7 +24,7 @@ if ($result->num_rows > 0) {
 }
 
 $result->close();
-pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"));
+pclose(popen('start /B php.exe pv-qt-backend/index.php '.$id.' 2>nul >nul', "r"));
 
 ?>
 
@@ -59,7 +59,7 @@ pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"
                     <h2>Thank you</h2>
                     <p>
                         Your Query has been successfully submitted. Your results will be emailed to you shortly. If you do not receive an email with results within 24 hours please contact us at
-                        <a href="mailto:cssip@air.org">cssip@air.org</a>.
+                        <a href="mailto:contact@patentsview.org">cssip@air.org</a>.
                     </p>
                     <p style="margin-top: 10px; margin-bottom: 10px;">
                         <a href='<?php echo $url; ?>' target="_blank">
