@@ -121,7 +121,7 @@ define([
                             else {
 
                                 grecaptcha.render('captcha-container', {
-                                    'sitekey': '6LcUEgYTAAAAAPXnyayKNTkx4nZsgQoBG52pD9_D',
+                                    'sitekey': '6LdyMMIUAAAAACJ3lEAZMUqL1ut-lw3C9ddMwbyn',
                                     'callback': function (e) {
                                         $('#save').prop("disabled", _.isEmpty(e));
                                     },

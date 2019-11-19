@@ -24,7 +24,7 @@ if ($result->num_rows > 0) {
 }
 
 $result->close();
-pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"));
+pclose(popen('start /B php.exe pv-qt-backend/index.php '.$id.' 2>nul >nul', "r"));
 
 ?>
 
@@ -37,9 +37,9 @@ pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"
     <meta name="description" content="Create a new Query">
     <meta name="author" content="AIR">
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,700,800%7CRoboto+Slab:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="../assets/css/headfoot.css" />
-    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="../assets/css/pvqt.css" />
+    <link rel="stylesheet" href="/assets/css/headfoot.css" />
+    <link rel="stylesheet" href="/assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/assets/css/pvqt.css" />
 </head>
 <body>
     <noscript>
@@ -59,14 +59,14 @@ pclose(popen('start /B php.exe C:/querytool/backend.php '.$id.' 2>nul >nul', "r"
                     <h2>Thank you</h2>
                     <p>
                         Your Query has been successfully submitted. Your results will be emailed to you shortly. If you do not receive an email with results within 24 hours please contact us at
-                        <a href="mailto:cssip@air.org">cssip@air.org</a>.
+                        <a href="mailto:contact@patentsview.org">cssip@air.org</a>.
                     </p>
                     <p style="margin-top: 10px; margin-bottom: 10px;">
                         <a href='<?php echo $url; ?>' target="_blank">
                             <?php echo $url; ?>
                         </a>
                     </p>
-                    <a href="https://www.patentsview.org/querydev" class="prev-next-btn btn btn-lg btn-primary" title="Begin New Query">
+                    <a href="https://www.patentsview.org/" class="prev-next-btn btn btn-lg btn-primary" title="Begin New Query">
                         Begin New Query
                         <i class="fa fa-caret-right"></i>
                     </a>
