@@ -24,7 +24,11 @@ if ($result->num_rows > 0) {
 }
 
 $result->close();
-pclose(popen('php pv-qt-backend/index.php 2>/dev/null >/dev/null &', "r"));
+if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
+    pclose(popen('start /B php.exe pv-qt-backend/index.php 2>nul >nul', "r"));
+} else {
+    pclose(popen('php pv-qt-backend/index.php 2>/dev/null >/dev/null &', "r"));
+}
 
 ?>
 
