@@ -3,21 +3,19 @@ header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
 function verify($response) {
-    require ("../.private/key.php");
+    require (".private/key.php");
     $ip = $_SERVER["REMOTE_ADDR"]; //server Ip
     $url = "https://www.google.com/recaptcha/api/siteverify";
     $full_url = $url."?secret=".$key."&response=".$response."&remoteip=".$ip;
-
     $data = json_decode(file_get_contents($full_url));
     if(isset($data->success) && $data->success == true) {
         return true;
     }
-
     return false;
 }
 
 function save($json) {
-    require ("../.private/cs.php");
+    require (".private/cs.php");
     $ip = $_SERVER["REMOTE_ADDR"]; //server Ip
     $data = json_decode($json);
     $recipient = $data->recipient;
@@ -31,7 +29,7 @@ function save($json) {
     $output_fields = join(",", $data->outputIds);
     $query_string = $data->query;
 
-    $mysqli = new mysqli($mysql_host,$mysql_username,$mysql_password,"QueryTool");
+    $mysqli = new mysqli($mysql_host,$mysql_username,$mysql_password,"QueryTool_dev");
 
     if ($mysqli->connect_error) {
         echo json_encode(array("status"=>"error","message"=>"Error Processing Query."));
