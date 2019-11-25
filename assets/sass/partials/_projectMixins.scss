@@ -1,0 +1,10 @@
+@mixin sans($cap-height: null, $line-height: null, $dimensions-only: false, $round-size: true) {
+	@include font-mixin(
+		$rem-cap-height: 7.3,
+		$cap-height: $cap-height,
+		$family: $sans,
+		$line-height: $line-height,
+		$dimensions-only: $dimensions-only,
+		$round-size: $round-size
+	);
+}

@@ -1,0 +1,393 @@
+//structure
+$header-height: 61px;
+$data-display-collapsed-height: 15px;
+$data-display-full-height: 37px;
+$table-toolbar-height: 27px;
+$footer-height: 25px;
+$constrain-width: 985px;
+$small-constrain-width: 758px;
+$body-padding: 14px;
+$sidebar-width: 21.2183%;
+$sidebar-width-px: 209px;
+$main-content-width: 76.3452%;
+$main-content-width-px: 752px;
+$menu-item-width: 90px;
+$main-content-padding-top: 38px;
+$main-content-padding-side: 42px;
+
+$full-width-px: 1024px;
+
+/** FONTS */
+$sans: 'Open Sans', sans-serif;
+$light-wt: 300;
+$normal-wt: 400;
+$semi-wt: 600;
+$bold-wt: 700;
+
+//colors
+// updated colors
+$blue-mid: #4f5f6f;
+$blue-lighter: #e0e8f2;
+$blue-light: #d0dded;
+$blue-dark: #445160;
+$yellow: #e7e3b9;
+$patent-light: rgb(118, 164, 193);
+$patent-dark: rgb(125, 147, 170);
+
+$text-orange: #a66a57;
+$text-blue-dark: #3e4b5a;
+$text-blue: #4f5f6f;
+$text-blue-light: #9cabb9;
+$text-blue-export: #445160;
+$text-blue-export-hover: #19202A;
+$text-yellow: #e7e3b9;
+$text-assignee: #dc9c70; // assignees
+$text-inventor: #b6a867;
+$text-patent: #8abbd5;
+$text-primary-patent: #92a5ba;
+$text-patent-citations: #7a92ac;
+$text-gray: #8f9498;
+$text-light-gray: #babfc5;
+
+$ui-hover-light-blue: #dfe9f3;
+$ui-white: #fcfdff;
+$ui-border-light-blue: #b3c3d1;
+$ui-border-blue: #66778a;
+$ui-slider-blue: #7e8fa2;
+
+$rule-gray: #d8e0ea;
+
+// legacy colors
+$white: #ffffff;
+$black: #000000;
+$gray-dark: #333333;
+$gray: #d2d3d4;
+$gray-lightest: #ddddde;
+$gray-light: #a4a4a4;
+$blue-gray-dark: #8c9fae;
+$blue-gray: #b2cadd;
+$blue-gray-light: #e9eff3;
+$blue-gray-lighter: #eaedf1;
+$orange-dark: #a75a3e;
+$orange-mid: #ce6f4d;
+$orange: #e17954;
+$dark-red: #b24646;
+$light-pink: #f8e3e0;
+
+//gradients
+.gradient-blue-gray {
+	@include background-image(linear-gradient(#d9e1ec 0%, #d9e1ec 8%, #bdc9da 100%));
+}
+.gradient-blue-gray-light {
+	@include background-image(linear-gradient($blue-gray-lighter 0%, $blue-gray-lighter 8%, #d8e0ec 100%));
+}
+.gradient-gray {
+	@include background-image(linear-gradient(#fafbfc 0%, #fafbfc 10%, #eaebec 100%));
+}
+.gradient-gray-light {
+	@include background-image(linear-gradient(#fbfcfd 0%, #fbfcfd 10%, #f0f1f2 100%));
+}
+%filter-background-gradient {
+	@include background-image(linear-gradient(#fbfcfd 0%, #fbfcfd 10%, #f0f1f2 100%));
+}
+//strokes
+$stroke-blue-dark: 1px solid #425161;
+$stroke-blue-mid: 1px solid $blue-mid;
+$stroke-blue-gray-dark: 1px solid $blue-gray-dark;
+$stroke-blue-light: 1px solid $blue-gray;
+$stroke-blue-gray-light: 1px solid $blue-gray;
+$stroke-gray-light: 1px solid $gray-lightest;
+
+//theme colors
+$default-bg-color: #f3f8fd;
+$default-text-color: $blue-mid;
+
+//fonts
+$font-family: "Open Sans", sans-serif;
+$font-size-default: 12px;
+$font-size-footer: 11px;
+$font-size-logo: 12px;
+$font-size-logo-bold: 250%;
+$font-size-title: 10px;
+
+//font weights
+$weight-light: 300;
+$weight-normal: 400;
+$weight-semi-bold: 600;
+$weight-bold: 700;
+$weight-extra-bold: 800;
+
+//others
+$detail-loading-image: "../img/loading-animation.gif";
+
+//defaults
+%root-container {
+	color: $default-text-color;
+	font-family: $font-family;
+	font-size: $font-size-default;
+}
+
+%loading-animation {
+	background: url($detail-loading-image);
+	width: image-width($detail-loading-image);
+	height: image-height($detail-loading-image);
+	display: inline-block;
+}
+
+%server-error-message {
+	font-size: 13px;
+	font-style: italic;
+	color: #a9a9a9;
+	display: inline-block;
+}
+
+@mixin category-nav($type, $highlight-class-name, $before-margin-right:5px, $before-margin-top:-2px) {
+	a:before {
+		content: ".";
+		display: inline-block;
+		margin-right: $before-margin-right;
+		margin-top: $before-margin-top;
+		vertical-align: middle;
+	}
+
+	li.#{$type} > a:before {
+		@extend %sprite-search-category-#{$type}-blue;
+	}
+	li.#{$type}.#{$highlight-class-name} > a:before {
+		@extend %sprite-search-category-#{$type}-yellow;
+	}
+}
+
+%clear-fix {
+	&:after {
+		// Clearfix without using overflow (because it affects the custom
+		// dropdown lists in the funding filter)
+		content: "";
+		display: table;
+		clear: both;
+	}
+}
+
+//search sprites
+$search-sprites: sprite-map("search/*.png");
+%sprite-tag-close-loading {
+	@include sprite-replace-text-with-dimensions($search-sprites, close-loading);
+}
+%sprite-tag-remove {
+	@include sprite-replace-text-with-dimensions($search-sprites, tag-x);
+}
+%sprite-tag-remove-hover {
+	@include sprite-replace-text-with-dimensions($search-sprites, tag-x_hover);
+}
+%sprite-tag-divide {
+	@include sprite-replace-text-with-dimensions($search-sprites, tag-divide);
+}
+%sprite-how-to {
+	@include sprite-replace-text-with-dimensions($search-sprites, how-to);
+}
+%sprite-dropdown-triangle {
+	@include sprite-replace-text-with-dimensions($search-sprites, dropdowndown-arrow);
+}
+%sprite-collapse {
+	@include sprite-replace-text-with-dimensions($search-sprites, collapse);
+}
+%sprite-collapse-elipse {
+	@include sprite-replace-text-with-dimensions($search-sprites, collapse-elipse);
+}
+%sprite-expand {
+	@include sprite-replace-text-with-dimensions($search-sprites, expand);
+}
+%sprite-expand-elipse {
+	@include sprite-replace-text-with-dimensions($search-sprites, expand-elipse);
+}
+%sprite-sort-arrow-asc {
+	@include sprite-replace-text-with-dimensions($search-sprites, column-arrow-up);
+}
+%sprite-sort-arrow-desc {
+	@include sprite-replace-text-with-dimensions($search-sprites, column-arrow-down);
+}
+%sprite-sort-arrow-active-asc {
+	@include sprite-replace-text-with-dimensions($search-sprites, column-arrow-active-up);
+}
+%sprite-sort-arrow-active-desc {
+	@include sprite-replace-text-with-dimensions($search-sprites, column-arrow-active-down);
+}
+%sprite-new-window-link {
+	@include sprite-replace-text-with-dimensions($search-sprites, new_window-icon);
+}
+%sprite-new-window-link-blue {
+	@include sprite-replace-text-with-dimensions($search-sprites, new_window-icon-blue);
+}
+%sprite-detail-link {
+	@include sprite-replace-text-with-dimensions($search-sprites, detail);
+}
+%sprite-detail-link-large-blue {
+	@include sprite-replace-text-with-dimensions($search-sprites, detail-blue);
+}
+%sprite-detail-link-large {
+	@include sprite-replace-text-with-dimensions($search-sprites, detail-large);
+}
+%sprite-query-link {
+	@include sprite-replace-text-with-dimensions($search-sprites, query);
+}
+%sprite-search-filter-btn {
+	@include sprite-replace-text-with-dimensions($search-sprites, search-filter-btn);
+}
+%sprite-prev-option-btn {
+	@include sprite-replace-text-with-dimensions($search-sprites, back);
+}
+%sprite-reset-option-btn {
+	@include sprite-replace-text-with-dimensions($search-sprites, reset);
+}
+%sprite-search-option-btn {
+	@include sprite-replace-text-with-dimensions($search-sprites, search-option-btn);
+}
+%sprite-list-menu {
+	@include sprite-replace-text-with-dimensions($search-sprites, list-menu);
+}
+%sprite-list-menu-blue {
+	@include sprite-replace-text-with-dimensions($search-sprites, list-menu-blue);
+}
+%sprite-list-menu-yellow {
+	@include sprite-replace-text-with-dimensions($search-sprites, list-menu-yellow);
+}
+%sprite-map-menu {
+	@include sprite-replace-text-with-dimensions($search-sprites, map-menu);
+}
+%sprite-map-menu-blue {
+	@include sprite-replace-text-with-dimensions($search-sprites, map-menu-blue);
+}
+%sprite-map-menu-yellow {
+	@include sprite-replace-text-with-dimensions($search-sprites, map-menu-yellow);
+}
+%sprite-checkbox-checked {
+	@include sprite-replace-text-with-dimensions($search-sprites, checkbox-x);
+}
+%sprite-radio-checked {
+	@include sprite-replace-text-with-dimensions($search-sprites, radio-dot);
+}
+%sprite-class-dropdown-arrow {
+	@include sprite-replace-text-with-dimensions($search-sprites, class-arrow-down);
+}
+%sprite-detail-close {
+	@include sprite-replace-text-with-dimensions($search-sprites, close-elipse);
+}
+%sprite-detail-close-hover {
+	@include sprite-replace-text-with-dimensions($search-sprites, close-hover);
+}
+%sprite-detail-inventor {
+	@include sprite-replace-text-with-dimensions($search-sprites, lightbulb);
+}
+%sprite-detail-assignee {
+	@include sprite-replace-text-with-dimensions($search-sprites, suitcase);
+}
+%sprite-detail-class {
+	@include sprite-replace-text-with-dimensions($search-sprites, file);
+}
+%sprite-detail-location {
+	@include sprite-replace-text-with-dimensions($search-sprites, detail-location);
+}
+%sprite-detail-patent {
+	@include sprite-replace-text-with-dimensions($search-sprites, detail_patent-ribbon);
+}
+%sprite-detail-back {
+	@include sprite-replace-text-with-dimensions($search-sprites, back);
+}
+%sprite-detail-divide {
+	@include sprite-replace-text-with-dimensions($search-sprites, divide);
+}
+%sprite-detail-next {
+	@include sprite-replace-text-with-dimensions($search-sprites, next);
+}
+%sprite-detail-map-legend-most-recent {
+	@include sprite-replace-text-with-dimensions($search-sprites, star-blue);
+}
+%sprite-detail-map-legend-previous {
+	@include sprite-replace-text-with-dimensions($search-sprites, location-blue);
+}
+%sprite-detail-chart-tooltip-arrow {
+	@include sprite-replace-text-with-dimensions($search-sprites, chart-tooltip-arrow-down);
+}
+%sprite-detail-co-inventor-main-location {
+	@include sprite-replace-text-with-dimensions($search-sprites, star-blue);
+}
+%sprite-map-tooltip-arrow {
+	@include sprite-replace-text-with-dimensions($search-sprites, map-tooltip-arrow-right);
+}
+
+%sprite-search-category-inventor-blue {
+	@include sprite-replace-text-with-dimensions($search-sprites, sm-inventor_blue);
+}
+%sprite-search-category-inventor-yellow {
+	@include sprite-replace-text-with-dimensions($search-sprites, sm-inventor_yellow);
+}
+%sprite-search-category-patent-blue {
+	@include sprite-replace-text-with-dimensions($search-sprites, sm-patent_blue);
+}
+%sprite-search-category-patent-yellow {
+	@include sprite-replace-text-with-dimensions($search-sprites, sm-patent_yellow);
+}
+%sprite-search-category-assignee-blue {
+	@include sprite-replace-text-with-dimensions($search-sprites, sm-assignee_blue);
+}
+%sprite-search-category-assignee-yellow {
+	@include sprite-replace-text-with-dimensions($search-sprites, sm-assignee_yellow);
+}
+%sprite-search-category-class-blue {
+	@include sprite-replace-text-with-dimensions($search-sprites, sm-class_blue);
+}
+%sprite-search-category-class-yellow {
+	@include sprite-replace-text-with-dimensions($search-sprites, sm-class_yellow);
+}
+
+//landing page sprites
+$landing-sprites: sprite-map("landing/*.png");
+%sprite-logo-large {
+	@include sprite-replace-text-with-dimensions($landing-sprites, logo-large);
+}
+%sprite-uspto {
+	@include sprite-replace-text-with-dimensions($landing-sprites, uspto);
+}
+%sprite-creative-commons {
+	@include sprite-replace-text-with-dimensions($landing-sprites, creative-commons);
+}
+%sprite-list-menu-landing {
+	@include sprite-replace-text-with-dimensions($landing-sprites, list_blue);
+}
+%sprite-map-menu-landing {
+	@include sprite-replace-text-with-dimensions($landing-sprites, map_blue);
+}
+
+%sprite-icon-bulb {
+	@include sprite-replace-text-with-dimensions($landing-sprites, icon-bulb);
+}
+%sprite-icon-pin {
+	@include sprite-replace-text-with-dimensions($landing-sprites, icon-pin);
+}
+%sprite-icon-briefcase {
+	@include sprite-replace-text-with-dimensions($landing-sprites, icon-briefcase);
+}
+%sprite-icon-ribbon {
+	@include sprite-replace-text-with-dimensions($landing-sprites, icon-ribbon);
+}
+%sprite-icon-download {
+	@include sprite-replace-text-with-dimensions($landing-sprites, download-icon);
+}
+%sprite-icon-download-hover {
+	@include sprite-replace-text-with-dimensions($landing-sprites, download-icon-hover);
+}
+
+//shared sprites
+$shared-sprites: sprite-map("shared/*.png");
+%sprite-api {
+	@include sprite-replace-text-with-dimensions($shared-sprites, api);
+}
+%sprite-data-query {
+	@include sprite-replace-text-with-dimensions($shared-sprites, data-query);
+}
+%sprite-data-download {
+	@include sprite-replace-text-with-dimensions($shared-sprites, data-download);
+}
+%sprite-med-logo {
+	@include sprite-replace-text-with-dimensions($shared-sprites, med-logo);
+}

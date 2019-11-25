@@ -1,0 +1,416 @@
+.search {
+	position: relative;
+	margin: 0 auto;
+	padding-left: 20px;
+	padding-right: 20px;
+
+	.column-left {
+		float: left;
+		width: $sidebar-width;
+	}
+
+	.column-right {
+		float: right;
+		width: $main-content-width;
+	}
+
+	.title {
+		color: $gray-dark;
+		font-size: $font-size-title;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+
+	h1, aside {
+		@extend .column-left;
+	}
+
+	nav, section {
+		@extend .column-right;
+	}
+
+	nav ul {
+		display: inline-block;
+		float: right;
+		li {
+			display: block;
+			float: left;
+			a {
+				display: block;
+				text-align: center;
+				text-decoration: none;
+				width: $menu-item-width;
+			}
+		}
+	}
+
+	> div {
+		@include clearfix;
+		overflow: visible; // repair clearfix for gov. int. search results ul
+		padding: 0;
+		padding-bottom: $footer-height;
+		padding-top: 38px;
+		position: relative;
+	}
+
+	.simple-search {
+		color: $text-blue-dark;
+
+		.simple-search-header {
+			text-align: center;
+			margin-top: 77px;
+
+			h2 {
+				width: 550px;
+				margin: 0 auto 13px;
+
+				@include sans(
+                    $cap-height: 25,
+                    $line-height: 40
+                );
+			}
+
+			p {
+				width: 550px;
+				margin: 0 auto;
+
+				@include sans(
+                    $cap-height: 9,
+                    $line-height: 17
+                );
+			}
+		}
+
+		.simple-search-dialog {
+			$dusty-blue: #7d8ea1;
+			$nav-full-height: 46px;
+
+			height: 190px;
+
+			position: relative;
+			margin: 50px auto 48px;
+			width: 514px;
+			background: $ui-white;
+			@include border-radius(3px);
+			@include box-shadow(2px 2px 8px rgba(0, 0, 0, 0.05));
+
+			.simple-search-nav {
+				background: #DFE9F3;
+				text-align: center;
+				border-bottom: 1px solid $ui-border-light-blue;
+				color: $text-blue;
+
+				.simple-search-nav-label {
+					text-transform: uppercase;
+					letter-spacing: 0.05em;
+					@include sans($cap-height: 7);
+					margin-right: 5px;
+					position: relative;
+					top: -1px;
+
+					&:after {
+						content: ':';
+					}
+				}
+
+				ul {
+					display: inline-block;
+					margin: 0;
+					padding: 0;
+					@include sans($cap-height: 9);
+
+					li {
+						height: $nav-full-height;
+						position: relative;
+						display: inline-block;
+						line-height: $nav-full-height + 3;
+						box-sizing: border-box;
+						cursor: pointer;
+						margin: 0 15px;
+						padding: 0 13px;
+						font-weight: $semi-wt;
+
+						&.selected {
+							color: #3B4B56;
+							border-bottom: 3px solid $dusty-blue;
+						}
+					}
+				}
+			}
+
+			h3 {
+				@include sans($cap-height: 7);
+				text-transform: uppercase;
+				font-weight: $bold-wt;
+				color: $text-orange;
+				display: inline-block;
+				width: 100px;
+				text-align: right;
+			}
+
+			input {
+				border: 0;
+				border-bottom: 1px solid #c8d0da;
+				margin-left: 15px;
+				width: 300px;
+				font-style: italic;
+				font-weight: $light-wt;
+				padding-bottom: 9px;
+				outline: 0;
+				background: transparent;
+			}
+
+			.simple-search-form {
+				position: absolute;
+				top: $nav-full-height + 35px;
+			}
+
+			.simple-search-submit {
+				display: inline-block;
+				background: $dusty-blue;
+				height: 30px;
+				width: 30px;
+				@include border-radius(15px);
+				border: 1px solid $ui-border-blue;
+				position: relative;
+				top: 12px;
+				margin-left: 4px;
+				cursor: pointer;
+				outline: 0;
+				@include transition(background 0.2s ease-in-out);
+
+				.icon {
+					position: absolute;
+					top: 8px;
+					left: 8px;
+					fill: #FFF;
+				}
+
+				&:hover, &:focus {
+					background: $blue-mid;
+				}
+			}
+
+			.advanced-link {
+				color: #889897;
+				position: absolute;
+				right: 10px;
+				bottom: 10px;
+				text-decoration: none;
+				padding-bottom: 2px;
+				border-bottom: 1px solid #BCCDDC;
+			}
+		}
+	}
+}
+
+#view-style ul {
+	border-right: $stroke-blue-dark;
+	li {
+		border-left: $stroke-blue-dark;
+		a, a:visited {
+			color: $white;
+		}
+		a {
+			@include single-text-shadow(0, 0, 1px, false, rgba(0,0,0,.35));
+			font-size: 15px;
+			font-weight: 400;
+			letter-spacing: 0.03em;
+			height: 40px;
+			padding: 20px 0 0;
+			&:before {
+				content: ".";
+				display: inline-block;
+				margin-right: 8px;
+				margin-top: -3px;
+				vertical-align: middle;
+			}
+			&:hover {
+				color: $blue-light;
+			}
+			&:active, &.current, &.current-view-style {
+				@include single-box-shadow(0, 2px, 3px, null, rgba(0,0,0,.25), inset);
+				background: $blue-dark;
+				color: $blue-light;
+			}
+		}
+		&.list {
+			a {
+				&:before {
+					@extend %sprite-list-menu;
+				}
+				&:hover:before {
+					@extend %sprite-list-menu-blue;
+				}
+				&.current:before {
+					@extend %sprite-list-menu-yellow;
+				}
+			}
+		}
+		&.map {
+			a {
+				&:before {
+					@extend %sprite-map-menu;
+				}
+				&:hover:before {
+					@extend %sprite-map-menu-blue;
+				}
+				&.current:before {
+					@extend %sprite-map-menu-yellow;
+				}
+			}
+		}
+		&.list a.current {
+			@extend a.current-view-style;
+			&:before {
+				@extend %sprite-list-menu-blue;
+			}
+		}
+		&.list {
+			body.list & {
+				a {
+					@extend a.current-view-style;
+					&:before {
+						@extend %sprite-list-menu-blue;
+					}
+				}
+			}
+		}
+		&.map a.current {
+			@extend a.current-view-style;
+			&:before {
+				@extend %sprite-map-menu-blue;
+			}
+		}
+		&.map {
+			body.map & {
+				a {
+					@extend a.current-view-style;
+					&:before {
+						@extend %sprite-map-menu-blue;
+					}
+				}
+			}
+		}
+	}
+}
+
+.data-display {
+	$select-color: #3B4B56;
+	$unselect-color: #7c8c9f;
+	background: $blue-light;
+	border-bottom: 1px solid #bcccdd;
+	border-right: $stroke-blue-light;
+
+	/*  overflow: hidden;
+
+    &:hover {
+        overflow: visible;
+    } */
+
+	div {
+		overflow: visible;
+	}
+
+	nav {
+		display: inline-block;
+		vertical-align: top;
+	}
+
+	ul {
+		&.tab-list {
+			position: relative;
+			display: inline-block;
+			margin-left: 20px;
+		}
+
+		&.class-list {
+			visibility: hidden;
+			opacity: 0;
+			transition: opacity 350ms;
+
+			position: relative;
+			top: 0;
+			&.visible {
+				opacity: 1;
+			}
+		}
+	}
+
+	.prompt {
+		color: $select-color;
+		text-transform: uppercase;
+		font-size: 10px;
+		height: $data-display-full-height;
+		line-height: $data-display-full-height;
+	}
+
+	li {
+		&.tab-elem {
+			color: $unselect-color;
+			height: $data-display-full-height;
+			position: relative;
+			display: inline-block;
+			line-height: $data-display-full-height;
+			box-sizing: border-box;
+			cursor: pointer;
+			vertical-align: top;
+			// Just need a non-zero z-index here:
+			z-index: 1;
+
+			@include transition(color 0.2s ease-in-out);
+
+			&:hover {
+				color: $select-color;
+			}
+
+			&.class {
+				// To ensure the tab label for class doesn't change if the
+				// selected class changes:
+				min-width: 139px;
+
+				span:after {
+					content: '';
+					display: inline-block;
+					border: 4px solid transparent;
+					border-top-color: $unselect-color;
+					position: absolute;
+					top: 17px;
+					right: 4px;
+				}
+
+				&:hover {
+					span:after {
+						border-top-color: $select-color;
+					}
+				}
+			}
+
+			span {
+				padding: 0 7px;
+			}
+			&.selected {
+				color: #3B4B56;
+				border-bottom: 3px solid #7d8ea1;
+			}
+		}
+
+		&.class-elem {
+			z-index: 10;
+			background: $blue-light;
+			color: $default-text-color;
+			font-weight: $weight-normal;
+			padding: 0 14px;
+			$height: 35px;
+			height: $height;
+			line-height: $height;
+			@include transition(background 0.2s ease-in-out);
+			&.selected {
+				background: #c0cfe2; //#A5BACF;
+			}
+			&:hover {
+				background: #A5BACF;
+			}
+		}
+	}
+}

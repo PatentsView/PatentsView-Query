@@ -1,0 +1,68 @@
+.symbol-key {
+
+	position: absolute;
+	top: -1px;
+	right: 0;
+	font-size: 1.4rem;
+
+
+	.key-item {
+		@include transition(opacity 1s ease-in-out);
+		display: inline-block;
+
+
+		&.has-tooltip {
+			position: relative;
+
+			.viz-tooltip {
+				position: absolute;
+
+				top: 6px;
+
+				&.left {
+					left: 100%;
+					left: calc(100% + 3px);
+				}
+
+				&.right {
+					left: -3px;
+				}
+			}
+
+			.key-item-label {
+				position: relative;
+				&:after {
+					content: '';
+					display: block;
+					position: absolute;
+					border-bottom: 1px dotted $text-blue-dark;
+
+					bottom: -3px;
+					left: 0;
+					right: 0;
+				}
+			}
+		}
+	}
+
+	.key-item-symbol,
+	.key-item-label,
+	.key-item-note {
+		display: inline-block;
+	}
+
+	.key-item-note {
+		font-weight: 400;
+		margin-left: 6px;
+	}
+
+	.key-item + .key-item {
+		margin-left: 12px
+	}
+
+	.key-item-symbol {
+		margin-right: 6px;
+		position: relative;
+		top: 1px;
+	}
+}

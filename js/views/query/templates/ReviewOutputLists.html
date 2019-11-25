@@ -1,0 +1,38 @@
+﻿<div class="list-group static">
+    <span class="list-group-item" data-target="#{{categoryId}}-output-fields" aria-expanded="false" aria-controls="checkbox">
+            <span class="control-label"> {{shortName}} </span>
+    </span>
+    {{#if fields}}
+    <div class="list-group-submenu" id="{{categoryId}}-output-fields">
+        {{#each fields}}
+        {{#if isActive}}
+        <div class="list-group-item">
+            <i class="fa fa-check" aria-hidden="true" style="color: #3e4b5a;"></i>
+            <span class="control-label"> {{name}} </span>
+        </div>
+        {{/if}}
+        {{/each}}
+    </div>
+    {{/if}}
+    {{#if groups}}
+    <div class="list-group-submenu" id="{{categoryId}}-output-fields">
+        {{#each groups}}
+        <div class="list-group static">
+            <span class="list-group-item" data-target="#{{shortNameId}}-output-fields" aria-expanded="false" aria-controls="checkbox">
+                    <span class="control-label"> {{shortName}} </span>
+            </span>
+            <div class="list-group-submenu" id="{{shortNameId}}-output-fields">
+                {{#each fields}}
+                {{#if isActive}}
+                <div class="list-group-item">
+                    <i class="fa fa-check" aria-hidden="true" style="color: #3e4b5a;"></i>
+                    <span class="control-label"> {{name}} </span>
+                </div>
+                {{/if}}
+                {{/each}}
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+</div>

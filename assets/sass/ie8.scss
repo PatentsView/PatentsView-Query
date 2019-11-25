@@ -1,0 +1,22 @@
+
+input[type="radio"],
+input[type="checkbox"] {
+    cursor: pointer;
+    display: block;
+    width: 11.4%;
+}
+.stackedLabel {
+    padding-right: 0;
+    width: 88.09%;
+}
+#patent-words-all-label,
+#patent-words-any-label,
+#patent-words-exact-label,
+#inventor-words-all-label,
+#inventor-words-any-label,
+#inventor-words-exact-label,
+#assignee-words-all-label,
+#assignee-words-any-label,
+#assignee-words-exact-label {
+    @extend .stackedLabel;
+}

@@ -1,0 +1,309 @@
+@mixin imageReplaceContent($margin-top:0, $margin-right:0, $margin-bottom:0, $margin-left:0) {
+    content: ".";
+    display: inline-block;
+    margin: $margin-top $margin-right $margin-bottom $margin-left;
+    vertical-align: middle;
+}
+
+@mixin diamondBullet($color, $size, $outdent:-10px, $vertical-offset: 0) {
+    //bullet styling
+    &:before,
+    &:after {
+        display: block;
+        content: '';
+        position: absolute;
+        left: $outdent;
+        border: $size solid transparent;
+    }
+
+    &:before {
+        top: 2 * $size + $vertical-offset;
+        border-top-color: $color;
+    }
+
+    &:after {
+        top: 0 + $vertical-offset;
+        border-bottom-color: $color;
+    }
+}
+
+%choropleth-legend {
+    position: relative;
+    color: #121b28;
+
+    p,
+    ol {
+        display: inline-block;
+    }
+    ol {
+        @include clearfix;
+        margin: 0 4px;
+        padding: 0;
+    }
+    li {
+        @include hide-text;
+        background: #121b28;
+        float: left;
+        height: 8px;
+        width: 16px;
+        &.color-range-1 {
+            background: #a2b2c3;
+        }
+        &.color-range-2 {
+            background: #8096ac;
+        }
+        &.color-range-3 {
+            background: #5a7794;
+        }
+        &.color-range-4 {
+            background: #41597a;
+        }
+        &.color-range-5 {
+            background: #223349;
+        }
+        &.color-range-6 {
+            background: #121b28;
+        }
+    }
+
+    @include border-radius(2px);
+    background: rgba(245, 246, 246, 0.5);
+    border: 1px solid #c1cee0;
+    bottom: 4px;
+    text-transform: lowercase;
+    &.disabled {
+        display: none;
+    }
+}
+
+%collapse-icon {
+    &:hover {
+        &:after {
+            background: #d7d8d9;
+            @include border-radius(7px);
+        }
+    }
+    &:after {
+        content: '–';
+        display: block;
+        float: right;
+        font-weight: $light-wt;
+        font-size: 15px;
+        text-indent: 0;
+        line-height: 10px;
+        height: 13px;
+        width: 13px;
+        text-align: center;
+    }
+}
+
+%collapsed-icon {
+    &:after {
+        content: '+';
+        line-height: 13px;
+    }
+}
+
+%close-btn {
+    background: transparent;
+    border: 0;
+    line-height: 14px;
+    outline: 0;
+
+    &:after {
+        content: '×';
+        font-weight: $light-wt;
+        display: inline-block;
+        text-align: center;
+        font-size: 10px;
+        color: #c0c0c0;
+        background: #4b5e6e;
+        width: 14px;
+        height: 14px;
+        margin-left: 4px;
+        @include border-radius(7px);
+        @include transition(color 0.2s ease-in-out);
+        position: relative;
+        top: -1px;
+        padding-top: 5px;
+        line-height: 0;
+        @include box-sizing(border-box);
+    }
+
+    &:hover {
+        &:after {
+            color: #cde6f6;
+        }
+    }
+}
+
+%center-shell {
+    margin: 0 auto;
+    width: $full-width-px;
+    &:after {
+        display: block;
+        content: '';
+        clear: both;
+    }
+}
+
+@keyframes load-circle-anim {
+    $pi: 3.14159265359;
+    $loader-radius: 12px;
+    $loader-circumference: $pi * 2 * $loader-radius;
+
+    0% {
+        stroke-dashoffset: $loader-circumference * 1;
+        stroke-dasharray: #{$loader-circumference}, #{$loader-circumference};
+    }
+
+    100% {
+        stroke-dashoffset: $loader-circumference * -1;
+        stroke-dasharray: #{$loader-circumference}, #{$loader-circumference};
+    }
+}
+
+.load-circle {
+    margin-top: 100px;
+    margin-bottom: -130px; // not increase size of parent
+    $SIZE: 30px;
+
+    transform: rotate(-90deg);
+
+    width: $SIZE;
+    height: $SIZE;
+    margin: 100px auto 0 auto;
+    position: relative;
+    display: block;
+
+    circle {
+        stroke: #dfe9f4;
+        stroke-linecap: butt;
+        stroke-width: 4px;
+        fill: transparent;
+        @include animation(load-circle-anim 1.6s infinite linear);
+    }
+}
+
+
+////
+
+svg.icon {
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+}
+
+// custom aspects
+.scrollarea {
+    .scrollbar-container.vertical {
+        width: 0;
+        right: 9px;
+        overflow: visible;
+
+        &:before {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            bottom: 0;
+            border-left: 1px solid #aab0b7;
+            @include transition(border-left-color 0.2s ease-in-out);
+        }
+
+        .scrollbar {
+            width: 7px;
+        }
+    }
+
+    .scrollbar {
+        @include border-radius(4px);
+        background: #aab0b7;
+        @include transition(background 0.2s ease-in-out);
+    }
+
+    &:hover {
+        .scrollbar {
+            background: #9eaab6;
+        }
+
+        .scrollbar-container.vertical {
+            &:before {
+                border-left-color: #9eaab6;
+            }
+        }
+    }
+}
+
+.scrollarea-content {
+    padding: 0 10px 0 0;
+}
+
+// defaults from https://github.com/souhe/reactScrollbar/
+// with styles to be overridden commented out
+.scrollarea-content {
+    margin: 0;
+    //padding: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.scrollarea {
+    position: relative;
+    overflow: hidden;
+    .scrollbar-container {
+        &.horizontal {
+            width: 100%;
+            height: 10px;
+            left: 0;
+            bottom: 0;
+
+            .scrollbar {
+                width: 20px;
+                height: 8px;
+                //background: black;
+                margin-top: 1px;
+            }
+        }
+
+        &.vertical {
+            //width: 10px;
+            height: 100%;
+            //right: 0;
+            top: 0;
+
+            .scrollbar {
+                //width: 8px;
+                height: 20px;
+                //background: black;
+                margin-left: 1px;
+            }
+        }
+
+        position: absolute;
+        background: none;
+        //opacity: .1;
+        z-index: 9999;
+
+        -webkit-transition: all .4s;
+        -moz-transition: all .4s;
+        -ms-transition: all .4s;
+        -o-transition: all .4s;
+        transition: all .4s;
+
+        // &:hover{
+        //     background: gray;
+        //     opacity: .6 !important;
+        // }
+
+        // &.active{
+        //     background: gray;
+        //     opacity: .6 !important;
+        // }
+    }
+
+    /* &:hover .scrollbar-container{
+        opacity: .3;
+    } */
+}

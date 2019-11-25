@@ -1,0 +1,167 @@
+.export-button {
+	@extend %unselectable;
+	padding: 10px;
+
+	.icon {
+		position: relative;
+		top: 2px;
+		fill: $text-blue-export;
+		font-size: 12px;
+		margin-right: 2px;
+		@include transition(all 0.2s ease-in-out);
+	}
+
+	color: $text-blue-export;
+	@include sans(9, 20);
+	cursor: pointer;
+	@include transition(all 0.2s ease-in-out);
+
+	&:hover {
+		color: $text-blue-export-hover;
+		.icon {
+			fill: $text-blue-export-hover;
+		}
+	}
+}
+
+.export-view {
+	display: none;
+	position: fixed;
+	left: 64px;
+	bottom: 0;
+	background: #505f6f;
+	width: 252px;
+	padding: 0;
+	border: 1px solid transparentize($default-bg-color, 0.5);
+	border-bottom: 0;
+	@include box-sizing(border-box);
+
+	.export-summary {
+		cursor: pointer;
+		position: relative;
+		color: $text-blue-light;
+		margin: 9px 0 7px 20px;
+		@include sans(7, 20);
+		text-transform: uppercase;
+
+		&:after {
+			position: absolute;
+			top: -14px;
+			right: 21px;
+			width: 6px;
+			height: 6px;
+			display: block;
+			content: '×';
+			font-size: 2.25rem;
+			// border: 2px solid $text-blue-light;
+			// border-top-color: transparent;
+			// border-left-color: transparent;
+			// @include transform(rotate(45deg));
+		}
+	}
+
+	&.visible {
+		display: block;
+	}
+
+	&.expanded .export-summary:after {
+		// @include transform(translate(0, 6px) rotate(225deg));
+	}
+
+	.export-item-list {
+		margin: 0;
+		padding: 0;
+		max-height: 166px;
+		overflow: auto;
+	}
+
+	.export-item {
+		color: $text-blue-light;
+		@include sans(8, 33);
+
+		&:first-child {
+			margin-top: 4px;
+		}
+
+		&:last-child {
+			margin-bottom: 13px;
+		}
+
+		a {
+			display: block;
+			padding: 0 20px;
+
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+			background: transparent;
+			@include transition(all 0.25s ease-in-out);
+
+			&:hover {
+				background: $blue-dark;
+			}
+		}
+
+		.text {
+			position: relative;
+
+			&:after {
+				content: '';
+				display: block;
+				position: absolute;
+				bottom: -1px;
+				left: 0;
+				right: 0;
+				border-bottom: 1px solid transparent;
+				@include transition(all 0.2s ease-in-out);
+			}
+		}
+
+		&.complete {
+			color: #fff;
+
+			.export-status-icon .icon {
+				fill: #fff;
+			}
+
+			.text {
+				&:after {
+					border-bottom-color: #fff;
+				}
+			}
+		}
+	}
+
+	.export-status-icon {
+		position: relative;
+
+		//@include transition(width 0.2s ease-in-out);
+		height: 10px;
+		display: inline-block;
+
+		.icon {
+			position: absolute;
+			fill: $text-blue-light;
+		}
+
+		&:not(.complete) {
+			width: 20px;
+
+			.icon {
+				top: -3px;
+				left: -2px;
+				font-size: 16px;
+				@include animation(spin-counterclockwise 1200ms infinite linear);
+			}
+		}
+
+		&.complete {
+			width: 20px;
+			.icon {
+				top: -1px;
+				font-size: 12px;
+			}
+		}
+	}
+}

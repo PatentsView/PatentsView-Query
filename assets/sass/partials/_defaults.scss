@@ -1,0 +1,239 @@
+.devTimeStamp {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #fff;
+    font-size: 9px;
+    z-index: 10000;
+    background: #405065;
+    padding: 3px;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background: $default-bg-color;
+    @extend %root-container;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+i,
+em {
+    font-style: italic;
+}
+
+h1 {
+    a {
+        display: block;
+        padding: 6px 0;
+    }
+}
+
+a,
+a:visited,
+a:hover,
+a:hover:visited {
+    cursor: pointer;
+    color: inherit;
+    text-decoration: inherit;
+
+    &.detail {
+        // &:hover,
+        // &:active {
+        //     &:after {
+        //         @extend %sprite-detail-link;
+        //         content: ".";
+        //         display: inline-block;
+        //         margin-left: 6px;
+        //         margin-top: -1px;
+        //         vertical-align: middle;
+        //     }
+        // }
+    }
+
+    &.query {
+        position: relative;
+        &:hover,
+        &:active {
+            &:after {
+                @extend %sprite-query-link;
+                content: ".";
+                display: block;
+                position: absolute;
+                right: 0;
+                top: -8px;
+            }
+        }
+    }
+}
+
+.mouse-device {
+    .viz-tooltip {
+        pointer-events: none;
+    }
+}
+
+.viz-tooltip {
+    z-index: 1000;
+
+    a {
+        // wraps content
+        display: block;
+    }
+
+    // specific types
+    &.patent-tooltip {
+        .count {
+            //color: $patent-light;
+        }
+
+        .secondary-node-tooltip {
+            .count {
+                color: $patent-light;
+            }
+        }
+
+        .count.patent-citations-count {
+            //color: $patent-dark;
+        }
+    }
+
+    &.inventor-tooltip {
+        .count {
+            color: $text-inventor;
+        }
+    }
+
+    &.assignee-tooltip {
+        .count {
+            color: $text-assignee;
+        }
+    }
+
+    &.location-tooltip {
+        .count {
+            color: $patent-light;
+        }
+    }
+
+    // general
+    max-width: 250px;
+
+    line-height: 17px;
+
+    .count {
+        font-weight: $bold-wt;
+        color: $patent-dark;
+    }
+
+    .link {
+        text-decoration: underline;
+        font-weight: $semi-wt;
+    }
+
+    ul {
+        padding: 0;
+        margin: 0;
+    }
+
+    border-color: #f00;
+
+    @include tooltip ($ui-border-blue,
+ 8px,
+ transparent,
+ 0,
+ 0);
+
+    .tt-body {
+        background: $ui-white;
+        border: 1px solid rgba(126, 145, 152, 0.5);
+        padding: 15px;
+        @include box-sizing(border-box);
+    }
+
+    // border on tip side
+    $sides-list: top right left;
+    @each $cur-side in $sides-list {
+        &.#{$cur-side} {
+            .tt-wrap {
+                padding-#{$cur-side}: 2px;
+            }
+
+            .tt-body {
+                border-#{$cur-side}: 0;
+            }
+        }
+    }
+
+    &:not(.top):not(.right):not(.left) {
+        .tt-wrap {
+            padding-bottom: 2px;
+        }
+
+        .tt-body {
+            border-bottom: 0;
+        }
+    }
+
+    .tt-wrap {
+        @include box-shadow(0 0 6px rgba(0, 0, 0, 0.15));
+    }
+
+    h5 {
+        font-weight: $semi-wt;
+        margin-bottom: 5px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    td {
+        padding: 4px 0 0px 0;
+
+        &:first-child {
+            width: 60%;
+
+            &:after {
+                content: ':';
+            }
+        }
+
+        &:last-child {
+            text-align: right;
+            vertical-align: bottom;
+            padding-left: 3px;
+        }
+    }
+
+    .flexible-dl-table > div,
+    tr {
+        & > :first-child {
+            &:after {
+                content: ':';
+            }
+        }
+
+        & > :last-child {
+            padding-left: 3px;
+        }
+
+        &.patent-count {
+            color: $patent-light; //$text-patent;
+        }
+
+        &.assignee-count {
+            color: $text-assignee;
+        }
+
+        &.inventor-count {
+            color: $text-inventor;
+        }
+    }
+}

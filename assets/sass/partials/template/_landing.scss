@@ -1,0 +1,893 @@
+%h3 {
+	color: #EFEFEF;
+	text-align: center;
+	font-weight: $weight-light;
+	font-size: 18px;
+	margin-top: 45px;
+}
+%landing-paragraph-text {
+	color: $blue-light;
+	line-height: 18px;
+	font-weight: $weight-light;
+	font-size: 13px;
+}
+%inline-link {
+	&:hover {
+		border-bottom-color: $orange;
+		color: $yellow;
+	}
+	color: $blue-light;
+}
+
+%landing-page-invalid-tooltip {
+	&:before {
+		//top left arrow
+		content: '';
+		display: block;
+		border: 6px solid transparent;
+		border-bottom-color: $dark-red;
+		position: absolute;
+		top: -12px;
+		left: 4px;
+	}
+	position: absolute;
+	background: $light-pink;
+	border: 1px solid $dark-red;
+	color: $dark-red;
+	padding: 6px;
+	white-space: nowrap;
+	z-index: 1;
+}
+$landing-page-bottom-modules-width: 577px;
+@mixin triangle-left($half-base, $height, $color, $horizontal-offset: 0) {
+	width: 0;
+	height: 0;
+	border-top: $half-base solid transparent;
+	border-bottom: $half-base solid transparent;
+	border-right: $height solid $color;
+	display: block;
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: -$height + $horizontal-offset;
+	vertical-align: middle;
+	@include transform(translateY(-50%));
+}
+
+footer.fat-footer {
+	color: $blue-light;
+	font-weight: $weight-light;
+
+	.center-shell {
+		@extend %center-shell;
+	}
+
+	a {
+		@extend %inline-link;
+	}
+
+	.column {
+		float: left;
+		@include box-sizing(border-box);
+	}
+
+	h4 {
+		font-weight: $weight-light;
+		@include sans(
+            $cap-height: 7,
+            $dimensions-only: true
+        );
+		@extend %caps;
+		color: $yellow;
+	}
+
+	ul {
+		padding: 0;
+	}
+
+	li {
+		margin: 10px 0 0 0;
+		padding: 0 0 8px 12px;
+		position: relative;
+	}
+
+	%para-text {
+		p {
+			line-height: 18px;
+			font-size: 11px;
+			margin-top: 11px;
+		}
+
+		a {
+			text-decoration: underline;
+		}
+	}
+
+	&.secondary-footer {
+		background: #505f6e;
+
+		ul {
+		}
+
+		li {
+			@include diamondBullet($yellow, 3px, $outdent:0, $vertical-offset: 2px);
+			margin: 5px 0 0 0;
+		}
+
+		.email {
+			width: 100%;
+			margin-left: $main-content-padding-side;
+		}
+	}
+
+	&.primary-footer {
+		background: #3f4b58;
+		min-height: 304px;
+
+		a {
+			&:hover {
+				color: $yellow;
+			}
+		}
+
+		.column {
+			padding-top: 26px;
+			padding-right: 35px;
+
+			&.one {
+				width: 238px;
+				margin-left: 42px;
+			}
+
+			&.two {
+				width: 229px;
+			}
+
+			&.three {
+				width: 272px;
+			}
+
+			&.four {
+				width: 235px;
+			}
+		}
+
+		.new-credit {
+			@extend %para-text;
+		}
+
+		.logo-link {
+			a {
+				text-decoration: none;
+				display: block;
+			}
+
+			.logo-img {
+				margin: 15px 0 10px 0;
+			}
+		}
+
+		.new-info li {
+			@include diamondBullet($yellow, 3px, $outdent:0);
+		}
+
+		.copyright {
+			margin: 10px 0 0 0;
+		}
+
+		.new-data-sources {
+			li {
+				@include diamondBullet($yellow, 3px, $outdent:0);
+				list-style: none;
+				position: relative;
+
+				a {
+					text-decoration: underline;
+				}
+
+				svg.icon {
+					position: absolute;
+					left: 0px;
+					top: 0px;
+					font-size: 1.1em;
+					fill: $yellow;
+				}
+			}
+
+			.update-date {
+				@include sans(
+                    $cap-height: 9,
+                    $dimensions-only: true
+                );
+
+				font-style: italic;
+				margin-top: 18px;
+			}
+		}
+
+		.terms-and-services {
+			@extend %para-text;
+		}
+
+		ul {
+			margin: 20px 0 0 0;
+
+			a {
+				text-decoration: none;
+			}
+		}
+
+		li {
+			@include sans(
+                $cap-height: 7,
+                $dimensions-only: true
+            );
+
+			@extend %caps;
+
+			a {
+				color: $text-blue-light;
+			}
+		}
+	}
+}
+
+@mixin landing-category-nav($type, $before-margin-right:5px, $before-margin-top:-2px) {
+	a:before {
+		content: ".";
+		display: inline-block;
+		margin-right: $before-margin-right;
+		margin-top: $before-margin-top;
+		vertical-align: middle;
+	}
+
+	li.#{$type} > a:before {
+		@extend %sprite-search-category-#{$type}-yellow;
+	}
+}
+
+.landing {
+	min-height: 100%;
+	background: $blue-dark;
+
+	.landing-content {
+		padding: 30px 0 30px 0;
+		background: #4b5c6e;
+		//background-image: radial-gradient(400px at 50% 360px, #5C7186 40%, #4b5c6e 100%);
+		position: relative;
+		overflow: hidden;
+
+		&:before {
+			content: '';
+			display: block;
+			position: absolute;
+
+			$rad: 400px;
+			$sqrt2: 1.414;
+
+			background-image: -svg(
+				radial-gradient(
+					$rad at 50% 50%,
+					#5C7186 40%/$sqrt2,
+					#4b5c6e 100%/$sqrt2
+				)
+			);
+			background-size: $rad * 2;
+			background-repeat: no-repeat;
+			width: 2 * $rad;
+			height: 2 * $rad;
+			left: calc(50% - #{$rad});
+			top: -40px;
+		}
+	}
+
+	.center-container {
+		width: 660px;
+		margin: 0 auto;
+		//padding-top: 200px;
+		position: relative; //required to force above absolutely positioned gradient in .landing-content:before
+	}
+
+	.upper-landing {
+		margin: 0 55px;
+
+		h1 {
+			@extend %sprite-logo-large;
+			margin: 0 auto;
+		}
+
+		p {
+			text-align: center;
+			color: $blue-light;
+			line-height: 18px;
+			font-weight: $weight-light;
+			font-size: 13px;
+			margin-top: 10px;
+		}
+	}
+
+	.lower-landing {
+		h3 {
+			@extend %h3;
+		}
+
+		ul {
+			margin: 40px 0 0 0;
+			padding: 0;
+
+			&:after {
+				content: '';
+				display: block;
+				clear: both;
+			}
+		}
+
+		li {
+			float: left;
+			width: 180px;
+			position: relative;
+
+			a {
+				@extend %landing-paragraph-text;
+
+				&.with-icon {
+					text-decoration: none;
+					&:before {
+						content: '.';
+						display: block;
+						margin: 0 auto 27px auto;
+						position: relative;
+					}
+				}
+			}
+
+			&.icon-pin a:before {
+				@extend %sprite-icon-pin;
+			}
+
+			&.icon-bulb a:before {
+				@extend %sprite-icon-bulb;
+			}
+
+			&.icon-briefcase a:before {
+				@extend %sprite-icon-briefcase;
+				margin-bottom: 28px;
+			}
+
+			&.icon-ribbon a:before {
+				@extend %sprite-icon-ribbon;
+			}
+
+			//icon glow
+			&:before {
+				opacity: 0;
+				content: '';
+				display: block;
+				position: absolute;
+
+				$wd: 90px;
+				$rad: 45px;
+				$sqrt2: 1.414;
+
+				background-image: -svg(
+					radial-gradient(
+						45px at 50% 50%,
+						rgba(104, 122, 140, 1) 20%/$sqrt2,
+						rgba(104, 122, 140, 0.35) 60%/$sqrt2,
+						rgba(104, 122, 140, 0) 100%/$sqrt2
+					)
+				);
+				background-size: $rad * 2;
+				background-repeat: no-repeat;
+				width: 2 * $rad;
+				height: 2 * $rad;
+				left: $wd - $rad;
+				top: -25px;
+
+				@include transition(opacity 0.3s ease-in-out);
+			}
+
+			&:hover:before {
+			}
+
+			&:hover {
+				&:before {
+					//show icon glow
+					opacity: 1;
+				}
+				a:not(.with-icon) {
+					color: $yellow;
+				}
+			}
+
+			&:not(:first-child) {
+				margin-left: 30px;
+
+				&:after {
+					//line border
+					position: absolute;
+					content: '';
+					display: block;
+					height: 114px;
+					border-left: 1px solid #3F5060;
+					//margin: 0 10px;
+					top: 44px;
+					left: -30px;
+				}
+			}
+
+			&:not(:last-child) {
+				margin-right: 30px;
+			}
+		}
+	}
+
+	.search-controls {
+		height: 335px;
+		margin: 34px 0 0 0;
+		$background: #4B5C6E;
+
+		.query-nav {
+			margin: 0 auto 9px auto;
+			display: table;
+			width: 100%;
+			color: $blue-light;
+			// This fixes the problem with the background color of the last tab
+			// due to pixel rounding.
+			background: #3E4B5B;
+			text-align: right;
+			// This is needed to fix spacing problem on Firefox because
+			// whitespace messes up with the borders of inline-block li
+			// elements.
+			font-size: 0;
+
+			ul {
+				display: table-row;
+			}
+
+			@include landing-category-nav("patent");
+			@include landing-category-nav("inventor");
+			@include landing-category-nav("assignee");
+			@include landing-category-nav("class");
+
+			li {
+				&.leading-text {
+					font-size: 10px;
+					font-weight: 600;
+					text-transform: uppercase;
+					background: #3E4B5B;
+					margin-right: 33px;
+				}
+				background: #3E4B5B;
+
+				height: $data-display-collapsed-height;
+				line-height: $data-display-collapsed-height - 2px;
+				display: inline-block;
+				text-align: center;
+
+				font-size: 13px;
+				font-weight: $weight-light;
+
+				a {
+					display: block;
+					text-align: center;
+					text-decoration: none;
+					width: 120px;
+					color: $blue-light;
+					margin: auto;
+				}
+
+				&:not(:first-child) {
+					border-left: 1px solid #4B5C6E;
+				}
+
+				&.selected {
+					background: $background;
+
+					&, a {
+						outline-style: none;
+						-moz-outline-style: none;
+					}
+				}
+
+				&:hover:not(.selected):not(.no-hover) {
+					background: #435363;
+				}
+			}
+
+			&:after {
+				content: '';
+				display: block;
+				clear: both;
+			}
+		}
+
+		.display-nav {
+			$item-width: 135px;
+			$item-margin: 15px;
+
+			margin: 0 auto;
+			width: 2 * $item-width + $item-margin + 5;
+
+			li {
+				border: 1px solid #374757;
+
+				height: 30px;
+				line-height: 30px;
+				display: block;
+				float: left;
+
+				font-size: 13px;
+				font-weight: $weight-light;
+
+				@include transition(all 0.25s ease-in-out);
+
+				a {
+					display: block;
+					opacity: 0.6;
+					text-align: center;
+					text-decoration: none;
+					width: $item-width;
+					color: #323D49;
+					background: $blue-light;
+
+					@include transition(all 0.25s ease-in-out);
+
+					&:before {
+						@include imageReplaceContent($margin-right:8px, $margin-top:-3px);
+					}
+				}
+
+				&.list a:before {
+					@extend %sprite-list-menu-landing;
+				}
+
+				&.map a:before {
+					@extend %sprite-map-menu-landing;
+				}
+
+				&:not(:first-child) {
+					margin-left: $item-margin;
+				}
+
+				&:not([disabled]) {
+					&, a {
+						outline-style: none;
+						opacity: 1;
+						-moz-outline-style: none;
+					}
+				}
+
+				&[disabled] {
+					cursor: default;
+					a {
+						opacity: 0.6;
+						cursor: default;
+					}
+				}
+				&:hover:not([disabled]) {
+					a {
+						opacity: 1;
+						background: $blue-gray;
+					}
+				}
+			}
+
+			&:after {
+				content: '';
+				display: block;
+				clear: both;
+			}
+		}
+
+		#filters {
+			margin: 0 40px 28px 40px;
+
+			p, h3, #search-actions, #search-patent-map {
+				display: none;
+			}
+
+			legend {
+				color: $blue-light;
+				font-size: 14px;
+				font-weight: $weight-light;
+				padding: 20px 0 4px 0;
+			}
+
+			form > fieldset {
+				position: relative;
+				float: left;
+				min-height: 70px;
+
+				&:nth-child(2n + 1) {
+					float: right;
+				}
+			}
+
+			fieldset {
+				width: 267px;
+
+				input[type=text] {
+					border: none;
+					padding: 9px 0 9px 9px;
+					background: #EAEDF2;
+					width: 100%;
+					@include box-sizing(border-box);
+
+					@include border-radius(2px);
+
+					&.placeholder {
+						color: $gray-light;
+						font-style: italic;
+					}
+
+					@include input-placeholder {
+						color: $gray-light;
+						font-style: italic;
+					}
+
+					&[disabled="disabled"], &.disabled {
+						@include opacity(.65);
+					}
+
+					&#location-country {
+						width: 100px;
+					}
+
+					&#location-state {
+						width: 51px;
+						margin-left: 4px;
+					}
+
+					&#location-city {
+						width: 98px;
+						margin-left: 4px;
+					}
+				}
+
+				label, input[type=radio], input[type=checkbox], select, button {
+					display: none;
+				}
+			}
+
+			.tooltip-invalid {
+				@extend %landing-page-invalid-tooltip;
+
+				left: 0;
+				top: 0;
+			}
+
+			form:after {
+				content: '';
+				display: block;
+				clear: both;
+			}
+		}
+
+		#search-location fieldset div {
+			display: inline-block;
+			&:first-child {
+				display: none;
+			}
+		}
+
+		background: $background;
+		border: 1px solid #374757;
+	}
+}
+
+$landing-horizontal-rule-color: #414f5f;
+
+.email-collection {
+	$text-field-background-color: #EAEDF2;
+	$elem-height: 32px;
+	height: 171px;
+	margin: 0 auto;
+	display: flex;
+	width: 66%;
+	justify-content: space-around;
+	align-items: center;
+
+	// This duratino must match that inside `EmailCollectionView.js`:
+	$transition-duration: 300ms;
+
+	p {
+		color: $blue-light;
+		text-align: center;
+		margin-bottom: 15px;
+		@extend %landing-paragraph-text;
+	}
+
+	.tooltip-invalid {
+		@extend %landing-page-invalid-tooltip;
+		position: absolute;
+		top: 36px;
+		left: 52px;
+	}
+
+	.email-wrapper {
+		svg.icon {
+			font-size: 26px;
+			margin-right: 15px;
+			fill: $yellow;
+			position: relative;
+			top: 2px;
+		}
+	}
+	.envelope-container {
+		$image: "landing/envelope.png";
+		$image-original-width: image-width($image);
+		$image-original-height: image-height($image);
+		$enlargement-factor: 1.3;
+		$expanded-width: 35px;
+		display: inline-block;
+		position: relative;
+		width: 45px;
+		height: $elem-height;
+		.envelope {
+			width: 27px;
+			height: 18px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translateY(-50%) translateX(-50%);
+			transition: all $transition-duration;
+			background-size: 100% 100%;
+
+			&.expanded {
+				width: $expanded-width;
+				height: 23px;
+			}
+
+			vertical-align: top;
+			background-image: image-url($image);
+		}
+	}
+	.email-text-field-wrapper {
+		vertical-align: top;
+		display: inline-block;
+		position: relative;
+		height: $elem-height;
+		padding: 0 2px 0 0;
+		//width: 226px;
+		transition: width $transition-duration;
+		&.contracted {
+			width: 3px;
+		}
+		&:before {
+			@include triangle-left(
+                $half-base: 5px,
+                $height: 5px,
+                $color: $text-field-background-color
+            );
+		}
+
+		@include border-radius(2px);
+		background: $text-field-background-color;
+	}
+	input[type=text] {
+		border: none;
+		padding: 9px 0 9px 9px;
+		background: $text-field-background-color;
+		width: 233px;
+		@include box-sizing(border-box);
+		display: inline-block;
+		@include border-radius(2px);
+
+		&.placeholder {
+			color: $gray-light;
+			font-style: italic;
+		}
+
+		@include input-placeholder {
+			color: $gray-light;
+			font-style: italic;
+		}
+	}
+	.thank-you-message-container {
+		position: absolute;
+		top: 40px;
+		left: 40px;
+		height: $elem-height;
+		width: 226px;
+		transition: all $transition-duration;
+		border: none;
+		padding: 9px 0 9px 9px;
+		background: $text-field-background-color;
+		overflow: hidden;
+		@include box-sizing(border-box);
+		color: #333333;
+		@include border-radius(2px);
+
+		&:before {
+			@include triangle-left(
+                $half-base: 5px,
+                $height: 5px,
+                $color: $text-field-background-color
+            );
+		}
+	}
+	.thank-you-message {
+		width: 226px;
+	}
+	.email-subscribe {
+		vertical-align: top;
+		$height: $elem-height;
+		height: $height;
+		line-height: $height;
+		font-size: 11.5px;
+		color: #323D49;
+		background: $blue-light;
+		display: inline-block;
+		width: 88px;
+		height: $elem-height;
+		text-align: center;
+		opacity: 1;
+		transition: opacity $transition-duration;
+		cursor: pointer;
+		&.disabled {
+			opacity: 0.6;
+			cursor: default;
+		}
+		&.hidden {
+			opacity: 0;
+		}
+	}
+
+	label {
+		display: none;
+	}
+
+	button {
+		display: inline-block;
+		background: #7d8fa2;
+		color: #FFF;
+		border: 1px solid #505f6e;
+		padding: 6px 12px;
+		outline: 0;
+		@include border-radius(2px);
+		opacity: 1;
+		@include transition(all 0.2s ease-in-out);
+
+		&[disabled] {
+			opacity: 0.75;
+		}
+
+		&:not([disabled]):hover {
+			background: #505f6e;
+		}
+	}
+}
+
+/* .recent-updates {
+    $color: #cde6f6;
+    width: $landing-page-bottom-modules-width;
+    margin: 0 auto;
+    border-top: 1px solid $landing-horizontal-rule-color;
+    margin-top: 35px;
+    h3 {
+        @extend %h3;
+        margin-top: 32px;
+    }
+    ul {
+        color: $color;
+        width: 565px;
+        margin: 0 auto;
+        margin-top: 19px;
+    }
+    li {
+        @extend %landing-paragraph-text;
+        @include diamondBullet($yellow, 3px, $vertical-offset: 7px);
+        position: relative;
+        font-size: 13px;
+        padding: 0 0 8px 12px;
+        line-height: 18px;
+        & + li {
+            margin-top: 10px;
+        }
+        a {
+            @extend %inline-link;
+            color: $color;
+        }
+    }
+}*/

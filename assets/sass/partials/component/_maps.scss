@@ -1,0 +1,115 @@
+
+
+.ol-zoom {
+	position: absolute;
+	left: auto;
+	top: 10px;
+	right: 10px;
+
+	.ol-zoom-in {
+		margin-bottom: 3px;
+		position: relative;
+
+		&:after {
+			position: absolute;
+			bottom: -2px;
+			left: 0;
+			right: 0;
+
+			content: '';
+			display: block;
+			border-bottom: 1px solid $ui-border-light-blue;
+		}
+	}
+
+}
+
+
+.ol-control {
+	border: 1px solid $ui-border-light-blue;
+	@include border-radius(2px);
+	padding: 1px;
+
+	&, &:hover {
+		background-color: $ui-white;
+	}
+}
+
+.ol-control button {
+	background-color: $ui-white;
+	font-weight: $light-wt;
+	font-size: 14px;
+	color: $text-blue-dark;
+	width: 1.2em;
+	height: 1.2em;
+
+	@include transition(all 0.2s ease-out);
+
+	&:hover {
+		background-color: $ui-hover-light-blue;
+	}
+
+	&:focus {
+		background-color: $ui-hover-light-blue;
+		outline: 0;
+	}
+}
+
+
+.ol-attribution {
+	display: none;
+}
+.ol-attribution ul {
+	font-size: 8px;
+}
+
+
+.map-legend {
+	margin: 0;
+	padding: 0;
+	@include sans(
+		$cap-height: 8
+	);
+
+	.legend-icon {
+		display: inline-block;
+		height: 8px;
+		width: 8px;
+		@include border-radius(4px);
+		margin-right: 6px;
+	}
+
+	.legend-note {
+		margin-left: 6px;
+	}
+
+	li {
+		display: inline-block;
+	}
+
+	li + li {
+		margin-left: 17px;
+	}
+}
+
+.map {
+	.gmap, .olmap {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+
+	.map-shell, .map {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+
+	}
+
+
+}
+

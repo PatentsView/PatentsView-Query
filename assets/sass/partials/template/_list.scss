@@ -1,0 +1,430 @@
+#results {
+	.listview-loading {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
+		background: rgba(#808080, 0.63);
+		text-align: center;
+
+		&:before {
+			// ghost element used for vertical centering
+			// see: https://css-tricks.com/centering-in-the-unknown/
+			content: '';
+			display: inline-block;
+			height: 100%;
+			vertical-align: middle;
+		}
+
+		.listview-loading-dialog {
+			width: 512px;
+			display: inline-block;
+			vertical-align: middle;
+			@include border-radius(1px);
+			border: 1px solid #4b5c6e;
+			@include box-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+
+			.listview-loading-dialog-title {
+				background: #cde6f6;
+				font-size: 11px;
+				text-align: right;
+				padding: 4px;
+
+				button {
+					@extend %close-btn;
+				}
+			}
+
+			.listview-loading-dialog-content {
+				background: #4b5c6e url(../img/loading.gif) center top no-repeat;
+				color: #cde6f6;
+				font-size: 18px;
+				padding: 40px 20px;
+				text-align: center;
+
+				b {
+					color: #fff;
+					font-size: 21px;
+				}
+
+				p:first-child {
+					margin-top: 120px;
+				}
+
+				p:last-child {
+					margin-top: 15px;
+					font-size: 13px;
+				}
+			}
+		}
+	}
+	.table-toolbar {
+		@include clearfix;
+		@extend .gradient-gray-light;
+		@include border-radius(3px);
+		border: $stroke-gray-light;
+		color: $gray-dark;
+		font-size: 11px;
+		font-weight: 600;
+		height: 24px;
+		padding: 0 10px 0;
+		h4 {
+			float: left;
+			font-style: italic;
+			text-transform: lowercase;
+			width: 50%;
+			padding: 7px 0 7px;
+			font-weight: 400;
+		}
+		p {
+			@extend .title;
+			float: right;
+			text-align: right;
+			a,
+			a:visited {
+				padding: 7px 0 7px;
+				display: inline-block;
+				color: $gray-dark;
+				text-decoration: none;
+
+				/* &:hover,
+                &:active {
+                    &:after {
+                        @extend %sprite-collapse-elipse;
+                        margin: -2px 0 0 6px;
+                    }
+                } */
+				&:after {
+					margin-left: 4px;
+					position: relative;
+					top: -1px;
+					@extend %collapse-icon;
+				}
+				&.collapsed {
+					&:after {
+						@extend %collapsed-icon;
+					}
+				}
+			}
+		}
+	}
+
+	table {
+		width: 100%;
+
+		&.sort-header-table {
+			background: #fff;
+		}
+	}
+	thead {
+		border-bottom: $stroke-gray-light;
+		color: $blue-mid;
+		th {
+			font-size: 13px;
+			font-weight: 600;
+			letter-spacing: 0.02em;
+			padding: 6px 0 7px 14px;
+			position: relative;
+			text-decoration: none;
+			text-transform: uppercase;
+			vertical-align: middle;
+
+			span {
+				content: ".";
+				margin-right: 8px;
+				margin-top: -2px;
+				position: absolute;
+				left: 10px;
+			}
+
+			.icon {
+				fill: #cbcbcb;
+				@include transform(translate(0, 2px) rotate(0deg) );
+				@include transition(all 0.15s ease-in-out);
+				margin-right: 5px;
+			}
+
+			&.asc .icon {
+				@include transform(translate(0, 2px) rotate(180deg) );
+			}
+
+			&.active.sortable {
+				.icon {
+					fill: $orange;
+				}
+				a {
+					color: $orange;
+				}
+			}
+
+			&:not(.sortable) {
+				.icon {
+					visibility: hidden;
+					display: none;
+				}
+			}
+		}
+		a {
+			color: $blue-mid;
+			cursor: pointer;
+		}
+	}
+	.list-wrapper {
+		background: #fff;
+		max-height: 1000px;
+		overflow-x: hidden;
+		overflow-y: auto; //scroll-bar if necessary
+		@include border-bottom-radius(2px);
+
+		@include box-sizing(border-box);
+		padding: 0 0 25px 0;
+	}
+	.list-wrapper > table > tbody {
+		a:hover {
+			color: $orange;
+		}
+
+		td {
+			font-weight: 400;
+		}
+		> tr {
+			border-bottom: 1px dashed #dddddd;
+			> td {
+				@include transition(background-color 0.3s ease-out);
+
+				&:hover {
+					background: #f9f9f9;
+				}
+
+				tr {
+					&:first-child {
+						td {
+							padding: 16px 12px 16px 14px;
+							position: relative;
+							vertical-align: middle;
+
+							dt {
+								display: none;
+							}
+						}
+					}
+
+					&.details {
+						td {
+							padding: 0 8px 0 14px;
+
+							//padding-top: 16px;
+							vertical-align: top;
+							dt {
+								display: block;
+								color: $orange-dark;
+								font-size: 10px;
+								font-weight: bold;
+								margin-bottom: 7px;
+								margin-top: -1px;
+								line-height: 12px;
+								text-transform: uppercase;
+							}
+
+							.collapsible-wrapper {
+								@include box-sizing(border-box);
+								padding-top: 16px;
+							}
+						}
+
+						dt {
+							.gov-interest-id,
+							.gov-interest-name {
+								font-weight: 400;
+								margin-top: 2px;
+								margin-bottom: -2px;
+							}
+						}
+
+						.gov-interest-id {
+							min-width: 20px;
+							float: left;
+							padding-right: 4px;
+						}
+
+						.gov-interest-name {
+							overflow: hidden;
+						}
+
+						li:not(:last-child) {
+							margin-bottom: 4px;
+						}
+					}
+				}
+			}
+
+			tr:first-child {
+				td {
+					/* padding-bottom: 16px;
+					padding-top: 16px; */
+					/* &:first-child {
+						dd {
+							padding-right: 12px;
+							padding-top: 0;
+							padding-left: 0;
+						}
+					} */
+					/* &.inventors dd {
+						padding-left: 17px;
+					}
+					&.assignees dd {
+						padding-left: 13px;
+					} */
+					&.patents dd,
+					&.years-active dd,
+					&.citations dd {
+						padding-left: 0;
+						text-align: left;
+					}
+					/* &.citations dd {
+						text-align: center;
+					} */
+					dt {
+						display: none;
+						position: absolute;
+						top: 0;
+					}
+					dd {
+						font-size: 14px;
+						font-weight: 400;
+						line-height: 1.25em;
+						padding-top: 8px;
+						margin-bottom: 8px;
+					}
+
+					& .newsearch {
+						&:hover,
+						&:active {
+							&:after {
+								@extend %sprite-query-link;
+								content: ".";
+								display: inline-block;
+								margin-left: 5px;
+								margin-top: -3px;
+								vertical-align: middle;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	th,
+	td {
+		text-align: left;
+		width: 13%;
+		&:first-child {
+			width: 37%;
+		}
+		&.patent-title {
+			width: 42%;
+		}
+		&.location {
+			width: 25%;
+		}
+		&.citations {
+			width: 17%;
+		}
+		&.application-date,
+		&.grant-date {
+			width: 22%;
+		}
+		&.class {
+			width: 32%;
+		}
+
+		&.years-active {
+			a {
+				position: relative;
+				padding-left: 18px;
+				.icon {
+					margin-left: -18px;
+					position: relative;
+					top: 6px;
+				}
+
+				display: inline-block;
+			}
+		}
+	}
+	th {
+		&.assignees {
+			position: relative;
+			left: -9px;
+		}
+	}
+	.details {
+		display: table-row;
+
+		.metadata-col {
+			//&.publication-number {
+			float: left;
+			width: 50%;
+			dl {
+				display: block;
+			}
+		}
+		dl {
+			margin-bottom: 20px;
+
+			&.class {
+				float: right;
+				width: 50%;
+				.patent-class-type {
+					display: inline-block;
+					width: 40px;
+				}
+			}
+		}
+		dd {
+			margin-bottom: 4px;
+		}
+		&.collapsed {
+			display: none;
+		}
+	}
+	&.patents .list-wrapper > table > tbody > tr tr:first-child td  dt {
+		display: block;
+	}
+	&.patents .list-wrapper > table > tbody > tr tr:first-child td {
+		padding-bottom: 16px;
+	}
+
+	.more {
+		margin-top: -2px;
+		a {
+			@extend .gradient-blue-gray-light;
+			@include border-radius(2px);
+			@include single-text-shadow(0, 1px, 0, false, rgba(255,255,255,1));
+			border: $stroke-gray-light;
+			color: $blue-dark;
+			display: block;
+			margin: 24px 24px 0 24px;
+			font-size: 13px;
+			font-weight: 600;
+			padding: 8px;
+			text-align: center;
+			text-decoration: none;
+			text-transform: uppercase;
+			&:hover,
+			&:active {
+				@extend .gradient-blue-gray;
+			}
+			cursor: pointer;
+		}
+	}
+	&.empty {
+		.more {
+			//Hide results elements when results are empty
+			display: none;
+		}
+	}
+}

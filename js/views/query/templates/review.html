@@ -1,0 +1,119 @@
+﻿{{#if isQuickSearch}}
+<section class="col-md-12 step">
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-primary pull-right" href="#step/selectCriteria"> Edit </a>
+            <h2>Search Criteria</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="quick-search" class="well well-sm">
+                <div class="input-group">
+                    <span class="input-group-addon">Quick Search <i class="q fa fa-question-circle" aria-hidden="true" data-toggle="popover" data-content="Find all patents with your specified text in the patent title, abstract, inventor name, or assignee name"></i></span>
+                    <div class="form-inline" style="padding-top: 5px;">
+                        <span class="expression">
+                            {{quickSearch}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{else}}
+<section class="col-md-12 step">
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-primary pull-right" href="#step/selectCriteria"> Edit </a>
+            <h2>Category</h2>
+            <div class="input-group">
+                <span class="sub-title">Searching for a subset of:</span> <span style="color: #3e4b5a; font-style: italic; font-size: 16pt; font-weight: 400; padding-left: 5px;">{{entityName}}</span>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="col-md-12 step">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Search Criteria</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="search-summary" class="well well-sm" style="padding: 0;background-color: #fff;">
+                <div class="input-group" style="">
+                    <span class="input-group-addon">Search <br /> Summary</span>
+                    <div id="filters" class="filters-selected-col col-xs-12 col-md-10">
+                        {{#each expressions}}
+                        <span class="control-label" style="padding-left: 10px; padding-right: 10px;">
+                            {{fieldText}} {{operatorText}} {{value}}
+                        </span>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{/if}}
+<section class="col-md-12 step">
+    <div class="col-md-12">
+        <div class="row" style="margin-bottom: 20px;">
+            <a class="btn btn-primary pull-right" href="#step/selectResults"> Edit </a>
+            <h2 style="margin-top: 0;">Output Fields</h2>
+            <span class="sub-title">Fields to be included in output data.</span>
+        </div>
+        <div id="outputs-readonly" class="row well well-sm">
+        </div>
+    </div>
+</section>
+<section class="col-md-12 step">
+    <div class="col-md-12">
+        <div class="row" style="margin-bottom: 20px;">
+            <h2>Customize Results</h2>
+            <span class="sub-title">How your query results will be sorted, and the format of your output dataset.</span>
+        </div>
+        <div class="row">
+            <div id="sort-by" class="well well-sm" style="padding: 0;">
+                <div class="input-group" style="">
+                    <span class="input-group-addon">Sort Results By</span>
+                    <div class="col-xs-12 col-md-12">
+                        <div class="form-inline">
+                            <div class="form-group" style="padding-right: 20px;">
+                                <span class="control-label" style="font-weight: bold;">Group:</span>
+                                <span class="control-label">
+                                    {{group}}
+                                </span>
+                            </div>
+                            <div class="form-group">
+                                <span class="control-label" style="font-weight: bold;">Field:</span>
+                                <span class="control-label">
+                                    {{field}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="well well-sm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="desc" style="font-weight: bold;">The email address where your results will be delivered.</div>
+                        <span class="control-label" style="padding-top: 7.5px;">
+                            {{recipient}}
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="desc" style="font-weight: bold;">The file format(s) of your final results.</div>
+                        <span class="control-label" style="padding-top: 7.5px;">
+                            {{#if xml}}XML &nbsp;{{/if}} {{#if json}}JSON &nbsp;{{/if}} {{#if csv}}CSV {{/if}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

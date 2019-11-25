@@ -1,0 +1,105 @@
+
+
+.locations  {
+	position: relative;
+	padding-bottom: 0;
+	overflow: hidden;
+	background: #f3f5f8;
+
+	$map-body-height: 580px;
+
+	.map, .loading {
+		@include transition(1s ease-in-out);
+	}
+
+	&.viz {
+		padding-bottom: $map-body-height;
+		.load-circle {
+
+		}
+	}
+
+	.flexible-dl-table {
+		& > div {
+			> :first-child {
+				float: left;
+			}
+
+			> :last-child {
+				float: right;
+			}
+
+			&:after {
+				content: '';
+				display: block;
+				clear: both;
+			}
+		}
+	}
+
+
+	.loading {
+		height: auto;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		top: 0;
+	}
+
+	.viz-head {
+		z-index: 1;
+		padding-bottom: 12px;
+
+		position: relative;
+		background: rgba($default-bg-color, 0.7);
+
+		&:after {
+			content: '';
+			display: block;
+			position: absolute;
+			border-bottom: 1px solid #d8e0ea;
+			bottom: 0;
+			left: $main-content-padding-side;
+			right: $main-content-padding-side;
+		}
+
+		.note {
+			position: absolute;
+			bottom: 12px;
+			right: $main-content-padding-side;
+
+			@include sans(
+				$cap-height: 10,
+				$dimensions-only: true
+			);
+
+			font-style: italic;
+		}
+	}
+
+	.map-legend {
+		font-weight: $semi-wt;
+		margin-top: 24px;
+
+		@include sans(
+			$cap-height: 10
+		);
+
+		.legend-icon {
+			height: 10px;
+			width: 10px;
+			@include border-radius(5px);
+		}
+
+		.legend-note {
+			font-weight: $normal-wt;
+		}
+	}
+
+	.ol-zoom {
+		$zoom-control-height: 45px;
+		top: auto;
+		bottom: $map-body-height - ($zoom-control-height + 10px);
+	}
+}

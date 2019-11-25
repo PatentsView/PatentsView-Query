@@ -1,0 +1,77 @@
+#results .tags {
+    @include clearfix;
+    color: $white;
+    ul,
+    li {
+        @include border-radius(12px);
+        background: $orange;
+        float: left;
+        margin-right: 6px;
+        &:hover,
+        &.hover {
+            background: $orange-mid;
+        }
+        li {
+            margin-right: 1px;
+        }
+    }
+    > li,
+    ul { margin-bottom: 6px; }
+
+    .tag-label {
+        font-weight: $weight-light;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        &:after {
+            content: ':';
+        }
+    }
+    b {
+        display: inline-block;
+        font-weight: normal;
+        padding: 6px 0 5px 14px;
+    }
+    a {
+        @include border-radius(6px);
+        color: $white;
+        display: inline-block;
+        margin: -2px 9px 0 6px;
+        padding: 0;
+        text-decoration: none;
+        vertical-align: middle;
+        span {
+            @extend %sprite-tag-remove;
+            display: block;
+        }
+        &:hover,
+        &:active {
+            background-color: $orange-dark;
+            color: $white;
+        }
+    }
+    ul {
+        li {
+            @include border-radius(0);
+            &:before {
+                @extend %sprite-tag-divide;
+                content: ".";
+                display: inline-block;
+                margin-left: -1px;
+                margin-top: -2px;
+                vertical-align: middle;
+            }
+            &:first-child,
+            &.first-child {
+                @include border-left-radius(12px);
+                border-left: none;
+                &:before {
+                    display: none;
+                }
+            }
+            &:last-child,
+            &.last-child {
+                @include border-right-radius(12px);
+            }
+        }
+    }
+}
