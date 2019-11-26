@@ -29,7 +29,7 @@ function save($json) {
     $output_fields = join(",", $data->outputIds);
     $query_string = $data->query;
 
-    $mysqli = new mysqli($mysql_host,$mysql_username,$mysql_password,"QueryTool_dev");
+    $mysqli = new mysqli($mysql_host,$mysql_username,$mysql_password,$mysql_database);
 
     if ($mysqli->connect_error) {
         echo json_encode(array("status"=>"error","message"=>"Error Processing Query."));

@@ -3,7 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
 require ("../.private/cs.php");
-$mysqli = new mysqli($mysql_host,$mysql_username,$mysql_password,"QueryTool");
+$mysqli = new mysqli($mysql_host,$mysql_username,$mysql_password,$mysql_database);
 
 if ($mysqli->connect_error) {
     echo json_encode(array("status"=>"error","message"=>"Error Resolving CPC class."));
