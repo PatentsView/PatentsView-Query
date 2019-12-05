@@ -3080,7 +3080,7 @@
   {
     "isQuery": "true",
     "group": "assignees",
-    "name": "Assignee Country FIPS Code",
+    "name": "Assignee County FIPS Code",
     "entities": [
       "patent",
       "assignee",
@@ -3093,7 +3093,7 @@
     "type": "integer-exact",
     "id": "assignee_county_fips",
     "searchGroup": "patent",
-    "desc": "FIPS code for the country associated with the assignee"
+    "desc": "FIPS code for the county associated with the assignee"
   },
   {
     "isQuery": "true",
@@ -3109,7 +3109,7 @@
     "isSort": "false",
     "isOutput": "true",
     "type": "string",
-    "id": "assignee_county",
+    "id": "assignee_country",
     "searchGroup": "patent",
     "desc": "Country associated with the assignee"
   },
@@ -3346,14 +3346,14 @@
     "isSort": "false",
     "isOutput": "true",
     "type": "string",
-    "id": "inventor_county",
+    "id": "inventor_country",
     "searchGroup": "inventor",
-    "desc": "FIPS code for the country associated with the inventor"
+    "desc": "Country associated with the inventor"
   },
   {
     "isQuery": "true",
     "group": "inventors",
-    "name": "Inventor Country FIPS Code",
+    "name": "Inventor County FIPS Code",
     "entities": [
       "patent",
       "assignee",
@@ -3366,7 +3366,7 @@
     "type": "integer-exact",
     "id": "inventor_county_fips",
     "searchGroup": "inventor",
-    "desc": "country associated with the inventor"
+    "desc": "FIPS code of county associated with the inventor"
   },
   {
     "isQuery": "true",
