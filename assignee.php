@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
-require ("../.private/cs.php");
+require ("../.private/cs_realized.php");
 $mysqli = new mysqli($mysql_host,$mysql_username,$mysql_password,$mysql_database);
 
 if ($mysqli->connect_error) {

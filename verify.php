@@ -3,7 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
 function verify($response) {
-    require (".private/key.php");
+    require (".private/key_realized.php");
     $ip = $_SERVER["REMOTE_ADDR"]; //server Ip
     $url = "https://www.google.com/recaptcha/api/siteverify";
     $full_url = $url."?secret=".$key."&response=".$response."&remoteip=".$ip;
@@ -15,7 +15,7 @@ function verify($response) {
 }
 
 function save($json) {
-    require (".private/cs.php");
+    require (".private/cs_realized.php");
     $ip = $_SERVER["REMOTE_ADDR"]; //server Ip
     $data = json_decode($json);
     $recipient = $data->recipient;
