@@ -4,6 +4,6 @@ PatentsView Query
 
 `stashver` is the latest branch.
 
-## Header and Footer
+## Header and footer script
 
-The header and footer component is re-using the self-containing Vue built scripts from here: <https://github.com/CSSIP-AIR/PatentsView-API>. So you need to develop over there, and copy the build script here. This is for maintainability - develop once and deploy everywhere.
+Built from https://github.com/American-Institutes-for-Research/pv-header-footer
