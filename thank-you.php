@@ -44,6 +44,20 @@ if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
     <link rel="stylesheet" href="assets/css/headfoot.css" />
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
     <link rel="stylesheet" href="assets/css/pvqt.css" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-3509031-17"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-3509031-17");
+    </script>
 </head>
 <body>
     <noscript>
