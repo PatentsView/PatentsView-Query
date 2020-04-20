@@ -93,7 +93,7 @@ a.anchor {
 }
 
 #contents {
-    position: fixed;
+    /* position: fixed; */
     margin-top: 25px;
     max-width: 260px;
 }
