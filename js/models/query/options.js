@@ -3133,7 +3133,7 @@
   },
   {
     "isQuery": "false",
-    "group": "assignees",
+    "group": "applications",
     "name": "Length of Detailed Description",
     "entities": [
       "patent",
