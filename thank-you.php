@@ -68,7 +68,7 @@ if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
     <div class="page-wrapper">
         
         <!-- Container -->
-        <section id="step-by-step-container" class="container"></section>
+        <!-- <section id="step-by-step-container" class="container"></section> -->
         <!-- /Container -->
         <section class="container">
             <!-- form action buttons -->
