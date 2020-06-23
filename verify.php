@@ -24,7 +24,8 @@ function save($json) {
     $field_id = $data->fieldId;
     $result_count = $data->resultCount;
     $format_json = $data->json;
-    $format_xml = $data->xml;
+    // Disabling XML export
+    $format_xml = 0; //$data->xml
     $format_csv = $data->csv;
     $output_fields = join(",", $data->outputIds);
     $query_string = $data->query;
