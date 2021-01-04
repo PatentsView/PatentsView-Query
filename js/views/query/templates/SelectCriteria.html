@@ -45,7 +45,7 @@
 </div>
 <section class="col-md-12 intro no-padding intro-centered">
   <div class="row">
-    <div class="col-lg-7 col-md-6">
+    <div class="col-lg-12">
       <h3 class="intro-text">
         Find all patents with your specified text in the patent title or
         abstract.
@@ -74,13 +74,14 @@
         <div id="quick-search" class="well well-sm">
           <div class="input-group">
             <span class="input-group-addon"
-              >Quick Search
-              <i
-                class="q fa fa-question-circle"
-                aria-hidden="true"
-                data-toggle="popover"
-                data-content="Simple query form that searches if all components of the query string separated by white space are found in patent title or abstract."
-              ></i
+              >QUICK SEARCH
+              <span class="black-circle-wrapper">
+                <i
+                  class="q fa fa-question-circle"
+                  aria-hidden="true"
+                  data-toggle="popover"
+                  data-content="Simple query form that searches if all components of the query string separated by white space are found in patent title or abstract."
+                ></i></span
             ></span>
             <form id="quickSearchForm" onsubmit="return false;">
               <input
@@ -88,36 +89,43 @@
                 name="quickSearch"
                 type="text"
                 class="form-control"
-                placeholder="example: bicycle tire Schwinn"
+                placeholder="Example: bicycle tire Schwinn"
                 value="{{quickSearch}}"
               />
+              <div class="search-controls center-block no-float">
+                <div>
+                  <a
+                    class="btn-data-dict btn btn-help"
+                    href="/query/data_dictionary.html"
+                    target="_blank"
+                  >
+                    DATA DICTIONARY
+                    <i class="fa fa-caret-right"></i>
+                  </a>
+                  <a
+                    class="btn btn-help"
+                    href="/query/faqs.html"
+                    target="_blank"
+                  >
+                    <!-- <i class="fa fa-question-circle fa-3" aria-hidden="true"></i> -->
+                    BUILDER FAQS
+                    <i class="fa fa-caret-right"></i>
+                  </a>
+                </div>
+                <button
+                  href="#"
+                  class="btn btn-primary advanced-search-btn"
+                  id="advanced-search"
+                >
+                  Advanced search >
+                  <!-- <i class="fa fa-plus-square-o"></i> -->
+                </button>
+              </div>
             </form>
+            <button class="btn btn-primary quick-search">
+              <i class="fa fa-search"></i>
+            </button>
           </div>
-          <div class="">
-            <a class="btn btn-help" href="/query/faqs.html" target="_blank">
-              <i class="fa fa-question-circle fa-3" aria-hidden="true"></i>
-              BUILDER FAQS
-            </a>
-            <a
-              class="btn-data-dict btn btn-help"
-              href="/query/data_dictionary.html"
-              target="_blank"
-            >
-              DATA DICTIONARY
-            </a>
-          </div>
-        </div>
-        <div class="search-controls center-block no-float col-md-5 col-lg-4">
-          <button
-            href="#"
-            class="btn btn-primary pull-left advanced-search-btn"
-            id="advanced-search"
-          >
-            Advanced Search<i class="fa fa-plus-square-o"></i>
-          </button>
-          <button class="btn btn-primary quick-search pull-right">
-            Submit Search<i class="fa fa-caret-right"></i>
-          </button>
         </div>
       </div>
     </div>
