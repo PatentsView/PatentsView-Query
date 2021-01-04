@@ -7910,3 +7910,16 @@ button.btn-lg i {
 .tt-suggestion p {
   margin: 0;
 }
+#previewResults #quick-search .input-group {
+  justify-content: left;
+}
+#previewResults #quick-search .form-inline {
+  padding-top: 7px !important;
+}
+#criteria-section #search-summary .submit-search {
+  width: unset;
+  height: unset;
+}
+#criteria-section #conditions i.q {
+  margin-left: 5px;
+}
