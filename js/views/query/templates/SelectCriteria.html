@@ -53,26 +53,10 @@
       <button
         class="dark-btn btn btn-primary pull-left"
         id="back-quick-search"
-        style="display: none;"
+        style="display: none"
       >
         <i class="fa fa-caret-left"></i> Quick Search
       </button>
-    </div>
-    <div class="col-lg-5 col-md-6">
-      <a
-        class="btn btn-help pull-right"
-        href="/query/faqs.html"
-        target="_blank"
-      >
-        <i class="fa fa-question-circle fa-3" aria-hidden="true"></i> Help
-      </a>
-      <a
-        class="btn-data-dict btn btn-help pull-right"
-        href="/query/data_dictionary.html"
-        target="_blank"
-      >
-        View Data Dictionary
-      </a>
     </div>
   </div>
 </section>
@@ -82,7 +66,7 @@
   <section
     id="quick-search-section"
     class="col-md-12 step"
-    style="display: none;"
+    style="display: none"
   >
     {{/if}}
     <div class="row">
@@ -109,6 +93,19 @@
               />
             </form>
           </div>
+          <div class="">
+            <a class="btn btn-help" href="/query/faqs.html" target="_blank">
+              <i class="fa fa-question-circle fa-3" aria-hidden="true"></i>
+              BUILDER FAQS
+            </a>
+            <a
+              class="btn-data-dict btn btn-help"
+              href="/query/data_dictionary.html"
+              target="_blank"
+            >
+              DATA DICTIONARY
+            </a>
+          </div>
         </div>
         <div class="search-controls center-block no-float col-md-5 col-lg-4">
           <button
@@ -126,7 +123,7 @@
     </div>
   </section>
   {{#if isQuickSearch}}
-  <section id="entity-section" class="col-md-12 step" style="display: none;">
+  <section id="entity-section" class="col-md-12 step" style="display: none">
     {{else}}
     <section id="entity-section" class="col-md-12 step">
       {{/if}}
@@ -179,11 +176,7 @@
       </div>
     </section>
     {{#if isQuickSearch}}
-    <section
-      id="criteria-section"
-      class="col-md-12 step"
-      style="display: none;"
-    >
+    <section id="criteria-section" class="col-md-12 step" style="display: none">
       {{else}}
       <section id="criteria-section" class="col-md-12 step">
         {{/if}}
@@ -204,7 +197,7 @@
             <div
               id="search-summary"
               class="well well-sm"
-              style="padding: 0; background-color: #fff;"
+              style="padding: 0; background-color: #fff"
             >
               <div class="input-group" style="">
                 <span class="input-group-addon"
@@ -218,7 +211,7 @@
                   ></div>
                 </span>
                 <span class="input-group-addon">
-                  <span class="input-group-btn" style="padding-left: 20px;">
+                  <span class="input-group-btn" style="padding-left: 20px">
                     <button class="btn btn-primary submit-search">
                       Submit Search<i class="fa fa-caret-right"></i>
                     </button>
