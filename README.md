@@ -6,4 +6,4 @@ PatentsView Query
 
 ## Header and footer script
 
-Built from https://github.com/American-Institutes-for-Research/pv-header-footer
+Refer to: [https://github.com/American-Institutes-for-Research/pv-header-footer](https://github.com/American-Institutes-for-Research/pv-header-footer)
