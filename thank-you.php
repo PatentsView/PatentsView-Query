@@ -1,12 +1,12 @@
 <?php
 
-require (".private/cs_realized.php");
-$mysqli = new mysqli($mysql_host,$mysql_username,$mysql_password,$mysql_database);
+require(".private/cs_realized.php");
+$mysqli = new mysqli($mysql_host, $mysql_username, $mysql_password, $mysql_database);
 
 if ($mysqli->connect_error) {
-    echo json_encode(array("status"=>"error","message"=>"Error Fetching Query."));
+    echo json_encode(array("status" => "error", "message" => "Error Fetching Query."));
 
-    die("Error : (". $mysqli->connect_errno .") ". $mysqli->connect_error);
+    die("Error : (" . $mysqli->connect_errno . ") " . $mysqli->connect_error);
 }
 
 $sql = "SELECT entity_id, query_string FROM query_submission WHERE id=" . $_GET["q"];
@@ -20,7 +20,7 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $entity_id = $row["entity_id"];
     $q = $row["query_string"];
-    $url = "https://dev.patentsview.org/api/".$entity_id."s/query?".$q;
+    $url = "https://dev.patentsview.org/api/" . $entity_id . "s/query?" . $q;
 }
 
 $result->close();
@@ -34,6 +34,7 @@ if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Create a PatentsView Query</title>
@@ -45,20 +46,19 @@ if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
     <link rel="stylesheet" href="assets/css/pvqt.css" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-3509031-17"
-    ></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-3509031-17"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
+        window.dataLayer = window.dataLayer || [];
 
-      gtag("config", "UA-3509031-17");
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+
+        gtag("config", "UA-3509031-17");
     </script>
 </head>
+
 <body>
     <noscript>
         This search tool requires Javascript. For more information about finding a particular patent or group of patents please visit
@@ -66,7 +66,7 @@ if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
         <a href="tel:1-800-786-9199" title="USPTO Customer Support Toll-Free Phone Number">1-800-786-9199</a>.
     </noscript>
     <div class="page-wrapper">
-        
+
         <!-- Container -->
         <section id="step-by-step-container" class="container"></section>
         <!-- /Container -->
@@ -91,6 +91,7 @@ if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
                 </div>
             </div>
     </div>
-    <script src="js/header_footer.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/PatentsView/pv-header-footer/dist.js"></script>
 </body>
+
 </html>
