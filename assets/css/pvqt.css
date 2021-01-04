@@ -7203,6 +7203,15 @@ h3 {
   margin-top: 13px;
   margin-bottom: 10px;
 }
+.container {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 1020px;
+  }
+}
 h2.select-category {
   margin-bottom: 3px;
 }

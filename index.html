@@ -56,6 +56,159 @@
       >.</noscript
     >
     <div class="page-wrapper">
+      <div class="query-nav container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="menu-container">
+              <div class="section-menu-toggle" id="menu-toggle">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+              </div>
+              <div class="section-hidden-label label-shown" id="label-hidden">
+                IN THIS SECTION
+              </div>
+              <div class="section-menu" id="section-menu">
+                <a href="./" class="highlighted-link"
+                  >DATASET&nbsp;QUICK&nbsp;BUILDER</a
+                >
+                <a
+                  href="https://community.patentsview.org/query/data-dictionary"
+                  >DATA&nbsp;DICTIONARY</a
+                >
+                <a href="https://community.patentsview.org/query/builder-faqs"
+                  >BUILDER&nbsp;FAQS</a
+                >
+                <a href="https://www.patentsview.org/download"
+                  >DOWNLOAD&nbsp;TABLES</a
+                >
+                <a
+                  href="https://s3.amazonaws.com/data.patentsview.org/documents/Patents_DB_dictionary_bulk_downloads.xlsx"
+                  >DOWNLOAD&nbsp;DICTIONARY</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <style>
+        .query-nav {
+          margin-top: 40px;
+        }
+        .menu-container {
+          display: flex;
+          align-items: center;
+        }
+        .section-menu-toggle {
+          cursor: pointer;
+        }
+        .section-menu-toggle div {
+          width: 30px;
+          height: 5px;
+          background-color: #333;
+          margin: 6px 0;
+          transition: 1s;
+        }
+        div.bar1-open {
+          -webkit-transform: rotate(-90deg) translate(-13px, 6px);
+          transform: rotate(-90deg) translate(-13px, 6px);
+          background-color: #9d2a06;
+        }
+        div.bar1-close {
+          -webkit-transform: rotate(0) translate(0, 0);
+          transform: rotate(0) translate(0, 0);
+          background-color: black;
+        }
+        div.bar2-open {
+          -webkit-transform: rotate(270deg) translate(-2px, -3px);
+          transform: rotate(270deg) translate(-2px, -3px);
+          background-color: #9d2a06;
+        }
+        div.bar2-close {
+          -webkit-transform: rotate(0) translate(0, 0);
+          transform: rotate(0) translate(0, 0);
+          background-color: black;
+        }
+        div.bar3-open {
+          -webkit-transform: rotate(-90deg) translate(9px, -11px);
+          transform: rotate(-90deg) translate(9px, -12px);
+          background-color: #9d2a06;
+        }
+        div.bar3-close {
+          -webkit-transform: rotate(0) translate(0, 0);
+          transform: rotate(0) translate(0, 0);
+          background-color: black;
+        }
+
+        .section-hidden-label {
+          display: none;
+          font-size: 11px;
+          font-weight: 700;
+          padding-left: 6px;
+        }
+        .label-shown {
+          display: inline-block;
+        }
+        .section-menu {
+          display: none;
+        }
+        .section-menu a {
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 11px;
+          font-weight: 700;
+          color: #4f5f6f;
+          text-decoration: none;
+        }
+        .section-menu a:hover {
+          color: #00a3e0;
+        }
+        a.highlighted-link {
+          background-color: #9d2a06;
+          color: white;
+        }
+        a.highlighted-link:hover {
+          color: white;
+        }
+        .section-menu-shown {
+          display: block;
+          margin-left: 6px;
+        }
+      </style>
+      <script>
+        (() => {
+          const toggle = document.querySelector("#menu-toggle");
+          const label = document.querySelector("#label-hidden");
+          const menu = document.querySelector("#section-menu");
+
+          const bar1 = document.querySelector(".bar1");
+          const bar2 = document.querySelector(".bar2");
+          const bar3 = document.querySelector(".bar3");
+
+          let labelShown = true;
+          let menuShown = false;
+
+          const animate = (bar, barName) => {
+            if (bar.classList.contains(`${barName}-open`)) {
+              bar.classList.remove(`${barName}-open`);
+              bar.classList.add(`${barName}-close`);
+            } else if (bar.classList.contains(`${barName}-close`)) {
+              bar.classList.remove(`${barName}-close`);
+              bar.classList.add(`${barName}-open`);
+            } else {
+              bar.classList.add(`${barName}-open`);
+            }
+          };
+
+          toggle.addEventListener("click", () => {
+            label.classList.toggle("label-shown");
+            menu.classList.toggle("section-menu-shown");
+            animate(bar1, "bar1");
+            animate(bar2, "bar2");
+            animate(bar3, "bar3");
+          });
+        })();
+      </script>
       <!-- Container -->
       <section id="step-by-step-container" class="container"></section>
       <!-- /Container -->
