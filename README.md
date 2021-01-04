@@ -1,8 +1,6 @@
 # PatentsView-Query
 
-PatentsView Query
-
-`stashver` is the latest branch.
+Directly edit CSS file to modify styes.
 
 ## Header and footer script
 
