@@ -1,0 +1,16 @@
+﻿<table class="table table-striped">
+    <thead>
+        {{#each meta.fields}}
+    <th>{{this}}</th>
+    {{/each}}
+    </thead>
+    <tbody>
+        {{#each data}}
+            <tr>
+                {{#each this}}
+                <td>{{this}}</td>
+                {{/each}}
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

@@ -1,0 +1,254 @@
+﻿<section class="col-md-12 intro no-padding">
+  <div class="row">
+    <div class="col-md-12">
+      <a
+        class="btn btn-help pull-right"
+        href="https://community.patentsview.org/query/builder-faqs"
+        target="_blank"
+      >
+        BUILDER FAQS
+        <i class="fa fa-caret-right"></i>
+      </a>
+      <a
+        class="btn-data-dict btn btn-help pull-right"
+        href="https://community.patentsview.org/query/data-dictionary"
+        target="_blank"
+      >
+        DATA DICTIONARY
+        <i class="fa fa-caret-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+{{#if isQuickSearch}}
+<section class="col-md-12 step">
+  <div class="row">
+    <div class="col-md-12">
+      <a class="btn btn-primary pull-right" href="#step/selectCriteria">
+        Edit
+      </a>
+      <h2>Search Criteria</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id="quick-search" class="well well-sm">
+        <div class="input-group">
+          <span class="input-group-addon">Quick Search </span>
+          <div class="form-inline" style="padding-top: 5px">
+            <span class="expression"> {{quickSearch}} </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{{else}}
+<section class="col-md-12 step">
+  <div class="row">
+    <div class="col-md-12">
+      <a class="btn btn-primary pull-right" href="#step/selectCriteria">
+        Edit
+      </a>
+      <h2>Category</h2>
+      <div class="input-group">
+        <span class="sub-title">Searching for a subset of:</span>
+        <span
+          style="
+            color: #3e4b5a;
+            font-style: italic;
+            font-size: 16pt;
+            font-weight: 400;
+            padding-left: 5px;
+          "
+          >{{entityName}}</span
+        >
+      </div>
+    </div>
+  </div>
+</section>
+<section class="col-md-12 step">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Search Criteria</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div
+        id="search-summary"
+        class="well well-sm"
+        style="padding: 0; background-color: #fff"
+      >
+        <div class="input-group" style="">
+          <span class="input-group-addon"
+            >Search <br />
+            Summary</span
+          >
+          <div id="filters" class="filters-selected-col col-xs-12 col-md-10">
+            {{#each expressions}}
+            <span
+              class="control-label"
+              style="padding-left: 10px; padding-right: 10px"
+            >
+              {{fieldText}} {{operatorText}} {{value}}
+            </span>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{{/if}}
+<section class="col-md-12 step">
+  <div class="col-md-12">
+    <div class="row" style="margin-bottom: 20px">
+      <h2 style="margin-top: 0">Preview Results</h2>
+      <!--<span class="sub-title">Fields to be included in output data.</span>-->
+      <ul class="nav nav-pills">
+        <li class="active">
+          <a href="#preview-csv" data-toggle="tab">CSV</a>
+        </li>
+        <li>
+          <a href="#preview-json" data-toggle="tab">JSON</a>
+        </li>
+        <!-- <li>
+          <a href="#preview-xml" data-toggle="tab">XML</a>
+        </li> -->
+      </ul>
+      <div class="tab-content clearfix">
+        <div class="tab-pane active" id="preview-csv"></div>
+        <div class="tab-pane" id="preview-json"></div>
+        <!-- <div class="tab-pane" id="preview-xml"></div> -->
+      </div>
+    </div>
+  </div>
+</section>
+<form id="results-form">
+  <section class="col-md-12 step">
+    <div class="col-md-12">
+      <div class="row" style="margin-bottom: 20px">
+        <h2>Customize Results</h2>
+        <span class="sub-title"
+          >Select how your query results will be sorted and the format of your
+          output dataset.</span
+        >
+      </div>
+      <div class="row">
+        <div id="sort-by" class="well well-sm" style="padding: 0">
+          <div class="input-group" style="">
+            <span class="input-group-addon">Sort Results By</span>
+            <div class="col-xs-12 col-md-12">
+              <div class="form-inline">
+                <div class="form-group">
+                  <label for="group" class="col-sm-2 control-label"
+                    >Group</label
+                  >
+                  <div class="col-sm-10">
+                    <select
+                      id="group"
+                      name="group"
+                      class="form-control"
+                      style="min-width: 250px"
+                    >
+                      <option>-Select Group-</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="field" class="col-sm-2 control-label"
+                    >Field</label
+                  >
+                  <div class="col-sm-10">
+                    <select
+                      id="field"
+                      name="field"
+                      class="form-control"
+                      style="min-width: 250px"
+                    >
+                      <option>-Select Field-</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /input-group -->
+        </div>
+      </div>
+      <div class="row">
+        <div id="result-delivery" class="well well-sm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="desc">
+                  Please enter the email address where you want the results
+                  delivered.
+                </div>
+                <input
+                  type="text"
+                  id="recipient"
+                  name="recipient"
+                  class="form-control"
+                  placeholder="Enter email address"
+                  value="{{recipient}}"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="desc">
+                Please select the desired file format(s) of your final results.
+              </div>
+              <div class="input-group checkbox-group">
+                <!-- <div class="checkbox checkbox-primary checkbox-inline">
+                  {{#if xml}}
+                  <input
+                    type="checkbox"
+                    id="xml"
+                    name="format"
+                    value="xml"
+                    checked="checked"
+                  />
+                  {{else}}
+                  <input type="checkbox" id="xml" name="format" value="xml" />
+                  {{/if}}
+                  <label for="xml" class="control-label">XML</label>
+                </div> -->
+                <div class="checkbox checkbox-primary checkbox-inline">
+                  {{#if json}}
+                  <input
+                    type="checkbox"
+                    id="json"
+                    name="format"
+                    value="json"
+                    checked="checked"
+                  />
+                  {{else}}
+                  <input type="checkbox" id="json" name="format" value="json" />
+                  {{/if}}
+                  <label for="json" class="control-label">JSON</label>
+                </div>
+                <div class="checkbox checkbox-primary checkbox-inline">
+                  {{#if csv}}
+                  <input
+                    type="checkbox"
+                    id="csv"
+                    name="format"
+                    value="csv"
+                    checked="checked"
+                  />
+                  {{else}}
+                  <input type="checkbox" id="csv" name="format" value="csv" />
+                  {{/if}}
+                  <label for="csv" class="control-label">CSV</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /input-group -->
+      </div>
+    </div>
+  </section>
+</form>
