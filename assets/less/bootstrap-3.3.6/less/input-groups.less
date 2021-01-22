@@ -8,6 +8,9 @@
   position: relative; // For dropdowns
   display: table;
   border-collapse: separate; // prevent input groups from inheriting border styles from table cells when placed within a table
+  @media (max-width: 500px) {
+    display: block;
+  }
 
   // Undo padding and float of grid classes
   &[class*="col-"] {
@@ -29,7 +32,7 @@
 
     width: 100%;
     margin-bottom: 0;
-    
+
     &:focus {
       z-index: 3;
     }
@@ -51,7 +54,6 @@
 .input-group-sm > .input-group-btn > .btn {
   .input-sm();
 }
-
 
 // Display as table-cell
 // -------------------------

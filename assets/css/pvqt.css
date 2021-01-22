@@ -3894,6 +3894,11 @@ tbody.collapse.in {
   display: table;
   border-collapse: separate;
 }
+@media (max-width: 500px) {
+  .input-group {
+    display: block;
+  }
+}
 .input-group[class*="col-"] {
   float: none;
   padding-left: 0;
@@ -7209,7 +7214,7 @@ h3 {
 }
 @media (min-width: 1200px) {
   .container {
-    width: 1020px;
+    width: 990px;
   }
 }
 h2.select-category {
