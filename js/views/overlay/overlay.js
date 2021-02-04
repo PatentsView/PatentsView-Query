@@ -1,1 +1,349 @@
-define(["underscore","jquery","backbone","models/overlay/overlay","i18n!models/overlay/nls/lexicon","text!views/overlay/templates/overlay.html"],function(e,t,n,r,i,s){var o=n.View.extend({className:"overlay",events:{"click .paneNav li":"onNavClick","click .close":"onCloseClick","mouseenter .term":"mouseenterTerm","mouseleave .term":"mouseleaveTerm",click:"clickOverlay"},initialize:function(){e.bindAll(this,"onKeyChange","render","onExternalAnchorClick"),this.model.on("change:key",this.onKeyChange),this.model.on("change:group change:sub",this.render),this.$el=t(this.el),t("body").append(this.$el),t("a.overlay-link").click(this.onExternalAnchorClick)},render:function(){function n(){u&&o.$el.removeClass(u.overlayClassName)}function r(r){n(),r=e.template(r,i);var u=e.extend({},o.model.attributes,{copy:r}),f=e.template(s,u);o.$el.html(f),o.$el.addClass(a.overlayClassName),a.blockMouse!==o.$el.hasClass("block-mouse")&&o.$el.toggleClass("block-mouse"),a.verticalCenter!==o.$el.hasClass("vertical-center")&&o.$el.toggleClass("vertical-center"),o.$el.find(".term").each(function(){var e=t(this),n=e.attr("data-term"),r=i.glossary[n];r&&e.attr("longdesc",r.title+": "+r.text)}),o.model.get("show")&&o.show()}var o=this,u=this.model.previous("group"),a=this.model.attributes.group;a?t.get("/querytool/overlays/"+this.model.get("sub").file+"?1",r,"text"):n()},onExternalAnchorClick:function(e){var n=t(e.currentTarget).attr("data-key");return this.model.set("key",n),e.preventDefault(),!1},onNavClick:function(e){var n=t(e.currentTarget).attr("data-key");this.model.set("key",n)},onCloseClick:function(){this.close()},clickOverlay:function(e){t(e.target).closest(".pane").length===0&&this.close()},mouseenterTerm:function(e){var n=this,r=t(e.currentTarget),s=r.attr("data-term");if(s&&i.glossary[s]){var o=i.glossary[s],u="<h5>"+o.title+"</h5><p>"+o.text+"</p>",a=t("<div></div>").addClass("tooltip").html(u);this.$el.find(".pane").append(a);var f=r.position();a.css({left:f.left-a.outerWidth()+r.outerWidth()*.5+20,top:f.top-a.outerHeight()-5}),a.hide(),setTimeout(function(){n.$tip&&n.$tip.fadeIn(300)},300),this.$tip=a}return e.preventDefault(),!1},mouseleaveTerm:function(e){this.removeTip()},removeTip:function(){var e=this.$tip;this.$tip=null,e&&e.fadeOut(300,function(){e.remove()})},onKeyChange:function(t,n,r){var i=e.find(o.groups,function(t){return!!e.findWhere(t.items,{key:n})});i?this.model.set({group:i,sub:e.findWhere(i.items,{key:n}),show:!0}):(this.model.set({group:null,sub:null,show:!1}),this.hide())},close:function(){this.model.set("key",null)},show:function(){this.model.get("isVisible")||(this.model.set("isVisible",!0),this.$el.find(".pane").css({opacity:0,top:10}).animate({opacity:1,top:0},200),this.$el.show())},hide:function(){this.model.get("isVisible")&&(this.model.set("isVisible",!1),this.$el.fadeOut(200))},exposeApi:function(t){var n=this;t.overlaysApi={register:function(t){if(!(e.isObject(t)&&e.isArray(t.items)&&t.items.length>0))throw"Overlay group must be an object with an items array of length >= 1";for(var r=0,i=t.items.length;r<i;++r){var s=t.items[r];if(!(e.isString(s.key)&&s.key.length>0))throw'Each overlay group item must have a valid "key"';if(!n.keyIsAvailable_(s.key))throw'Overlay key "'+s.key+'" is already taken.';if(!(e.isString(s.file)&&s.file.length>0))throw'Each overlay group item must have a "file" name';if(s.title!==void 0&&!e.isString(s.title))throw'Each overlay group item "title" must be a string or undefined'}o.groups.push(t)},show:function(t){if(!e.isString(t))throw"Key must be a string";n.model.set("key",t)},hide:function(){n.model.set("key",null)}}},keyIsAvailable_:function(e){var t=o.groups;for(var n=0,r=t.length;n<r;++n){var i=t[n].items;for(var s=0,u=i.length;s<u;++s)if(i[s].key===e)return!1}return!0}},{groups:[{className:"center-pane",blockMouse:!0,verticalCenter:!1,items:[{key:r.overlays.about,file:"about.html",title:i.titles.about},{key:r.overlays.economist,file:"economist.html",title:i.titles.economist}]},{className:"center-pane",blockMouse:!0,verticalCenter:!1,items:[{key:r.overlays.methodsSources,file:"methodsSources.html",title:i.titles.methodsSources}]},{className:"center-pane",blockMouse:!0,verticalCenter:!1,items:[{className:"glossary scroll",key:r.overlays.glossary,file:"glossary.html",title:i.titles.glossary}]},{className:"center-pane",blockMouse:!1,verticalCenter:!1,items:[{className:"patent-class-overview",key:r.overlays.patentClass,file:"patentClass.html",title:i.titles.patentClass},{className:"patent-class-type scroll",key:r.overlays.uspc,file:"uspc.html",title:i.titles.uspc},{className:"patent-class-type scroll",key:r.overlays.nber,file:"nber.html",title:i.titles.nber},{className:"patent-class-type scroll",key:r.overlays.cpc,file:"cpc.html",title:i.titles.cpc}]},{className:"right-pane",blockMouse:!1,verticalCenter:!1,items:[{key:r.overlays.howTo,file:"howTo.html",title:i.titles.howTo},{className:"filter-opts",key:r.overlays.filterOpts,file:"filterOpts.html",title:i.titles.filterOpts}]}]});return o});
+define(['underscore', 'jquery', 'backbone',
+	'models/overlay/overlay',
+	'i18n!models/overlay/nls/lexicon',
+	'text!views/overlay/templates/overlay.html'
+	],
+function(_, $, Backbone, OverlayModel, Lexicon, overlayTemplate) {
+
+	var OverlayPane = Backbone.View.extend({
+		className: 'overlay',
+		events: {
+			'click .paneNav li': 'onNavClick',
+			'click .close': 'onCloseClick',
+			'mouseenter .term': 'mouseenterTerm',
+			'mouseleave .term': 'mouseleaveTerm',
+			'click': 'clickOverlay',
+		},
+		initialize: function() {
+		    _.bindAll(this, 'onKeyChange', 'render', 'onExternalAnchorClick');
+			this.model.on('change:key', this.onKeyChange);
+			this.model.on('change:group change:sub', this.render);
+			this.$el = $(this.el);
+			$('body').append(this.$el);
+			$('a.overlay-link').click(this.onExternalAnchorClick);
+		},
+		render: function () {
+
+			function clearPrev() {
+				if(prevGroup) {
+					self.$el.removeClass(prevGroup.overlayClassName);
+				}
+			}
+
+			function onload(text) {
+				clearPrev();
+				text = _.template(text, Lexicon);
+				var attr = _.extend({}, self.model.attributes, {copy:text});
+				var html = _.template(overlayTemplate, attr);
+				self.$el.html(html);
+				self.$el.addClass(group.overlayClassName);
+
+				if(group.blockMouse !== self.$el.hasClass('block-mouse')) {
+					self.$el.toggleClass('block-mouse');
+				}
+
+				if(group.verticalCenter !== self.$el.hasClass('vertical-center')) {
+					self.$el.toggleClass('vertical-center');
+				}
+
+				//enrich with accessibility info for glossary items
+				self.$el.find('.term').each(function() {
+					var $span = $(this);
+					var term = $span.attr('data-term');
+					var entry = Lexicon.glossary[term];
+
+					if (entry) {
+						$span.attr('longdesc', entry.title+': '+entry.text);
+					}
+				});
+
+				//show it now that we've loaded
+				if(self.model.get('show')) {
+					self.show();
+				}
+			}
+
+			var self = this;
+			var prevGroup = this.model.previous('group');
+			var group = this.model.attributes.group; 
+			
+			if(!group) {
+				clearPrev();
+			} else {
+                //TODO: Update prior to production deployment.
+			    $.get('/querytool/overlays/' + this.model.get('sub').file + '?1', onload, 'text');
+			}			
+		},	
+		onExternalAnchorClick: function(e) {
+			var key = $(e.currentTarget).attr('data-key');
+			this.model.set('key', key);
+			e.preventDefault();
+
+			return false;
+		},
+		onNavClick: function(e) {
+			var key = $(e.currentTarget).attr('data-key');
+			this.model.set('key', key);
+		},
+		onCloseClick: function () {
+			this.close();
+		},
+		clickOverlay: function(e) {
+			if($(e.target).closest('.pane').length === 0) {
+				//outside pane, but in overlay
+				this.close();
+			}
+		},
+		mouseenterTerm: function(e) {
+			var self = this;
+			var $span = $(e.currentTarget), term = $span.attr('data-term');
+
+			if(term && Lexicon.glossary[term]) {
+				var entry = Lexicon.glossary[term];
+				var html = '<h5>'+entry.title+'</h5><p>'+entry.text+'</p>';
+				var $tip = $('<div></div>').addClass('tooltip').html(html);
+				this.$el.find('.pane').append($tip);
+				var pos = $span.position();
+				$tip.css({
+					left: pos.left - $tip.outerWidth() + $span.outerWidth() * 0.5 + 20,
+					top: pos.top - $tip.outerHeight() - 5
+				});
+				$tip.hide();
+
+				// don't fade in immediately
+				// but allow mouseout to cancel
+				setTimeout(function(){
+					if(self.$tip) {
+						self.$tip.fadeIn(300);
+					}					
+				}, 300);
+				this.$tip = $tip;
+			}		
+
+			e.preventDefault();
+
+			return false;
+		},
+		mouseleaveTerm: function(e) {
+			this.removeTip();
+		},
+		removeTip: function() {
+			var $tip = this.$tip;
+			this.$tip = null;
+			
+			if($tip) {
+				$tip.fadeOut(300, function(){$tip.remove();});
+			}
+		},
+
+		onKeyChange: function(model, val, opts) {
+			var group = _.find(OverlayPane.groups, function(group) {
+				return !!_.findWhere(group.items, {key:val});
+			});
+
+			if(!group) {
+				//not a valid key, deselect
+				this.model.set({
+					group: null,
+					sub: null,
+					show: false
+				});
+
+				this.hide();
+			} else {
+				//select the group and subgroup
+				this.model.set({
+					group: group,
+					sub: _.findWhere(group.items, {key:val}),
+					show: true
+				});
+			}
+		},
+		close: function() {
+			this.model.set('key', null);
+		},
+		show: function () {
+			if(!this.model.get('isVisible')) {
+				this.model.set('isVisible', true);
+				this.$el.find('.pane').css({opacity:0, top:10}).animate({opacity:1, top: 0}, 200);
+				this.$el.show();
+			}
+		}, 
+		hide: function() {
+			if(this.model.get('isVisible')) {
+				this.model.set('isVisible', false);
+				this.$el.fadeOut(200);
+			}
+		},
+		exposeApi: function(scope) {
+			var self = this;
+
+			scope['overlaysApi'] = {
+				register: function(group) {
+					if(!(_.isObject(group) &&
+						    _.isArray(group.items) &&
+						    group.items.length > 0)) {
+					    throw 'Overlay group must be an object with an items array of length >= 1';
+					}
+
+					for(var i=0, l=group.items.length; i<l; ++i) {
+						var item = group.items[i];
+						
+						if(!(
+							_.isString(item.key) &&
+							item.key.length>0
+						)) {
+							throw 'Each overlay group item must have a valid "key"';
+						}
+
+						if(!self.keyIsAvailable_(item.key)) {
+							throw 'Overlay key "'+item.key+'" is already taken.';
+						}
+
+						if(!(_.isString(item.file) &&
+							    item.file.length>0)) {
+							throw 'Each overlay group item must have a "file" name';
+						}
+
+						if(!(item.title === void 0 ||
+							    _.isString(item.title))) {
+							throw 'Each overlay group item "title" must be a string or undefined';
+						}
+					}
+
+					OverlayPane.groups.push(group);
+				},
+
+				show: function(key) {
+					if(!_.isString(key)) {
+						throw 'Key must be a string';
+					}
+					
+					self.model.set('key', key);
+				},
+
+				hide: function() {
+					self.model.set('key', null);
+				}
+			};
+		},
+
+		keyIsAvailable_: function(key) {
+			var groups = OverlayPane.groups;
+
+			for(var i=0, l=groups.length; i<l; ++i) {
+				var items = groups[i].items;
+
+				for(var j=0, lj=items.length; j<lj; ++j) {
+					if(items[j].key === key) {
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+	}, 
+
+		/**
+		 * @static
+		 */
+	{
+		groups: [
+			{
+				className: 'center-pane',
+				blockMouse: true,
+				verticalCenter: false,
+				items: [
+					{
+						key: OverlayModel.overlays.about,
+						file: 'about.html',
+						title: Lexicon.titles.about
+					},
+					{
+						key: OverlayModel.overlays.economist,
+						file: 'economist.html',
+						title: Lexicon.titles.economist
+					}
+				]
+			},
+			{
+				className: 'center-pane',
+				blockMouse: true,
+				verticalCenter: false,
+				items: [
+					{
+						key: OverlayModel.overlays.methodsSources,
+						file: 'methodsSources.html',
+						title: Lexicon.titles.methodsSources
+					}
+				]
+			},
+			{
+				className: 'center-pane',
+				blockMouse: true,
+				verticalCenter: false,
+				items: [
+					{
+						className: 'glossary scroll',
+						key: OverlayModel.overlays.glossary,
+						file: 'glossary.html',
+						title: Lexicon.titles.glossary
+					}
+				]
+			},
+			{
+				className: 'center-pane',
+				blockMouse: false,
+				verticalCenter: false,
+				items:	[
+					{
+						className: 'patent-class-overview',
+						key: OverlayModel.overlays.patentClass,
+						file: 'patentClass.html',
+						title: Lexicon.titles.patentClass
+					},
+					{
+						className: 'patent-class-type scroll',
+						key: OverlayModel.overlays.uspc,
+						file: 'uspc.html',
+						title: Lexicon.titles.uspc
+					},
+					{
+						className: 'patent-class-type scroll',
+						key: OverlayModel.overlays.nber,
+						file: 'nber.html',
+						title: Lexicon.titles.nber
+					},
+					{
+						className: 'patent-class-type scroll',
+						key: OverlayModel.overlays.cpc,
+						file: 'cpc.html',
+						title: Lexicon.titles.cpc
+					}
+				]
+			},
+			{
+				className: 'right-pane',
+				blockMouse: false,
+				verticalCenter: false,
+				items:	[
+					{
+						key: OverlayModel.overlays.howTo,
+						file: 'howTo.html',
+						title: Lexicon.titles.howTo
+					},
+					{
+						className: 'filter-opts',
+						key: OverlayModel.overlays.filterOpts,
+						file: 'filterOpts.html',
+						title: Lexicon.titles.filterOpts
+					}
+				]
+			}
+		]
+	});
+
+	return OverlayPane;
+
+});

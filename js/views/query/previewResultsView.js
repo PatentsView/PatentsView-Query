@@ -1,1 +1,230 @@
-define(["jquery","underscore","backbone","prism","papa","handlebars","text!views/query/templates/PreviewResults.html","text!views/query/templates/CSVTemplate.html","text!views/query/templates/SelectResults.html"],function(e,t,n,r,i,s,o,u,a){var f=n.View.extend({tagName:"section",id:"previewResults",className:"step-view",initialize:function(e){return this.listenTo(this.model,"entityChanged",this.entityChanged),t.bindAll(this,"render","updateModel"),this.template=s.compile(o),this.csv=s.compile(u),this},events:{"change #group":"changeGroup"},render:function(){var n='<div class="sub-title" style="margin-top: 10px;">Loading a preview of your query. This could take a couple of minutes, as we are searching through over 5 million patents. <i class="fa fa-spinner fa-pulse" /></div>',i='<div class="sub-title" style="margin-top: 10px;">No Results.</div>',o=this.model.buildQuery(),u=this.model.get("entityId");this.model.set("query",o),e(this.el).empty(),e(this.el).append(this.template(this.model.toJSON())),e(this.el).find("#preview-csv").html(n),e(this.el).find("#preview-json").html(n),e(this.el).find("#preview-xml").html(n),o!=""&&(e.ajax({context:this,url:"https://www.patentsview.org/preview_api/"+u+"s/query?"+o,dataType:"json",beforeSend:function(e){e.setRequestHeader("Authorization","Negotiate")},async:!0,success:function(t){t.count>0?(e.ajax({context:this,type:"POST",url:"https://www.patentsview.org//query/tocsv.php",dataType:"text",data:{query:t},beforeSend:function(e){e.setRequestHeader("Authorization","Negotiate")},async:!0,success:function(t){var n=window.Papa.parse(t,{header:!0});n.data.length>0&&e(this.el).find("#preview-csv").addClass("preview-csv-scroll").html(this.csv(n))},error:function(t,n,r){e(this.el).find("#preview-csv").removeClass("preview-csv-scroll").html(i),e(this.el).find("#preview-json").html(i)}}),e(this.el).find("#preview-json").html('<pre style="max-height: 30em;" class="language-*"><code class="language-json">'+r.highlight(JSON.stringify(t,null,"	"),r.languages.json)+"</code></pre>")):(e(this.el).find("#preview-csv").removeClass("preview-csv-scroll").html(i),e(this.el).find("#preview-json").html(i))},error:function(t,n,r){e(this.el).find("#preview-csv").removeClass("preview-csv-scroll").html(i),e(this.el).find("#preview-json").html(i)}}),e.ajax({context:this,url:"https://www.patentsview.org/preview_api/"+u+"s/query?"+o+"&format=xml",dataType:"text",beforeSend:function(e){e.setRequestHeader("Authorization","Negotiate")},async:!0,success:function(t){if(t.indexOf("<count>0")>=0){e(this.el).find("#preview-xml").html(i);return}try{e.ajax({context:this,type:"POST",url:"https://www.patentsview.org//query/toxml.php",dataType:"text",data:{query:t},beforeSend:function(e){e.setRequestHeader("Authorization","Negotiate")},async:!0,success:function(t){e(this.el).find("#preview-xml").html('<pre style="max-height: 30em;" class="language-*"><code class="language-markup">'+r.highlight(t,r.languages.markup)+"</code></pre>")},error:function(t,n,r){e(this.el).find("#preview-csv").removeClass("preview-csv-scroll").html(i),e(this.el).find("#preview-json").html(i)}})}catch(n){e(this.el).find("#preview-xml").html(i)}},error:function(t,n,r){e(this.el).find("#preview-xml").html(i)}}));var u=this.model.get("entityId"),a=this.model.get("groupId");if(!t.isEmpty(u)){var f=s.compile('"<option>- Select Group -</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" value="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}" value="{{id}}">{{name}}</option>{{/if}}{{/each}}"');e("#group").html(f(this.model.get("sorts")));var l=t.find(this.model.get("sorts"),{id:a});if(!t.isUndefined(l)){var c=s.compile('"<option>- Select Field -</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" value="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}" value="{{id}}">{{name}}</option>{{/if}}{{/each}}"');e("#field").html(c(l.fields))}}return this},isValid:function(){var t=e(this.el).find("#results-form");return t.validate({rules:{recipient:{required:!0,email:!0},format:{required:!0}},messages:{recipient:{required:"Please provide a valid e-mail address to send query results to."},format:{required:"Please select at least one format for the qurey."}},highlight:function(t){e(t).closest(".form-group").addClass("has-error")},unhighlight:function(t){e(t).closest(".form-group").removeClass("has-error")},errorPlacement:function(t,n){n.attr("name")==="format"?t.insertAfter(e(n).closest(".checkbox-group")):t.insertAfter(n)}}),t.valid()},updateModel:function(){var n=e(this.el).find("#group > option:selected"),r=e(this.el).find("#field > option:selected");this.model.set("group",t.isUndefined(n.data("id"))?"None Selected":n.text()),this.model.set("field",t.isUndefined(r.data("id"))?"None Selected":r.text()),this.model.set("groupId",t.isUndefined(n.data("id"))?"":n.data("id")),this.model.set("fieldId",t.isUndefined(r.data("id"))?"":r.data("id")),this.model.set("recipient",e(this.el).find("#recipient").val()),this.model.set("xml",e(this.el).find("#xml").prop("checked")),this.model.set("csv",e(this.el).find("#csv").prop("checked")),this.model.set("json",e(this.el).find("#json").prop("checked"))},getNavHtml:function(e){return""},entityChanged:function(e){this.resetView=!0},changeGroup:function(n){n=n||window.event;var r=e(n.srcElement||n.target),i=r.find("option:selected").attr("data-id"),o=t.find(this.model.get("sorts"),{id:i});if(!t.isUndefined(o)){var u=s.compile('"<option>-Select Field-</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}" >{{name}}</option>{{/if}}{{/each}}"');e("#field").html(u(o.fields))}}});return f});
+﻿/**************************************************************/
+// View that displays the query options and criteria that the user has built on 
+// prior steps before submitting the query.
+/**************************************************************/
+define([
+    'jquery',
+    'underscore',
+    'backbone',
+    'prism',
+    'papa',
+    'handlebars',
+    'text!views/query/templates/PreviewResults.html',
+    'text!views/query/templates/CSVTemplate.html',
+    'text!views/query/templates/SelectResults.html'
+], function ($, _, Backbone, Prism, Papa, Handlebars, PreviewResultsTemplate, CSVTemplate, SelectResultsTemplate) {
+
+    var PreviewResultsView = Backbone.View.extend({
+        tagName: 'section',
+        id: 'previewResults',
+        className: 'step-view',
+        initialize: function (options) {
+            this.listenTo(this.model, 'entityChanged', this.entityChanged);
+            _.bindAll(this, 'render', 'updateModel');
+            this.template = Handlebars.compile(PreviewResultsTemplate);
+            this.csv = Handlebars.compile(CSVTemplate);
+            return this;
+        },
+        events: {
+            "change #group": "changeGroup"
+        },
+        render: function () {
+            var loadingResults = '<div class="sub-title" style="margin-top: 10px;">Loading a preview of your query. This could take a couple of minutes, as we are searching through over 5 million patents. <i class="fa fa-spinner fa-pulse" /></div>';
+            var noResults = '<div class="sub-title" style="margin-top: 10px;">No Results.</div>';
+            var query = this.model.buildQuery();
+            var entityId = this.model.get("entityId");
+            this.model.set("query", query);
+            $(this.el).empty();
+            $(this.el).append(this.template(this.model.toJSON()));
+            $(this.el).find('#preview-csv').html(loadingResults);
+            $(this.el).find('#preview-json').html(loadingResults);
+            $(this.el).find('#preview-xml').html(loadingResults);
+            
+            if (query != "") {
+                $.ajax({
+                    context: this,
+                    url: "https://www.patentsview.org/preview_api/" + entityId + "s/query?" + query,
+                    dataType: "json",
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Negotiate");
+                    },
+                    async: true,
+                    success: function (data) {
+                        if (data.count > 0) {
+                            
+                            $.ajax({
+                                context: this,
+                                type: 'POST',
+                                url: "https://www.patentsview.org//query/tocsv.php",
+                                dataType: "text",
+                                data: { query: data },
+                                beforeSend: function (request) {
+                                    request.setRequestHeader("Authorization", "Negotiate");
+                                },
+                                async: true,
+                                success: function (data) {
+                                    var results = window.Papa.parse(data, { header: true });
+
+                                    if (results.data.length > 0) {
+                                        $(this.el).find('#preview-csv').addClass('preview-csv-scroll').html(this.csv(results));
+                                    }
+                                },
+                                error: function (xhr, textStatus, errorMessage) {
+                                    
+                                    $(this.el).find('#preview-csv').removeClass('preview-csv-scroll').html(noResults);
+                                    $(this.el).find('#preview-json').html(noResults);
+                                }
+                            });
+
+                            $(this.el).find('#preview-json').html('<pre style="max-height: 30em;" class="language-*"><code class="language-json">' + Prism.highlight(JSON.stringify(data, null, '\t'), Prism.languages.json) + '</code></pre>');
+                        }
+                        else {
+                            $(this.el).find('#preview-csv').removeClass('preview-csv-scroll').html(noResults);
+                            $(this.el).find('#preview-json').html(noResults);
+                        }
+                    },
+                    error: function (xhr, textStatus, errorMessage) {
+                        $(this.el).find('#preview-csv').removeClass('preview-csv-scroll').html(noResults);
+                        $(this.el).find('#preview-json').html(noResults);
+                    }   
+                });
+               
+                $.ajax({
+                    context: this,
+                    url: "https://www.patentsview.org/preview_api/" + entityId + "s/query?" + query + "&format=xml",
+                    dataType: "text",
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Negotiate");
+                    },
+                    async: true,
+                    success: function (data) {
+                        
+                        if (data.indexOf("<count>0") >= 0) // no results returned.
+                        {
+                            $(this.el).find('#preview-xml').html(noResults);
+
+                            return;
+                        }
+
+                        try {
+                            $.ajax({
+                                context: this,
+                                type: 'POST',
+                                url: "https://www.patentsview.org//query/toxml.php",
+                                dataType: "text",
+                                data: { query: data },
+                                beforeSend: function (request) {
+                                    request.setRequestHeader("Authorization", "Negotiate");
+                                },
+                                async: true,
+                                success: function (data) {
+                                    $(this.el).find('#preview-xml').html('<pre style="max-height: 30em;" class="language-*"><code class="language-markup">' + Prism.highlight(data, Prism.languages.markup) + '</code></pre>');
+                                },
+                                error: function (xhr, textStatus, errorMessage) {
+                                    
+                                    $(this.el).find('#preview-csv').removeClass('preview-csv-scroll').html(noResults);
+                                    $(this.el).find('#preview-json').html(noResults);
+                                }
+                            });
+                        }
+                        catch (e)
+                        {
+                            $(this.el).find('#preview-xml').html(noResults);
+                        }
+                    },
+                    error: function (xhr, textStatus, errorMessage) {
+                        
+                        $(this.el).find('#preview-xml').html(noResults);
+                    }
+                });
+            }
+
+            var entityId = this.model.get('entityId');
+            var groupId = this.model.get('groupId');
+
+            if (!_.isEmpty(entityId)) {
+                var groupsTemplate = Handlebars.compile('"<option>- Select Group -</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" value="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}" value="{{id}}">{{name}}</option>{{/if}}{{/each}}"');
+                $('#group').html(groupsTemplate(this.model.get('sorts')));
+                var group = _.find(this.model.get('sorts'), { "id": groupId });
+
+                if (!_.isUndefined(group)) {
+                    var fieldsTemplate = Handlebars.compile('"<option>- Select Field -</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" value="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}" value="{{id}}">{{name}}</option>{{/if}}{{/each}}"');
+                    $('#field').html(fieldsTemplate(group.fields));
+                }
+            }
+
+            return this;
+        },
+        isValid: function () {
+
+            var form = $(this.el).find('#results-form');
+            form.validate({
+                rules: {
+                    recipient: {
+                        required: true,
+                        email: true
+                    },
+                    format: {
+                        required: true
+                    }
+                },
+                messages: {
+                    recipient: {
+                        required: "Please provide a valid e-mail address to send query results to."
+                    },
+                    format: {
+                        required: "Please select at least one format for the qurey."
+                    }
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error');
+                },
+                errorPlacement: function (error, element) {
+                    if (element.attr('name') === 'format') {
+                        error.insertAfter($(element).closest('.checkbox-group'));
+                    }
+                    else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+
+            return form.valid();
+        },
+        updateModel: function () {
+            var group = $(this.el).find('#group > option:selected');
+            var field = $(this.el).find('#field > option:selected');
+
+            this.model.set('group', (_.isUndefined(group.data('id'))) ? 'None Selected' : group.text());
+            this.model.set('field', (_.isUndefined(field.data('id'))) ? 'None Selected' : field.text());
+            this.model.set('groupId', (_.isUndefined(group.data('id'))) ? '' : group.data('id'));
+            this.model.set('fieldId', (_.isUndefined(field.data('id'))) ? '' : field.data('id'));
+            this.model.set('recipient', $(this.el).find('#recipient').val());
+            this.model.set('xml', $(this.el).find('#xml').prop('checked'));
+            this.model.set('csv', $(this.el).find('#csv').prop('checked'));
+            this.model.set('json', $(this.el).find('#json').prop('checked'));
+        },
+        getNavHtml: function (s) {
+            return '';
+        },
+        entityChanged: function (e) {
+            this.resetView = true;
+        },
+        changeGroup: function (e) {
+            e = e || window.event;
+            var source = $(e.srcElement || e.target);
+            var groupId = source.find('option:selected').attr('data-id');
+            var group = _.find(this.model.get('sorts'), { "id": groupId });
+            
+            if (!_.isUndefined(group)) {
+                var fieldsTemplate = Handlebars.compile('"<option>-Select Field-</option>{{#each this}}{{#if isActive}}<option id="{{id}}" data-id="{{id}}" selected="selected">{{name}}</option>{{else}}<option id="{{id}}" data-id="{{id}}" >{{name}}</option>{{/if}}{{/each}}"');
+                $('#field').html(fieldsTemplate(group.fields));
+            }
+        }
+    });
+
+    return PreviewResultsView;
+});
