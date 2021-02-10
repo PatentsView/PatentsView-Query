@@ -72,23 +72,11 @@
                 IN THIS SECTION
               </div>
               <div class="section-menu" id="section-menu">
-                <a href="./" class="highlighted-link"
-                  >DATASET&nbsp;QUERY&nbsp;BUILDER</a
-                >
-                <a
-                  href="https://community.patentsview.org/query/data-dictionary"
-                  >DATA&nbsp;DICTIONARY</a
-                >
-                <a href="https://community.patentsview.org/query/builder-faqs"
-                  >BUILDER&nbsp;FAQS</a
-                >
-                <a href="https://www.patentsview.org/download"
-                  >DOWNLOAD&nbsp;TABLES</a
-                >
-                <a
-                  href="https://s3.amazonaws.com/data.patentsview.org/documents/Patents_DB_dictionary_bulk_downloads.xlsx"
-                  >DOWNLOAD&nbsp;DICTIONARY</a
-                >
+                <a class="highlighted-link">DATASET&nbsp;QUERY&nbsp;BUILDER</a>
+                <a>DATA&nbsp;DICTIONARY</a>
+                <a>BUILDER&nbsp;FAQS</a>
+                <a>DOWNLOAD&nbsp;TABLES</a>
+                <a>DOWNLOAD&nbsp;DICTIONARY</a>
               </div>
             </div>
           </div>
@@ -209,6 +197,31 @@
             animate(bar1, "bar1");
             animate(bar2, "bar2");
             animate(bar3, "bar3");
+          });
+        })();
+        (() => {
+          const domain = window.location.hostname;
+          let link = [];
+          if (domain === "http://www.patentsview.org") {
+            links = [
+              "",
+              "https://community.patentsview.org/query/data-dictionary",
+              "https://community.patentsview.org/query/builder-faqs",
+              "https://community.patentsview.org/download/data-download-tables",
+              "https://community.patentsview.org/download/data-download-dictionary",
+            ];
+          } else {
+            links = [
+              "",
+              "https://patentsviewcommunity.int.air.org/query/data-dictionary",
+              "https://patentsviewcommunity.int.air.org/query/builder-faqs",
+              "https://patentsviewcommunity.int.air.org/download/data-download-tables",
+              "https://patentsviewcommunity.int.air.org/download/data-download-dictionary",
+            ];
+          }
+          const sectionMenuLinks = document.querySelectorAll(".section-menu a");
+          sectionMenuLinks.forEach((el, i) => {
+            el.href = links[i];
           });
         })();
       </script>

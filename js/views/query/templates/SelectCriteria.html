@@ -95,22 +95,40 @@
               <div class="search-controls center-block no-float">
                 <div>
                   <a
-                    class="btn-data-dict btn btn-help"
-                    href="https://community.patentsview.org/query/data-dictionary"
+                    class="btn-data-dict btn btn-help button-links"
                     target="_blank"
                   >
                     DATA DICTIONARY
                     <i class="fa fa-caret-right"></i>
                   </a>
-                  <a
-                    class="btn btn-help"
-                    href="https://community.patentsview.org/query/builder-faqs"
-                    target="_blank"
-                  >
+                  <a class="btn btn-help button-links" target="_blank">
                     <!-- <i class="fa fa-question-circle fa-3" aria-hidden="true"></i> -->
                     BUILDER FAQS
                     <i class="fa fa-caret-right"></i>
                   </a>
+                  <script>
+                    (() => {
+                      const domain = window.location.hostname;
+                      let link = [];
+                      if (domain === "http://www.patentsview.org") {
+                        links = [
+                          "https://community.patentsview.org/query/data-dictionary",
+                          "https://community.patentsview.org/query/builder-faqs",
+                        ];
+                      } else {
+                        links = [
+                          "https://patentsviewcommunity.int.air.org/query/data-dictionary",
+                          "https://patentsviewcommunity.int.air.org/query/builder-faqs",
+                        ];
+                      }
+                      const buttonLinks = document.querySelectorAll(
+                        ".button-links"
+                      );
+                      buttonLinks.forEach((el, i) => {
+                        el.href = links[i];
+                      });
+                    })();
+                  </script>
                 </div>
                 <button
                   href="#"
