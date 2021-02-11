@@ -93,7 +93,7 @@ if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
                 </div>
             </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/gh/PatentsView/pv-header-footer/dist.js"></script>
+    <script src='https://cdn.jsdelivr.net/gh/PatentsView/pv-header-footer/dist20210211-1.js'></script>
 </body>
 
 </html>
