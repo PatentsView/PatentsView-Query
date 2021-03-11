@@ -46,7 +46,8 @@
 <section class="col-md-12 intro no-padding intro-centered">
   <div class="row">
     <div class="col-lg-12">
-      <h3 class="intro-text">
+      <h1 class="main-title">Search Patent Data With the Query Tool</h1>
+      <h3 class="intro-text intro-text-2">
         Find all patents with your specified text in the patent title or
         abstract.
       </h3>
@@ -146,6 +147,95 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="search-details">
+      <p>
+        Researching a patent is part of the task of getting a new invention to
+        market. The PatentsView Query Tool is a powerful search tool that
+        longitudinally links inventors, their organizations, locations, and
+        overall patenting activity, returning a customized data set by e-mail.
+      </p>
+      <p>
+        For researchers, in particular, the query tool enables a broad spectrum
+        of users to examine the dynamics of inventor patenting activity over
+        time and space. Users can use the query tool to explore patent
+        technologies, assignees, citation patterns, and co-inventor networks.
+      </p>
+      <p>
+        Preliminary patent searches can be very beneficial for researchers and
+        inventors. They help avoid submitting a patent application with claims
+        already described. Also, specifically for inventors, they prepare you to
+        discuss your ideas with a registered patent attorney or patent agent.
+      </p>
+      <h2>
+        How to generate a customized data set with the PatentsView query tool:
+      </h2>
+      <ol>
+        <li>
+          For a <span class="bold-red">QUICK SEARCH</span> query tool: Input one
+          or more descriptive terms (separated by spaces) into the search bar
+          above, and click
+          <div class="btn btn-primary quick-search">
+            <i class="fa fa-search"></i>
+          </div>. The query tool will search the PatentsView database for patents
+          where each term appears in the patent title or abstract.
+          <br />
+          <span class="list-breakout-text">
+            <span class="bold-grey">For an Advanced Search query tool:</span>
+            Click “<a id="advanced-search">Advanced Search ></a>”. On the next page, select your category of
+            interest: patents, inventors, or assignees. Query results will be
+            organized based on these primary categories, which correspond to the
+            <a id="api-page-link" target="_blank">PatentsView API Endpoints</a>. Then, create one or more search criteria
+            by choosing a search field, selecting from the available options in
+            the dropdown menus, entering your search term, and clicking “Add to
+            Search.” When a search criterion is added, it will appear in the
+            Search Summary box, where you also can remove unwanted criteria.
+            Once all desired search criteria are added to the Search Summary,
+            click “Submit Search.”
+          </span>
+          <script>
+            (() => {
+              const domain = window.location.hostname;
+              let link = ''
+              if (domain === "http://www.patentsview.org") {
+                link = 
+                  "https://community.patentsview.org/apis/api-endpoints"
+                
+              } else {
+                link = 
+                  "https://patentsviewcommunity.uat.air.org/apis/api-endpoints"
+              }
+              const buttonLink = document.querySelector(
+                "#api-page-link"
+              );
+              buttonLink.href = link;
+            })();
+          </script>
+        </li>
+        <li>
+          On the next page, you can customize the information included in your
+          output data by checking or unchecking any of the fields listed. Fields
+          are grouped into five categories, which can be expanded by clicking on
+          the plus sign next to each category name. Note that selecting multiple
+          many-to-one output fields (e.g., inventor first and last name and
+          assignee organization name for a patent query) can result in duplicate
+          rows in the output data if the CSV format is selected.
+        </li>
+        <li>
+          Click “Preview Results” to view the next screen, where query tool
+          results can be previewed in CSV or JSON format. If you get zero
+          results from your query, consider fewer or alternative search terms.
+        </li>
+        <li>
+          Below the preview pane, you can sort your results by selecting a group
+          and field from the dropdown menus. Then, specify an e-mail address for
+          delivery and select your preferred file format(s).
+        </li>
+        <li>
+          Finally, click “Submit Query.” Upon completion of a successful query,
+          results will be sent to the designated e-mail address.
+        </li>
+      </ol>
     </div>
   </section>
   {{#if isQuickSearch}}

@@ -7175,13 +7175,13 @@ input[type="radio"] .styled:checked + label::after {
   font-family: 'Roboto Slab';
   font-style: normal;
   font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/robotoslab/v12/BngbUXZYTXPIvIBgJJSb6s3BzlRRfKOFbvjojISmb2Rm.ttf) format('truetype');
+  src: url(https://fonts.gstatic.com/s/robotoslab/v13/BngbUXZYTXPIvIBgJJSb6s3BzlRRfKOFbvjojISmb2Rm.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Roboto Slab';
   font-style: normal;
   font-weight: 700;
-  src: url(https://fonts.gstatic.com/s/robotoslab/v12/BngbUXZYTXPIvIBgJJSb6s3BzlRRfKOFbvjoa4Omb2Rm.ttf) format('truetype');
+  src: url(https://fonts.gstatic.com/s/robotoslab/v13/BngbUXZYTXPIvIBgJJSb6s3BzlRRfKOFbvjoa4Omb2Rm.ttf) format('truetype');
 }
 html {
   height: 100%;
@@ -7380,12 +7380,84 @@ i.q {
 .thankyou {
   color: #e17954;
 }
+h1.main-title {
+  color: #9d2a06;
+  font-size: 36px;
+  margin: 0 0 25px;
+  font-weight: 500;
+  font-style: normal;
+}
+h3.intro-text-2 {
+  color: #536579;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
 .intro-text {
   margin-top: 0px;
   color: #9d2a06;
   font-style: unset;
   font-size: 25px;
   margin-bottom: 0;
+}
+.search-details {
+  margin-top: 30px;
+}
+.search-details p {
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 25px;
+}
+.search-details h2 {
+  color: #9d2a06;
+  font-size: 25px;
+  font-weight: 500;
+  font-style: normal;
+  margin: 50px 0 30px 0;
+}
+.search-details ol {
+  color: #536579;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 25px;
+  padding-left: 25px;
+}
+.search-details ol li {
+  margin-bottom: 30px;
+}
+.search-details ol li .bold-red {
+  color: #9d2a06;
+  font-weight: bold;
+}
+.search-details ol li .quick-search {
+  pointer-events: none;
+  margin: 0;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 25px;
+  width: 25px;
+}
+.search-details ol li .quick-search i {
+  font-size: 12px;
+}
+.search-details ol li .list-breakout-text {
+  margin-top: 30px;
+  display: inline-block;
+}
+.search-details ol li .list-breakout-text .bold-grey {
+  color: #536579;
+  font-weight: bold;
+}
+.search-details ol li .list-breakout-text a {
+  color: #0077c8;
+}
+.search-details ol li .list-breakout-text a:hover {
+  cursor: pointer;
+}
+.search-details ol li .list-breakout-text a#api-page-link {
+  text-decoration: underline;
 }
 .dark-btn {
   font-size: 15px;
