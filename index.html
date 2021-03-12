@@ -201,24 +201,30 @@
         })();
         (() => {
           const domain = window.location.hostname;
-          let link = [];
-          if (domain === "http://www.patentsview.org") {
-            links = [
-              "",
-              "https://community.patentsview.org/query/data-dictionary",
-              "https://community.patentsview.org/query/builder-faqs",
-              "https://community.patentsview.org/download/data-download-tables",
-              "https://community.patentsview.org/download/data-download-dictionary",
-            ];
-          } else {
-            links = [
-              "",
-              "https://patentsviewcommunity.uat.air.org/query/data-dictionary",
-              "https://patentsviewcommunity.uat.air.org/query/builder-faqs",
-              "https://patentsviewcommunity.uat.air.org/download/data-download-tables",
-              "https://patentsviewcommunity.uat.air.org/download/data-download-dictionary",
-            ];
-          }
+          let links = [
+            "",
+            "https://www.patentsview.org/query/data-dictionary",
+            "https://www.patentsview.org/query/builder-faqs",
+            "https://www.patentsview.org/download/data-download-tables",
+            "https://www.patentsview.org/download/data-download-dictionary"
+          ];
+          // if (domain === "http://www.patentsview.org") {
+          //   links = [
+          //     "",
+          //     "https://www.patentsview.org//query/data-dictionary",
+          //     "https://www.patentsview.org//query/builder-faqs",
+          //     "https://www.patentsview.org//download/data-download-tables",
+          //     "https://www.patentsview.org//download/data-download-dictionary",
+          //   ];
+          // } else {
+          //   links = [
+          //     "",
+          //     "https://patentsviewcommunity.uat.air.org/query/data-dictionary",
+          //     "https://patentsviewcommunity.uat.air.org/query/builder-faqs",
+          //     "https://patentsviewcommunity.uat.air.org/download/data-download-tables",
+          //     "https://patentsviewcommunity.uat.air.org/download/data-download-dictionary",
+          //   ];
+          // }
           const sectionMenuLinks = document.querySelectorAll(".section-menu a");
           sectionMenuLinks.forEach((el, i) => {
             el.href = links[i];

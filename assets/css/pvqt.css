@@ -7363,7 +7363,6 @@ button.clear-all-btn:hover {
   padding-right: 0;
   padding-left: 0;
   border-bottom: solid 1px #3e4b5a;
-  padding-bottom: 30px;
   padding-top: 23px;
 }
 i.q {
@@ -7854,15 +7853,13 @@ button.btn-lg i {
 }
 .page-wrapper {
   min-height: 100%;
-  margin-bottom: -349.5px;
 }
 .page-wrapper:after {
   content: "";
   display: block;
-  height: 350px;
 }
 #step-by-step-container {
-  margin-bottom: 100px;
+  margin-bottom: 50px;
 }
 #step-pager {
   margin-left: -15px;

@@ -110,18 +110,21 @@
                   <script>
                     (() => {
                       const domain = window.location.hostname;
-                      let link = [];
-                      if (domain === "http://www.patentsview.org") {
-                        links = [
-                          "https://community.patentsview.org/query/data-dictionary",
-                          "https://community.patentsview.org/query/builder-faqs",
-                        ];
-                      } else {
-                        links = [
-                          "https://patentsviewcommunity.uat.air.org/query/data-dictionary",
-                          "https://patentsviewcommunity.uat.air.org/query/builder-faqs",
-                        ];
-                      }
+                      let links = [
+                        "https://www.patentsview.org/query/data-dictionary",
+                        "https://www.patentsview.org/query/builder-faqs",
+                      ];
+                      // if (domain === "http://www.patentsview.org") {
+                      //   links = [
+                      //     "https://www.patentsview.org/query/data-dictionary",
+                      //     "https://www.patentsview.org/query/builder-faqs",
+                      //   ];
+                      // } else {
+                      //   links = [
+                      //     "https://patentsviewcommunity.uat.air.org/query/data-dictionary",
+                      //     "https://patentsviewcommunity.uat.air.org/query/builder-faqs",
+                      //   ];
+                      // }
                       const buttonLinks = document.querySelectorAll(
                         ".button-links"
                       );
@@ -199,7 +202,7 @@
               let link = ''
               if (domain === "http://www.patentsview.org") {
                 link = 
-                  "https://community.patentsview.org/apis/api-endpoints"
+                  "https://www.patentsview.org/apis/api-endpoints"
                 
               } else {
                 link = 
