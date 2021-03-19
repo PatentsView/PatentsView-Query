@@ -69,7 +69,7 @@ define([
               $.ajax({
                 context: this,
                 type: "POST",
-                url: "https://www.patentsview.org//query/tocsv.php",
+                url: "https://querysupport.patentsview.org/tocsv.php",
                 dataType: "text",
                 data: { query: data },
                 beforeSend: function (request) {
@@ -147,7 +147,7 @@ define([
               $.ajax({
                 context: this,
                 type: "POST",
-                url: "https://www.patentsview.org//query/toxml.php",
+                url: "https://querysupport.patentsview.org/toxml.php",
                 dataType: "text",
                 data: { query: data },
                 beforeSend: function (request) {

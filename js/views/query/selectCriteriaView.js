@@ -800,7 +800,7 @@ define([
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-              url: "https://www.patentsview.org//query/location.php",
+              url: "https://querysupport.patentsview.org/location.php",
               //url: "/query/location.php",
               replace: function (url, query) {
                 return (
@@ -863,7 +863,7 @@ define([
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-              url: "https://www.patentsview.org//query/cpc.php",
+              url: "https://querysupport.patentsview.org/cpc.php",
               //url: "/query/cpc.php",
               replace: function (url, query) {
                 return url + "?cc=" + query;
@@ -895,7 +895,7 @@ define([
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-              url: "https://www.patentsview.org//query/uspc.php",
+              url: "https://querysupport.patentsview.org/uspc.php",
               //url: "/query/uspc.php",
               replace: function (url, query) {
                 return url + "?cc=" + query;
@@ -927,7 +927,7 @@ define([
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-              url: "https://www.patentsview.org//query/ipc.php",
+              url: "https://querysupport.patentsview.org/ipc.php",
               //url: "/query/ipc.php",
               replace: function (url, query) {
                 return url + "?cc=" + query;
@@ -960,7 +960,7 @@ define([
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-              url: "https://www.patentsview.org//query/assignee.php",
+              url: "https://querysupport.patentsview.org/assignee.php",
               //url: "/query/assignee.php",
               replace: function (url, query) {
                 return url + "?o=" + query;
@@ -994,7 +994,7 @@ define([
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-              url: "https://www.patentsview.org//query/gov.php",
+              url: "https://querysupport.patentsview.org/gov.php",
               //url: "/query/gov.php",
               replace: function (url, query) {
                 return url + "?n=" + query;
@@ -1027,7 +1027,7 @@ define([
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-              url: "https://www.patentsview.org//query/gov.php",
+              url: "https://querysupport.patentsview.org/gov.php",
               //url: "/query/gov.php",
               replace: function (url, query) {
                 return url + "?lo=" + query;
@@ -1060,7 +1060,7 @@ define([
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-              url: "https://www.patentsview.org//query/gov.php",
+              url: "https://querysupport.patentsview.org/gov.php",
               //url: "/query/gov.php",
               replace: function (url, query) {
                 return url + "?ltw=" + query;
@@ -1093,7 +1093,7 @@ define([
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-              url: "https://www.patentsview.org//query/gov.php",
+              url: "https://querysupport.patentsview.org/gov.php",
               //url: "/query/gov.php",
               replace: function (url, query) {
                 return url + "?lth=" + query;
@@ -1132,7 +1132,7 @@ define([
               datumTokenizer: Bloodhound.tokenizers.whitespace,
               queryTokenizer: Bloodhound.tokenizers.whitespace,
               remote: {
-                url: "https://www.patentsview.org//query/assignee.php",
+                url: "https://querysupport.patentsview.org/assignee.php",
                 //url: "/query/assignee.php",
                 replace: function (url, query) {
                   return url + "?o=" + query;
@@ -1168,7 +1168,7 @@ define([
               datumTokenizer: Bloodhound.tokenizers.whitespace,
               queryTokenizer: Bloodhound.tokenizers.whitespace,
               remote: {
-                url: "https://www.patentsview.org//query/gov.php",
+                url: "https://querysupport.patentsview.org/gov.php",
                 //url: "/query/gov.php",
                 replace: function (url, query) {
                   return url + "?n=" + query;
@@ -1204,7 +1204,7 @@ define([
               datumTokenizer: Bloodhound.tokenizers.whitespace,
               queryTokenizer: Bloodhound.tokenizers.whitespace,
               remote: {
-                url: "https://www.patentsview.org//query/gov.php",
+                url: "https://querysupport.patentsview.org/gov.php",
                 //url: "/query/gov.php",
                 replace: function (url, query) {
                   return url + "?lo=" + query;
@@ -1240,7 +1240,7 @@ define([
               datumTokenizer: Bloodhound.tokenizers.whitespace,
               queryTokenizer: Bloodhound.tokenizers.whitespace,
               remote: {
-                url: "https://www.patentsview.org//query/gov.php",
+                url: "https://querysupport.patentsview.org/gov.php",
                 //url: "/query/gov.php",
                 replace: function (url, query) {
                   return url + "?ltw=" + query;
@@ -1276,7 +1276,7 @@ define([
               datumTokenizer: Bloodhound.tokenizers.whitespace,
               queryTokenizer: Bloodhound.tokenizers.whitespace,
               remote: {
-                url: "https://www.patentsview.org//query/gov.php",
+                url: "https://querysupport.patentsview.org/gov.php",
                 //url: "/query/gov.php",
                 replace: function (url, query) {
                   return url + "?lth=" + query;
