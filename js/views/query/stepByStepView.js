@@ -257,7 +257,7 @@ define([
                     context: this,
                     type: 'POST',
                     //url: "verify.php",
-                    url: "/query/verify.php",
+                    url: "https://querysupport.patentsview.org/query/verify.php",
                     data: { "g-recaptcha-response": response, "query": JSON.stringify(query) },
                     success: function (e) {
                         $('#q').val(e.id);
