@@ -22,10 +22,22 @@
       href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="https://datatool.patentsview.org/query/assets/css/headfoot.css" />
-    <link rel="stylesheet" href="https://datatool.patentsview.org/query/assets/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="https://datatool.patentsview.org/query/assets/css/pvqt.css" />
-    <link rel="stylesheet" href="https://datatool.patentsview.org/query/assets/css/prism.css" />
+    <link
+      rel="stylesheet"
+      href="https://datatool.patentsview.org/query/assets/css/headfoot.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://datatool.patentsview.org/query/assets/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://datatool.patentsview.org/query/assets/css/pvqt.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://datatool.patentsview.org/query/assets/css/prism.css"
+    />
     <script
       data-main="js/main"
       src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.18/require.min.js"
@@ -75,11 +87,10 @@
                 IN THIS SECTION
               </div>
               <div class="section-menu" id="section-menu">
-                <a class="highlighted-link">DATASET&nbsp;QUERY&nbsp;BUILDER</a>
-                <a>DATA&nbsp;DICTIONARY</a>
-                <a>BUILDER&nbsp;FAQS</a>
-                <a>DOWNLOAD&nbsp;TABLES</a>
-                <a>DOWNLOAD&nbsp;DICTIONARY</a>
+                <a class="highlighted-link">QUERY&nbsp;BUILDER</a>
+                <a>QUERY&nbsp;BUILDER&nbsp;FAQS</a>
+                <a>DATA&nbsp;DOWNLOADS</a>
+                <a>DATA&nbsp;DICTIONARIES</a>
               </div>
             </div>
           </div>
@@ -202,15 +213,15 @@
             animate(bar3, "bar3");
           });
 
-          toggle.click() // open menu by default
+          toggle.click(); // open menu by default
         })();
-        (() => {const domain = window.location.hostname;
+        (() => {
+          const domain = window.location.hostname;
           let links = [
             "",
-            "https://www.patentsview.org/query/data-dictionary",
-            "https://www.patentsview.org/query/builder-faqs",
-            "https://www.patentsview.org/download/data-download-tables",
-            "https://www.patentsview.org/download/data-download-dictionary"
+            "https://patentsview.org/query/builder-faqs",
+            "https://patentsview.org/download/data-download-tables",
+            "https://patentsview.org/data-dictionaries",
           ];
           // if (domain === "http://www.patentsview.org") {
           //   links = [
