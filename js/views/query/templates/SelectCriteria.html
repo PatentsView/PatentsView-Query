@@ -46,7 +46,7 @@
 <section class="col-md-12 intro no-padding intro-centered">
   <div class="row">
     <div class="col-lg-12">
-      <h1 class="main-title">Search Patent Data With the Query Tool</h1>
+      <h1 class="main-title">Search Patent Data With the Query Builder</h1>
       <h3 class="intro-text intro-text-2">
         Find all patents with your specified text in the patent title or
         abstract.
@@ -125,9 +125,8 @@
                       //     "https://patentsviewcommunity.uat.air.org/query/builder-faqs",
                       //   ];
                       // }
-                      const buttonLinks = document.querySelectorAll(
-                        ".button-links"
-                      );
+                      const buttonLinks =
+                        document.querySelectorAll(".button-links");
                       buttonLinks.forEach((el, i) => {
                         el.href = links[i];
                       });
@@ -154,14 +153,14 @@
     <div class="search-details">
       <p>
         Researching a patent is part of the task of getting a new invention to
-        market. The PatentsView Query Tool is a powerful search tool that
+        market. The PatentsView Query Builder is a powerful search tool that
         longitudinally links inventors, their organizations, locations, and
         overall patenting activity, returning a customized data set by e-mail.
       </p>
       <p>
-        For researchers, in particular, the query tool enables a broad spectrum
-        of users to examine the dynamics of inventor patenting activity over
-        time and space. Users can use the query tool to explore patent
+        For researchers, in particular, the query builder tool enables a broad
+        spectrum of users to examine the dynamics of inventor patenting activity
+        over time and space. Users can use the query builder to explore patent
         technologies, assignees, citation patterns, and co-inventor networks.
       </p>
       <p>
@@ -171,46 +170,45 @@
         discuss your ideas with a registered patent attorney or patent agent.
       </p>
       <h2>
-        How to generate a customized data set with the PatentsView query tool:
+        How to generate a customized data set with the PatentsView query builder
+        tool:
       </h2>
       <ol>
         <li>
-          For a <span class="bold-red">QUICK SEARCH</span> query tool: Input one
-          or more descriptive terms (separated by spaces) into the search bar
-          above, and click
+          For a <span class="bold-red">QUICK SEARCH</span> query build: Input
+          one or more descriptive terms (separated by spaces) into the search
+          bar above, and click
           <div class="btn btn-primary quick-search">
             <i class="fa fa-search"></i>
-          </div>. The query tool will search the PatentsView database for patents
+          </div>
+          . The query builder will search the PatentsView database for patents
           where each term appears in the patent title or abstract.
           <br />
           <span class="list-breakout-text">
-            <span class="bold-grey">For an Advanced Search query tool:</span>
-            Click “<a id="advanced-search">Advanced Search ></a>”. On the next page, select your category of
-            interest: patents, inventors, or assignees. Query results will be
-            organized based on these primary categories, which correspond to the
-            <a id="api-page-link" target="_blank">PatentsView API Endpoints</a>. Then, create one or more search criteria
-            by choosing a search field, selecting from the available options in
-            the dropdown menus, entering your search term, and clicking “Add to
-            Search.” When a search criterion is added, it will appear in the
-            Search Summary box, where you also can remove unwanted criteria.
-            Once all desired search criteria are added to the Search Summary,
-            click “Submit Search.”
+            <span class="bold-grey">For an Advanced Search query build:</span>
+            Click “<a id="advanced-search">Advanced Search ></a>”. On the next
+            page, select your category of interest: patents, inventors, or
+            assignees. Query results will be organized based on these primary
+            categories, which correspond to the
+            <a id="api-page-link" target="_blank">PatentsView API Endpoints</a>.
+            Then, create one or more search criteria by choosing a search field,
+            selecting from the available options in the dropdown menus, entering
+            your search term, and clicking “Add to Search.” When a search
+            criterion is added, it will appear in the Search Summary box, where
+            you also can remove unwanted criteria. Once all desired search
+            criteria are added to the Search Summary, click “Submit Search.”
           </span>
           <script>
             (() => {
               const domain = window.location.hostname;
-              let link = ''
+              let link = "";
               if (domain === "https://patentsviewcommunity.uat.air.org") {
-                link = 
-                  "https://patentsviewcommunity.uat.air.org/apis/api-endpoints"
-                
+                link =
+                  "https://patentsviewcommunity.uat.air.org/apis/api-endpoints";
               } else {
-                link = 
-                  "https://patentsview.org/apis/api-endpoints"
+                link = "https://patentsview.org/apis/api-endpoints";
               }
-              const buttonLink = document.querySelector(
-                "#api-page-link"
-              );
+              const buttonLink = document.querySelector("#api-page-link");
               buttonLink.href = link;
             })();
           </script>
@@ -225,7 +223,7 @@
           rows in the output data if the CSV format is selected.
         </li>
         <li>
-          Click “Preview Results” to view the next screen, where query tool
+          Click “Preview Results” to view the next screen, where query builder
           results can be previewed in CSV or JSON format. If you get zero
           results from your query, consider fewer or alternative search terms.
         </li>
