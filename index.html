@@ -271,5 +271,39 @@
       defer
     ></script>
     <script src="https://cdn.jsdelivr.net/gh/PatentsView/pv-header-footer/dist20210211-1.js"></script>
+
+    <div
+      class="temp-disabled-modal"
+      style="
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div
+        style="
+          background-color: white;
+          max-width: 100%;
+          padding: 40px;
+          border-radius: 5px;
+          text-align: center;
+          font-size: 30px;
+        "
+      >
+        <div>The tool is currently under maintenance.</div>
+        <div>
+          Please contact
+          <a href="mailto:contact@patentsview.org">contact@patentsview.org</a>
+          for any needed assistance.
+        </div>
+      </div>
+    </div>
   </body>
 </html>
